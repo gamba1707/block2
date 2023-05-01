@@ -37,5 +37,7 @@ public class itemManager : MonoBehaviour
     {
         GameManager.I.Selectname =toggleGroup.ActiveToggles().First().name;
         Debug.Log("¡‘I‘ğ‚³‚ê‚Ä‚¢‚éF"+GameManager.I.Selectname);
+        
     }
+
 }

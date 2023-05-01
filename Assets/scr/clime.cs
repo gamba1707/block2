@@ -31,10 +31,15 @@ public class clime : MonoBehaviour
             Ray ray = new Ray(new Vector3(transform.position.x, transform.position.y + 1.8f, transform.position.z), transform.forward);
             Debug.DrawRay(new Vector3(transform.position.x, transform.position.y + 1.8f, transform.position.z), transform.forward * 1.0f, Color.red);
             RaycastHit hit;
-            if (!Physics.Raycast(ray, out hit, 1.0f))
+            Physics.Raycast(ray, out hit, 1.0f);
+           if (!hit.collider.gameObject.CompareTag("cube"))
+           {//ÉLÉÖÅ[ÉuÇ∂Ç·Ç»ÇØÇÍÇŒìoÇÈ
+                    Debug.Log("OK");
+                    anim.SetTrigger("clime");
+            }
+            else
             {
-                Debug.Log("OK");
-                anim.SetTrigger("clime");
+                Debug.Log("ìoÇÍÇ»Ç¢èÍèäÇÃÇÕÇ∏");
             }
         }
     }

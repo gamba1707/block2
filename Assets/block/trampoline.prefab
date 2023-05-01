@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 437785693}
   - component: {fileID: 437785695}
   - component: {fileID: 437785694}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Text (TMP) (1)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -183,7 +183,7 @@ GameObject:
   - component: {fileID: 1556470154}
   - component: {fileID: 1556470156}
   - component: {fileID: 1556470155}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Text (TMP) (3)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -355,7 +355,7 @@ GameObject:
   - component: {fileID: 1838336996}
   - component: {fileID: 1838336998}
   - component: {fileID: 1838336997}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Text (TMP) (2)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -528,7 +528,7 @@ GameObject:
   - component: {fileID: 1968717079340784451}
   - component: {fileID: 1968717079340784450}
   - component: {fileID: 1968717079340784449}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: trampoline
   m_TagString: trampoline
   m_Icon: {fileID: 0}
@@ -628,7 +628,7 @@ GameObject:
   - component: {fileID: 703762916718224529}
   - component: {fileID: 7323899976047666987}
   - component: {fileID: 5844174442613389999}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Text (TMP)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
