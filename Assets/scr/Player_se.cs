@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+//ここではアニメーションから呼び出されると足音を鳴らします
 public class Player_se : MonoBehaviour
 {
     AudioSource source;
@@ -10,12 +11,6 @@ public class Player_se : MonoBehaviour
     void Start()
     {
         source= GetComponent<AudioSource>();
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
     }
 
     void Onfoot()

@@ -16,7 +16,6 @@ public class Player_move : MonoBehaviour
     private Vector3 cameraForward = Vector3.zero;
     private static float x, y;
     [SerializeField] private float speed=5F;
-    private float gravity= -0.98f;
     // Start is called before the first frame update
     void Start()
     {

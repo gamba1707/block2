@@ -6,7 +6,6 @@ public class PoolManager : MonoBehaviour
 {
     [SerializeField] GameObject nomalblock, trampolineblock;
     [SerializeField] Transform nomal_parent, trampoline_parent;
-    private int poolnum=10;
     private int nomalnum, blocknum,trampolinenum;
     void Start()
     {
