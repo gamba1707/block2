@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -28,33 +29,36 @@ public class Player_move : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        //入力値
-        x = Input.GetAxis("Horizontal");    //左右矢印キーの値(-1.0~1.0)
-        //y = Input.GetAxis("Vertical");      //上下矢印キーの値(-1.0~1.0)
-        //アニメーション
-        if (x != 0 || y != 0) anim.SetBool("walk", true);
-        else anim.SetBool("walk", false);
-        if (controller.isGrounded)//着地時（たぶん）
+        if (GameManager.I.gamestate("Play"))
         {
-            gravityDirection = new Vector3(0, 0, 0);
-            // カメラの方向から、X-Z平面の単位ベクトルを取得
-            cameraForward = Vector3.Scale(maincamera.transform.forward, new Vector3(1, 0, 1)).normalized;
-            // 方向キーの入力値とカメラの向きから、移動方向を決定
-            moveDirection = cameraForward * y * speed + maincamera.transform.right * x * speed;
-            moveDirection = transform.TransformDirection(moveDirection);
+            //入力値
+            x = Input.GetAxis("Horizontal");    //左右矢印キーの値(-1.0~1.0)
+                                                //y = Input.GetAxis("Vertical");      //上下矢印キーの値(-1.0~1.0)
+                                                //アニメーション
+            if (x != 0 || y != 0) anim.SetBool("walk", true);
+            else anim.SetBool("walk", false);
+            if (controller.isGrounded)//着地時（たぶん）
+            {
+                gravityDirection = new Vector3(0, 0, 0);
+                // カメラの方向から、X-Z平面の単位ベクトルを取得
+                cameraForward = Vector3.Scale(maincamera.transform.forward, new Vector3(1, 0, 1)).normalized;
+                // 方向キーの入力値とカメラの向きから、移動方向を決定
+                moveDirection = cameraForward * y * speed + maincamera.transform.right * x * speed;
+                moveDirection = transform.TransformDirection(moveDirection);
+            }
+            else//空中にいる場合
+            {
+                Vector3 Direction = ((maincamera.transform.right * x * 3f) + (maincamera.transform.forward * y * 3f));
+                gravityDirection.y -= 5f * Time.deltaTime * 0.01f;
+                moveDirection = new Vector3(Direction.x, gravityDirection.y + moveDirection.y, Direction.z);
+                moveDirection = transform.TransformDirection(moveDirection);
+            }
+            //動いているときは常に押されている方向を向いてほしい
+            if (x != 0 || y != 0) Player_t.transform.localRotation = Quaternion.LookRotation(cameraForward * y + maincamera.transform.right * x);
+
+            //最終的に動かす
+            controller.Move(moveDirection * Time.deltaTime);
         }
-        else//空中にいる場合
-        {
-            Vector3 Direction = ((maincamera.transform.right * x * 3f) + (maincamera.transform.forward * y * 3f));
-            gravityDirection.y -= 5f * Time.deltaTime*0.01f;
-            moveDirection = new Vector3(Direction.x, gravityDirection.y + moveDirection.y, Direction.z);
-            moveDirection = transform.TransformDirection(moveDirection);
-        }
-        //動いているときは常に押されている方向を向いてほしい
-        if (x != 0 || y != 0) Player_t.transform.localRotation = Quaternion.LookRotation(cameraForward * y + maincamera.transform.right * x);
-        
-        //最終的に動かす
-        controller.Move(moveDirection * Time.deltaTime);
     }
 
     private void OnTriggerStay(Collider other)
@@ -64,11 +68,28 @@ public class Player_move : MonoBehaviour
             //キャラクターコントローラーの接地精度が低いのであるけどここで初期化
             gravityDirection = new Vector3(0, 0, 0);
             moveDirection.y = 6f;
-
             Debug.Log("kiffnsofo"+ moveDirection.y);
-            
         }
-        
     }
 
+    //ゲームクリアしたときにGameManagerから呼び出される
+    //
+    public void Clear_move()
+    {
+        Player_t.transform.rotation = Quaternion.Euler(0f, 90f, 0f);
+        clear_warp(transform.position);
+        anim.SetTrigger("clear");
+    }
+    //当たり判定的に入り口でゴールポーズされるとかっこ悪いのでエフェクトの中心に立たせる
+    void clear_warp(Vector3 start)
+    {
+        float z = (float)Math.Round((transform.position.z/1.5f), 0, MidpointRounding.AwayFromZero);
+        z *= 1.5f;
+        Debug.Log("変換前："+start.z+"  変換後："+z);
+        Vector3 end=new Vector3(transform.position.x, transform.position.y, z);
+        for(float i = 0; i <= 1; i += 0.01f)
+        {
+            transform.position = Vector3.Lerp(start, end, i);
+        }
+    }
 }

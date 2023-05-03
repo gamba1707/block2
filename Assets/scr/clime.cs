@@ -20,7 +20,7 @@ public class clime : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        Debug.DrawRay(new Vector3(transform.position.x, transform.position.y + 1.8f, transform.position.z), transform.forward * 1.0f, Color.red);
+        Debug.DrawRay(new Vector3(transform.position.x, transform.position.y + 1.6f, transform.position.z), transform.forward * 1.0f, Color.red);
     }
 
     private void OnTriggerEnter(Collider other)
@@ -28,12 +28,13 @@ public class clime : MonoBehaviour
         if (other.gameObject.CompareTag("cube"))
         {
             blockpos=other.transform.position;
-            Ray ray = new Ray(new Vector3(transform.position.x, transform.position.y + 1.8f, transform.position.z), transform.forward);
-            Debug.DrawRay(new Vector3(transform.position.x, transform.position.y + 1.8f, transform.position.z), transform.forward * 1.0f, Color.red);
+            Ray ray = new Ray(new Vector3(transform.position.x, transform.position.y + 1.7f, transform.position.z), transform.forward);
+            Debug.DrawRay(new Vector3(transform.position.x, transform.position.y + 1.7f, transform.position.z), transform.forward * 1.0f, Color.red);
             RaycastHit hit;
             Physics.Raycast(ray, out hit, 1.0f);
-           if (!hit.collider.gameObject.CompareTag("cube"))
-           {//ÉLÉÖÅ[ÉuÇ∂Ç·Ç»ÇØÇÍÇŒìoÇÈ
+            Debug.Log(hit.collider == null);
+           if (hit.collider == null)
+           {//âΩÇ‡Ç»ÇØÇÍÇŒìoÇÈ
                     Debug.Log("OK");
                     anim.SetTrigger("clime");
             }

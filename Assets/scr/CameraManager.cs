@@ -7,6 +7,7 @@ public class CameraManager : MonoBehaviour
 {
     [SerializeField] GameObject Player_vcam;
     [SerializeField] GameObject stage_vcam;
+    [SerializeField] GameObject clear_vcam;
     // Start is called before the first frame update
     void Start()
     {
@@ -16,15 +17,19 @@ public class CameraManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        //右クリック押したら
-        if (Input.GetMouseButtonDown(1))
+        if (GameManager.I.gamestate("Play"))
         {
-            stage_vcam.SetActive(true);
-        }
-        //右クリックを離したら
-        else if (Input.GetMouseButtonUp(1))
-        {
-            stage_vcam.SetActive(false);
+            //右クリック押したら
+            if (Input.GetMouseButtonDown(1))
+            {
+                stage_vcam.SetActive(true);
+            }
+            //右クリックを離したら
+            else if (Input.GetMouseButtonUp(1))
+            {
+                stage_vcam.SetActive(false);
+            }
         }
     }
+
 }
