@@ -16,7 +16,9 @@ public class Player_move : MonoBehaviour
     private Vector3 gravityDirection = Vector3.zero;
     private Vector3 cameraForward = Vector3.zero;
     private static float x, y;
+    [SerializeField] private Vector3 playerpos_first;
     [SerializeField] private float speed=5F;
+    [SerializeField] private bool falling;
     // Start is called before the first frame update
     void Start()
     {
@@ -24,6 +26,7 @@ public class Player_move : MonoBehaviour
         maincamera = Camera.main;
         Player_t = transform.GetChild(0).gameObject;
         anim = GetComponentInChildren<Animator>();
+        playerpos_first = transform.position;
     }
 
     // Update is called once per frame
@@ -33,12 +36,14 @@ public class Player_move : MonoBehaviour
         {
             //入力値
             x = Input.GetAxis("Horizontal");    //左右矢印キーの値(-1.0~1.0)
-                                                //y = Input.GetAxis("Vertical");      //上下矢印キーの値(-1.0~1.0)
-                                                //アニメーション
+
+            //アニメーション
             if (x != 0 || y != 0) anim.SetBool("walk", true);
             else anim.SetBool("walk", false);
+
             if (controller.isGrounded)//着地時（たぶん）
             {
+                falling = false;
                 gravityDirection = new Vector3(0, 0, 0);
                 // カメラの方向から、X-Z平面の単位ベクトルを取得
                 cameraForward = Vector3.Scale(maincamera.transform.forward, new Vector3(1, 0, 1)).normalized;
@@ -48,16 +53,26 @@ public class Player_move : MonoBehaviour
             }
             else//空中にいる場合
             {
-                Vector3 Direction = ((maincamera.transform.right * x * 3f) + (maincamera.transform.forward * y * 3f));
-                gravityDirection.y -= 5f * Time.deltaTime * 0.01f;
-                moveDirection = new Vector3(Direction.x, gravityDirection.y + moveDirection.y, Direction.z);
-                moveDirection = transform.TransformDirection(moveDirection);
+                falling = true;//FixcedUpdateの方で処理
             }
+
             //動いているときは常に押されている方向を向いてほしい
             if (x != 0 || y != 0) Player_t.transform.localRotation = Quaternion.LookRotation(cameraForward * y + maincamera.transform.right * x);
 
             //最終的に動かす
             controller.Move(moveDirection * Time.deltaTime);
+        }
+    }
+
+    //落下中の時のみ使用
+    private void FixedUpdate()
+    {
+        if (falling)
+        {
+            Vector3 Direction = ((maincamera.transform.right * x * 3f) + (maincamera.transform.forward * y * 3f));
+            gravityDirection.y -= 0.3f * Time.deltaTime;
+            moveDirection = new Vector3(Direction.x, gravityDirection.y + moveDirection.y, Direction.z);
+            moveDirection = transform.TransformDirection(moveDirection);
         }
     }
 
@@ -67,7 +82,7 @@ public class Player_move : MonoBehaviour
         {
             //キャラクターコントローラーの接地精度が低いのであるけどここで初期化
             gravityDirection = new Vector3(0, 0, 0);
-            moveDirection.y = 6f;
+            moveDirection.y = 6.2f;
             Debug.Log("kiffnsofo"+ moveDirection.y);
         }
     }
@@ -91,5 +106,21 @@ public class Player_move : MonoBehaviour
         {
             transform.position = Vector3.Lerp(start, end, i);
         }
+    }
+    public void GameOver_move()
+    {
+        //飛び降りた風の向きにする
+        Player_t.transform.rotation = Quaternion.Euler(20f, Player_t.transform.localEulerAngles.y, 0f);
+        //落ちたアニメーション
+        anim.SetBool("fall",true);
+    }
+
+    public void Reset_move()
+    {
+        Player_t.transform.rotation = Quaternion.Euler(0f, 0, 0f);
+        transform.position = playerpos_first;
+        anim.SetBool("walk", false);
+        anim.SetBool("fall", false);
+        Debug.Log("<color=#0000ffff>プレイヤー初期化</color>\nPlayerpos:" + transform.position);
     }
 }

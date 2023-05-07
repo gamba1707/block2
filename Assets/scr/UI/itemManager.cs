@@ -6,8 +6,7 @@ using UnityEngine.UI;
 
 public class itemManager : MonoBehaviour
 {
-    
-    private ToggleGroup toggleGroup;
+    [SerializeField] private ToggleGroup toggleGroup;
     //アイテムトグルグループ配列
     private Toggle[] toggle;
     //アイテムの画像
@@ -15,7 +14,6 @@ public class itemManager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        toggleGroup = GetComponent<ToggleGroup>();
         //とりあえずグループの数分取得して格納
         toggle = new Toggle[transform.childCount];
         
@@ -35,9 +33,8 @@ public class itemManager : MonoBehaviour
     //選択されているものを更新する
     public void OnSelectChenge()
     {
-        GameManager.I.Selectname =toggleGroup.ActiveToggles().First().name;
+            GameManager.I.Selectname =toggleGroup.ActiveToggles().First().name;
         Debug.Log("今選択されている："+GameManager.I.Selectname);
-        
     }
 
 }

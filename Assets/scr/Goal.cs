@@ -11,7 +11,7 @@ public class Goal : MonoBehaviour
         {
             Debug.Log("ÉSÅ[ÉãÇµÇ‹ÇµÇΩ");
             if(other.gameObject.name.Equals("Player"))
-                GameManager.I.OnClear(other.gameObject.GetComponent<Player_move>());
+                GameManager.I.OnClear();
             clear_vcam.SetActive(true);
         }
     }
