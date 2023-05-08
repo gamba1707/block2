@@ -9,4 +9,5 @@ public class MapData_scrobj : ScriptableObject
     public Vector3[] floorpos;
     public int fallnum;
     public Vector3[] fallpos;
+    public Vector3 goalpos;
 }

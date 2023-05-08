@@ -18,6 +18,7 @@ public class MapData : MonoBehaviour
         public Vector3[] floorpos;
         public int fallnum;
         public Vector3[] fallpos;
+        public Vector3 goalpos;
     }
 
     public static MapData mapinstance;
@@ -69,7 +70,7 @@ public class MapData : MonoBehaviour
     }
 
     //いろいろ情報をもらってステージ地形を持ったScriptableObjectを作成する
-    public void OnMapSave_scrobj(string stagename, int clearnum, Transform floor_parent, Transform fall_parent)
+    public void OnMapSave_scrobj(string stagename, int clearnum, Transform floor_parent, Transform fall_parent,Vector3 goalpos)
     {
         var obj = ScriptableObject.CreateInstance<MapData_scrobj>();
         obj.clearnum = clearnum;
@@ -85,6 +86,7 @@ public class MapData : MonoBehaviour
         {
             obj.fallpos[i] = fall_parent.GetChild(i).position;
         }
+        obj.goalpos = goalpos;
         //フォルダーが存在しないなら作る
         if(!System.IO.Directory.Exists("Assets/" + path)) System.IO.Directory.CreateDirectory(Application.dataPath + "/" + path);
         //ScriptableObjectを作成
@@ -102,8 +104,9 @@ public class MapData : MonoBehaviour
             if (GameManager.I.Editmode) mapData_Scrobj = stagedata;
             Debug.Log(mapData_Scrobj.name);
             GameManager.I.Add_Blocknum_goal=mapData_Scrobj.clearnum;//目標数設定
-            GameManager.I.SetFloorblock(mapData_Scrobj.floorpos);
-            GameManager.I.SetFallblock(mapData_Scrobj.fallpos);
+            GameManager.I.SetFloorblock(mapData_Scrobj.floorpos);//床情報を送って配置
+            GameManager.I.SetFallblock(mapData_Scrobj.fallpos);//奈落位置情報を送って配置
+            GameManager.I.SetGoalblock(mapData_Scrobj.goalpos);//ゴール場所を送って配置
         }
     }
 

@@ -35,6 +35,10 @@ public class Map_pointer : MonoBehaviour
                         poolm.GetFallObject(point());//poolManagerに位置を渡して生成させる
                         Debug.Log("生成したよ");
                         break;
+                    case "ゴール":
+                        poolm.GetGoalObject_edit(point());//poolManagerに位置を渡して移動
+                        Debug.Log("生成したよ");
+                        break;
                     case "普通のブロック":
                         poolm.GetNomalObject(point());//poolManagerに位置を渡して生成させる
                         GameManager.I.Add_Blocknum++;//GameManagerに加算する

@@ -136,7 +136,7 @@ GameObject:
   - component: {fileID: 19587514}
   - component: {fileID: 19587513}
   m_Layer: 5
-  m_Name: Button (1)
+  m_Name: ResetButton
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -206,7 +206,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 19587514}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 2001238405}
+        m_TargetAssemblyTypeName: Pouse_UI, Assembly-CSharp
+        m_MethodName: OnResetGame
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &19587514
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -530,7 +542,7 @@ GameObject:
   - component: {fileID: 76318649}
   - component: {fileID: 76318648}
   m_Layer: 5
-  m_Name: Button (2)
+  m_Name: SelectButton
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -600,7 +612,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 76318649}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 2001238405}
+        m_TargetAssemblyTypeName: Pouse_UI, Assembly-CSharp
+        m_MethodName: OnReturnSelect
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &76318649
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3145,6 +3169,7 @@ MonoBehaviour:
   nomalblock: {fileID: 2597779036430718306, guid: 842ac9ca229f27c499216baffdd12a27, type: 3}
   trampolineblock: {fileID: 1968717079340784462, guid: 7e4aa7cf09eaf554791f9a7624dc9d50, type: 3}
   fallblock: {fileID: 2597779036430718306, guid: b69e031da9bee904dab238d5cb02e601, type: 3}
+  goalblock: {fileID: 140098417}
   floor_parent: {fileID: 579555544}
   nomal_parent: {fileID: 536994279}
   trampoline_parent: {fileID: 318047121}
@@ -6395,7 +6420,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1803146735}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 123890383}
+        m_TargetAssemblyTypeName: Pouse_UI, Assembly-CSharp
+        m_MethodName: OnReturnSelect
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &1803146735
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -8,6 +8,7 @@ public class clime : MonoBehaviour
 {
     private Player_move player_move;
     private Animator anim;
+    int rotate;
 
     private Vector3 blockpos;
     // Start is called before the first frame update
@@ -20,14 +21,13 @@ public class clime : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        Debug.DrawRay(new Vector3(transform.position.x, transform.position.y + 1.6f, transform.position.z), transform.forward * 1.0f, Color.red);
+        Debug.DrawRay(new Vector3(transform.position.x, transform.position.y + 1.7f, transform.position.z), transform.forward * 1.0f, Color.red);
     }
 
     private void OnTriggerEnter(Collider other)
     {
-        if (other.gameObject.CompareTag("cube"))
+        if (GameManager.I.gamestate("Play")&&other.gameObject.CompareTag("cube"))
         {
-            blockpos=other.transform.position;
             Ray ray = new Ray(new Vector3(transform.position.x, transform.position.y + 1.7f, transform.position.z), transform.forward);
             Debug.DrawRay(new Vector3(transform.position.x, transform.position.y + 1.7f, transform.position.z), transform.forward * 1.0f, Color.red);
             RaycastHit hit;
@@ -36,7 +36,8 @@ public class clime : MonoBehaviour
            if (hit.collider == null)
            {//何もなければ登る
                     Debug.Log("OK");
-                    anim.SetTrigger("clime");
+                blockpos = other.transform.position;
+                anim.SetTrigger("clime");
             }
             else
             {
@@ -50,10 +51,9 @@ public class clime : MonoBehaviour
     IEnumerator clime_move()
     {
         float f=0f;
-        //向きによって進む方向を決めるため（南方向ならマイナス、北方向ならプラス）
-        int rotate = (transform.eulerAngles.y < 90 || transform.eulerAngles.y > 270) ? 1 : -1;
+        Debug.Log(blockpos);
         Vector3 startpos = new Vector3(transform.position.x, transform.position.y, transform.position.z);
-        Vector3 endpos = new Vector3(blockpos.x, transform.position.y + 1.5f, blockpos.z);
+        Vector3 endpos = new Vector3(blockpos.x, blockpos.y + 1f, blockpos.z);
         Debug.Log(startpos);
         Debug.Log(endpos);
         //駆け上がるまで繰り返す（補完待ち）

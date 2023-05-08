@@ -4,9 +4,9 @@ using UnityEngine;
 
 public class PoolManager : MonoBehaviour
 {
-    [SerializeField] GameObject floorblock,nomalblock, trampolineblock,fallblock;//ブロックのプレハブ（控えがなかった時用）
+    [SerializeField] GameObject floorblock,nomalblock, trampolineblock,fallblock,goalblock;//ブロックのプレハブ（控えがなかった時用）
     [SerializeField] Transform floor_parent,nomal_parent, trampoline_parent,fall_parent;//親として配置先
-    private int floornum,nomalnum, blocknum,trampolinenum;//何個非表示で控えているか
+    private int nomalnum, blocknum,trampolinenum;//何個非表示で控えているか
     void Start()
     {
         //GameManagerの方で設定された数値で初期化する
@@ -44,6 +44,14 @@ public class PoolManager : MonoBehaviour
     public void GetFallObject(Vector3 pos)
     {
         Instantiate(fallblock, pos, Quaternion.identity, fall_parent);
+    }
+    public void GetGoalObject_edit(Vector3 pos)
+    {
+        goalblock.gameObject.transform.position= new Vector3(pos.x,pos.y-0.75f,pos.z);
+    }
+    public void GetGoalObject(Vector3 pos)
+    {
+        goalblock.gameObject.transform.position= pos;
     }
 
     //ノーマルのブロックを生成する
@@ -136,6 +144,10 @@ public class PoolManager : MonoBehaviour
     public Transform Fall_parent
     {
         get { return fall_parent; }
+    }
+    public Vector3 Goalpos
+    {
+        get { return goalblock.gameObject.transform.position; }
     }
 }
 

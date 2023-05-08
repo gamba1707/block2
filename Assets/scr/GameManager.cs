@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SocialPlatforms.Impl;
 using TMPro;
+using UnityEngine.SceneManagement;
+using System;
 
 public class GameManager : MonoBehaviour
 {
@@ -66,8 +68,22 @@ public class GameManager : MonoBehaviour
             //Iに自身（GameManager）を代入
             I = this;
         }
-        
+        Time.timeScale = 1;
     }
+
+    private void OnGUI()
+    {
+        if(Editmode)
+        {
+            GUIStyle style = new GUIStyle();
+            style.fontSize = 32;
+            style.normal.textColor = Color.white;
+            string s = "現在、デバッグモードが有効です\nステージセレクトのデータは読み取られていません";
+            string s2 = "\n現在のステージ："+edit_mapdata.name;
+            GUI.Label(new Rect(200, 0, Screen.width, Screen.height), s+s2, style);
+        }
+    }
+
 
     private void Start()
     {
@@ -99,6 +115,10 @@ public class GameManager : MonoBehaviour
             pManager.GetFallObject(pos[i]);
         }
     }
+    public void SetGoalblock(Vector3 pos)
+    {
+        pManager.GetGoalObject(pos);
+    }
 
 
     private void Update()
@@ -116,7 +136,7 @@ public class GameManager : MonoBehaviour
     {
         Debug.Log(text.text);
         //mapdata.OnMapSave_json(text.text,Add_Blocknum,pManager.Floor_parent,pManager.Fall_parent);
-        mapdata.OnMapSave_scrobj(text.text, Add_Blocknum, pManager.Floor_parent, pManager.Fall_parent);
+        mapdata.OnMapSave_scrobj(text.text, Add_Blocknum, pManager.Floor_parent, pManager.Fall_parent,pManager.Goalpos);
     }
 
 
@@ -146,9 +166,8 @@ public class GameManager : MonoBehaviour
         GameOverPanel.SetActive(true);
     }
 
-    public void GameReset()
+    public void OnGameReset()
     {
-
         StartCoroutine(GameReset_move());
     }
     IEnumerator GameReset_move()
@@ -165,6 +184,24 @@ public class GameManager : MonoBehaviour
         LoadUI.Fadein();
         while (LoadUI.Fade_move) yield return null;
         game_status = GAME_STATUS.Play;
+    }
+
+    public void OnStageSelect()
+    {
+        LoadUI.Fadeout();
+        StartCoroutine(StageSelect_move());
+    }
+    IEnumerator StageSelect_move()
+    {
+        var async = SceneManager.LoadSceneAsync("Select");
+        async.allowSceneActivation = false;
+        while (LoadUI.Fade_move)
+        {
+            yield return null;
+            Debug.Log(async.progress);
+        }
+        yield return null;
+        async.allowSceneActivation = true;
     }
 
 
@@ -211,6 +248,14 @@ public class GameManager : MonoBehaviour
     public Vector3 Playerpos
     {
         get { return playerpos; }
-        set { playerpos = value; }
+        set
+        {
+            //もらった数値を1.5の倍数値に変換してから格納
+            //y軸だけはPlayerの足元なので+1.5fする必要性
+            float x = (float)(Math.Round((value.x / 1.5f), 0, MidpointRounding.AwayFromZero) * 1.5f);
+            float y = (float)(Math.Round((value.y / 1.5f), 0, MidpointRounding.AwayFromZero) * 1.5f)+1.5f;
+            float z = (float)(Math.Round((value.z / 1.5f), 0, MidpointRounding.AwayFromZero) * 1.5f);
+            playerpos = new Vector3(x,y, z); 
+        }
     }
 }

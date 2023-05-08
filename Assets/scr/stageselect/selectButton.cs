@@ -25,10 +25,16 @@ public class selectButton : MonoBehaviour
         //それぞれのボタンにアタッチされているステージデータを渡す
         mapData.setMapData(stagedata);
         //あまりに速いと不気味なのでステージロードを0.5秒待つ
-        Invoke("LoadStage",0.5f);
+        //Invoke("LoadStage",0.5f);
+        StartCoroutine(LoadStageScene());
+        //SceneManager.LoadScene("Stage");
     }
-    void LoadStage()
+    private IEnumerator LoadStageScene()
     {
-        SceneManager.LoadScene("Stage");
+        var async = SceneManager.LoadSceneAsync("Stage");
+
+        async.allowSceneActivation = false;
+        while (LoadUI.Fade_move) yield return null;
+        async.allowSceneActivation = true;
     }
 }

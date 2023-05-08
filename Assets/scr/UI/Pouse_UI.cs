@@ -4,18 +4,6 @@ using UnityEngine;
 
 public class Pouse_UI : MonoBehaviour
 {
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
-
     //ゲームに戻る
     public void OnReturnGame()
     {
@@ -24,11 +12,11 @@ public class Pouse_UI : MonoBehaviour
     //リセットするを押されたら呼ばれる
     public void OnResetGame()
     {
-        GameManager.I.GameReset();
+        GameManager.I.OnGameReset();
     }
     //セレクトに戻るを押した場合に呼ばれる
     public void OnReturnSelect()
     {
-
+        GameManager.I.OnStageSelect();
     }
 }

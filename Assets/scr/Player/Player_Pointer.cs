@@ -27,6 +27,7 @@ public class Player_Pointer : MonoBehaviour
             Physics.Raycast(ray, out hit, Camera.main.transform.position.x+2.5f);
             //何もないところに生成する場合
             //生成位置がプレイヤーの位置ではない
+            Debug.Log(point());
             if (!(GameManager.I.Playerpos == point()))
             {
                 //生成しようとしている場所に何もない（一応床ではないかも判定する）

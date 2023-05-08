@@ -34,6 +34,9 @@ public class Player_move : MonoBehaviour
     {
         if (GameManager.I.gamestate("Play"))
         {
+            //ここはプレイヤーの位置をGameManagerに伝える所
+            GameManager.I.Playerpos=transform.position;
+
             //入力値
             x = Input.GetAxis("Horizontal");    //左右矢印キーの値(-1.0~1.0)
 
