@@ -39,6 +39,7 @@ public class Loading_fade : MonoBehaviour
 
     public void Fadein()
     {
+        Debug.Log("フェードイン");
         StartCoroutine("fadein_move");
     }
     //実際にfadeoutを動かしているのはコチラ
@@ -53,12 +54,13 @@ public class Loading_fade : MonoBehaviour
             fade += 0.0025f;
             yield return null;
         }
-        yield return new WaitForSeconds(0.3f);
+        yield return new WaitForSecondsRealtime(0.25f);
         Fade_move = false;
     }
 
     public void Fadeout()
     {
+        Debug.Log("フェードアウト");
         StartCoroutine("fadeout_move");
     }
     //実際にfadeoutを動かしているのはコチラ
@@ -66,6 +68,7 @@ public class Loading_fade : MonoBehaviour
     {
         fade = 1f;//1にする
         Fade_move= true;
+        
         while (fade >= 0)
         {
             right = fade * Screen.width - 5;//右端からの大きさを決定
@@ -73,6 +76,7 @@ public class Loading_fade : MonoBehaviour
             fade -= 0.0025f;//段階を進める
             yield return null;//フレーム入れる
         }
+        yield return new WaitForSecondsRealtime(0.25f);
         Fade_move = false;
     }
 }

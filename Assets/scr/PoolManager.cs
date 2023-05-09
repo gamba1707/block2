@@ -4,15 +4,21 @@ using UnityEngine;
 
 public class PoolManager : MonoBehaviour
 {
-    [SerializeField] GameObject floorblock,nomalblock, trampolineblock,fallblock,goalblock;//ブロックのプレハブ（控えがなかった時用）
-    [SerializeField] Transform floor_parent,nomal_parent, trampoline_parent,fall_parent;//親として配置先
-    private int nomalnum, blocknum,trampolinenum;//何個非表示で控えているか
+    [Header("ブロックのプレハブ")]
+    [SerializeField] GameObject floorblock,nomalblock, trampolineblock,fallblock,downblock;//ブロックのプレハブ（控えがなかった時用）
+    [Header("生成するブロックの親オブジェクト先")]
+    [SerializeField] Transform floor_parent,nomal_parent, trampoline_parent,fall_parent,down_parent;//親として配置先
+    [Header("それぞれのシーンにあるゴールオブジェクト")]
+    [SerializeField] GameObject goalblock;
+
+    private int nomalnum, blocknum,trampolinenum,downnum;//何個非表示で控えているか
     void Start()
     {
         //GameManagerの方で設定された数値で初期化する
         nomalnum = GameManager.I.Nomalnum;
         blocknum = GameManager.I.Blocknum;
         if (GameManager.I.Trampoline) trampolinenum = blocknum;
+        if(GameManager.I.Down) downnum = blocknum;
         //指定されているものを指定された数生成する
         for (int i = 0;i<nomalnum;i++)
         {
@@ -21,15 +27,22 @@ public class PoolManager : MonoBehaviour
         for(int i = 0; i < blocknum; i++)
         {
             if (GameManager.I.Trampoline) Instantiate(trampolineblock, new Vector3(0, 0, -5), Quaternion.identity, trampoline_parent);
+            if (GameManager.I.Down) Instantiate(downblock, new Vector3(0, 0, -5), Quaternion.identity, down_parent);
+        
         }
 
         //生成したオブジェクトを非表示にする
-        foreach(Transform child in nomal_parent)
+        foreach (Transform child in nomal_parent)
         {
             GameObject childObject = child.gameObject;
             child.gameObject.SetActive(false);
         }
         foreach (Transform child in trampoline_parent)
+        {
+            GameObject childObject = child.gameObject;
+            child.gameObject.SetActive(false);
+        }
+        foreach (Transform child in down_parent)
         {
             GameObject childObject = child.gameObject;
             child.gameObject.SetActive(false);
@@ -100,12 +113,36 @@ public class PoolManager : MonoBehaviour
     END:;//終わり転送先
     }
 
+    //ちくわブロックを生成する
+    public void GetDownObject(Vector3 pos)
+    {
+        if (downnum > 0)
+        {
+            foreach (Transform child in down_parent)
+            {
+                if (!child.gameObject.activeInHierarchy)
+                {
+                    child.transform.position = pos;
+                    child.gameObject.SetActive(true);
+                    downnum--;
+                    goto END;//一つ出現させたら終わらせる
+                }
+            }
+        }
+        else//もうストックがないなら新たに生成して対応するしかない...
+        {
+            Instantiate(downblock, pos, Quaternion.identity, down_parent);
+        }
+    END:;//終わり転送先
+    }
+
     //消しゴム機能
     public void EraserObject(GameObject obj)
     {
         //再利用出来る数を更新
         if(obj.CompareTag("cube"))nomalnum++;
         else if(obj.CompareTag("trampoline"))trampolinenum++;
+        else if (obj.CompareTag("down")) downnum++;
         else Destroy(obj);
         //オブジェクトを非表示にする
         if(obj!=null)obj.SetActive(false);
@@ -132,8 +169,16 @@ public class PoolManager : MonoBehaviour
                 child.gameObject.SetActive(false);
             }
         }
+        //ちくわブロックを全て非表示化
+        foreach (Transform child in down_parent)
+        {
+            if (child.gameObject.activeInHierarchy)
+            {
+                child.gameObject.SetActive(false);
+            }
+        }
 
-        Debug.Log("<color=#0000ffff>ブロック初期化</color>\nnomalnum:"+nomalnum+ "\ntrampolinenum:"+trampolinenum);
+        Debug.Log("<color=#0000ffff>ブロック初期化</color>\nnomalnum:"+nomalnum+ "\ntrampolinenum:"+trampolinenum + "\ndownnum:" + downnum);
 
     }
 

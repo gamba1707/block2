@@ -6,6 +6,7 @@ TagManager:
   tags:
   - cube
   - trampoline
+  - down
   layers:
   - Default
   - TransparentFX

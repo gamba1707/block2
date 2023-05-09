@@ -44,6 +44,7 @@ public class GameManager : MonoBehaviour
     [Header("このステージで使うブロック")]
     [SerializeField] private bool nomal;
     [SerializeField] private bool trampoline;
+    [SerializeField] private bool down;
 
     [Header("通常のブロック（初期化時に控えておく数）")]
     [SerializeField] private int nomalnum;
@@ -180,10 +181,10 @@ public class GameManager : MonoBehaviour
         pmove.Reset_move();//プレイヤー関連の初期化
         pManager.Reset_box();//置いたブロックを初期化
         GameOverPanel.SetActive(false);//表示しているゲームオーバー画面を消す
-        yield return new WaitForSeconds(0.5f);//あまりに速いと不気味なので0.5秒待つ
         LoadUI.Fadein();
-        while (LoadUI.Fade_move) yield return null;
-        game_status = GAME_STATUS.Play;
+        while(LoadUI.Fade_move)yield return null;//ロード画面が終わるまで待つ
+        OnPouseback();//世界が動き出す
+
     }
 
     public void OnStageSelect()
@@ -228,6 +229,10 @@ public class GameManager : MonoBehaviour
     public bool Trampoline
     {
         get { return trampoline; }
+    }
+    public bool Down
+    {
+        get { return down; }
     }
 
     public int Nomalnum

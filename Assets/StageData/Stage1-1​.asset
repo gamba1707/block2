@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fa9bb295bfe98a34db2a0915e96d55ca, type: 3}
   m_Name: "Stage1-1\u200B"
   m_EditorClassIdentifier: 
-  clearnum: 0
+  clearnum: 7
   floornum: 31
   floorpos:
   - {x: 0, y: 0, z: 0}

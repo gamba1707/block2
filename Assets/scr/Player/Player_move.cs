@@ -4,12 +4,12 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
-//ƒvƒŒƒCƒ„[‚ÌˆÚ“®‚ÉŠÖ‚·‚éƒvƒƒOƒ‰ƒ€
+//ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ã®ç§»å‹•ã«é–¢ã™ã‚‹ãƒ—ãƒ­ã‚°ãƒ©ãƒ 
 public class Player_move : MonoBehaviour
 {
     CharacterController controller;
     private Camera maincamera;
-    private GameObject Player_t;//Player‚ğ‚·‚®‚»‚Ì•ûŒü‚É•à‚©‚¹‚é‚½‚ß
+    private GameObject Player_t;//Playerã‚’ã™ããã®æ–¹å‘ã«æ­©ã‹ã›ã‚‹ãŸã‚
     private Animator anim;
 
     private Vector3 moveDirection = Vector3.zero;
@@ -34,43 +34,43 @@ public class Player_move : MonoBehaviour
     {
         if (GameManager.I.gamestate("Play"))
         {
-            //‚±‚±‚ÍƒvƒŒƒCƒ„[‚ÌˆÊ’u‚ğGameManager‚É“`‚¦‚éŠ
+            //ã“ã“ã¯ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ã®ä½ç½®ã‚’GameManagerã«ä¼ãˆã‚‹æ‰€
             GameManager.I.Playerpos=transform.position;
 
-            //“ü—Í’l
-            x = Input.GetAxis("Horizontal");    //¶‰E–îˆóƒL[‚Ì’l(-1.0~1.0)
+            //å…¥åŠ›å€¤
+            x = Input.GetAxis("Horizontal");    //å·¦å³çŸ¢å°ã‚­ãƒ¼ã®å€¤(-1.0~1.0)
 
-            //ƒAƒjƒ[ƒVƒ‡ƒ“
+            //ã‚¢ãƒ‹ãƒ¡ãƒ¼ã‚·ãƒ§ãƒ³
             if (x != 0 || y != 0) anim.SetBool("walk", true);
             else anim.SetBool("walk", false);
 
-            if (controller.isGrounded)//’…’ni‚½‚Ô‚ñj
+            if (controller.isGrounded)//ç€åœ°æ™‚ï¼ˆãŸã¶ã‚“ï¼‰
             {
                 falling = false;
                 gravityDirection = new Vector3(0, 0, 0);
-                // ƒJƒƒ‰‚Ì•ûŒü‚©‚çAX-Z•½–Ê‚Ì’PˆÊƒxƒNƒgƒ‹‚ğæ“¾
+                // ã‚«ãƒ¡ãƒ©ã®æ–¹å‘ã‹ã‚‰ã€X-Zå¹³é¢ã®å˜ä½ãƒ™ã‚¯ãƒˆãƒ«ã‚’å–å¾—
                 cameraForward = Vector3.Scale(maincamera.transform.forward, new Vector3(1, 0, 1)).normalized;
-                // •ûŒüƒL[‚Ì“ü—Í’l‚ÆƒJƒƒ‰‚ÌŒü‚«‚©‚çAˆÚ“®•ûŒü‚ğŒˆ’è
+                // æ–¹å‘ã‚­ãƒ¼ã®å…¥åŠ›å€¤ã¨ã‚«ãƒ¡ãƒ©ã®å‘ãã‹ã‚‰ã€ç§»å‹•æ–¹å‘ã‚’æ±ºå®š
                 moveDirection = cameraForward * y * speed + maincamera.transform.right * x * speed;
                 moveDirection = transform.TransformDirection(moveDirection);
             }
-            else//‹ó’†‚É‚¢‚éê‡
+            else//ç©ºä¸­ã«ã„ã‚‹å ´åˆ
             {
-                falling = true;//FixcedUpdate‚Ì•û‚Åˆ—
+                falling = true;//FixcedUpdateã®æ–¹ã§å‡¦ç†
             }
 
-            //“®‚¢‚Ä‚¢‚é‚Æ‚«‚Íí‚É‰Ÿ‚³‚ê‚Ä‚¢‚é•ûŒü‚ğŒü‚¢‚Ä‚Ù‚µ‚¢
+            //å‹•ã„ã¦ã„ã‚‹ã¨ãã¯å¸¸ã«æŠ¼ã•ã‚Œã¦ã„ã‚‹æ–¹å‘ã‚’å‘ã„ã¦ã»ã—ã„
             if (x != 0 || y != 0) Player_t.transform.localRotation = Quaternion.LookRotation(cameraForward * y + maincamera.transform.right * x);
 
-            //ÅI“I‚É“®‚©‚·
+            //æœ€çµ‚çš„ã«å‹•ã‹ã™
             controller.Move(moveDirection * Time.deltaTime);
         }
     }
 
-    //—‰º’†‚Ì‚Ì‚İg—p
+    //è½ä¸‹ä¸­ã®æ™‚ã®ã¿ä½¿ç”¨
     private void FixedUpdate()
     {
-        if (falling)
+        if (GameManager.I.gamestate("Play")&& falling)
         {
             Vector3 Direction = ((maincamera.transform.right * x * 3f) + (maincamera.transform.forward * y * 3f));
             gravityDirection.y -= 0.3f * Time.deltaTime;
@@ -83,14 +83,14 @@ public class Player_move : MonoBehaviour
     {
         if (other.gameObject.CompareTag("trampoline"))
         {
-            //ƒLƒƒƒ‰ƒNƒ^[ƒRƒ“ƒgƒ[ƒ‰[‚ÌÚ’n¸“x‚ª’á‚¢‚Ì‚Å‚ ‚é‚¯‚Ç‚±‚±‚Å‰Šú‰»
+            //ã‚­ãƒ£ãƒ©ã‚¯ã‚¿ãƒ¼ã‚³ãƒ³ãƒˆãƒ­ãƒ¼ãƒ©ãƒ¼ã®æ¥åœ°ç²¾åº¦ãŒä½ã„ã®ã§ã‚ã‚‹ã‘ã©ã“ã“ã§åˆæœŸåŒ–
             gravityDirection = new Vector3(0, 0, 0);
             moveDirection.y = 6.2f;
             Debug.Log("kiffnsofo"+ moveDirection.y);
         }
     }
 
-    //ƒQ[ƒ€ƒNƒŠƒA‚µ‚½‚Æ‚«‚ÉGameManager‚©‚çŒÄ‚Ño‚³‚ê‚é
+    //ã‚²ãƒ¼ãƒ ã‚¯ãƒªã‚¢ã—ãŸã¨ãã«GameManagerã‹ã‚‰å‘¼ã³å‡ºã•ã‚Œã‚‹
     //
     public void Clear_move()
     {
@@ -98,12 +98,12 @@ public class Player_move : MonoBehaviour
         clear_warp(transform.position);
         anim.SetTrigger("clear");
     }
-    //“–‚½‚è”»’è“I‚É“ü‚èŒû‚ÅƒS[ƒ‹ƒ|[ƒY‚³‚ê‚é‚Æ‚©‚Á‚±ˆ«‚¢‚Ì‚ÅƒGƒtƒFƒNƒg‚Ì’†S‚É—§‚½‚¹‚é
+    //å½“ãŸã‚Šåˆ¤å®šçš„ã«å…¥ã‚Šå£ã§ã‚´ãƒ¼ãƒ«ãƒãƒ¼ã‚ºã•ã‚Œã‚‹ã¨ã‹ã£ã“æ‚ªã„ã®ã§ã‚¨ãƒ•ã‚§ã‚¯ãƒˆã®ä¸­å¿ƒã«ç«‹ãŸã›ã‚‹
     void clear_warp(Vector3 start)
     {
         float z = (float)Math.Round((transform.position.z/1.5f), 0, MidpointRounding.AwayFromZero);
         z *= 1.5f;
-        Debug.Log("•ÏŠ·‘OF"+start.z+"  •ÏŠ·ŒãF"+z);
+        Debug.Log("å¤‰æ›å‰ï¼š"+start.z+"  å¤‰æ›å¾Œï¼š"+z);
         Vector3 end=new Vector3(transform.position.x, transform.position.y, z);
         for(float i = 0; i <= 1; i += 0.01f)
         {
@@ -112,18 +112,20 @@ public class Player_move : MonoBehaviour
     }
     public void GameOver_move()
     {
-        //”ò‚Ñ~‚è‚½•—‚ÌŒü‚«‚É‚·‚é
+        //é£›ã³é™ã‚ŠãŸé¢¨ã®å‘ãã«ã™ã‚‹
         Player_t.transform.rotation = Quaternion.Euler(20f, Player_t.transform.localEulerAngles.y, 0f);
-        //—‚¿‚½ƒAƒjƒ[ƒVƒ‡ƒ“
+        //è½ã¡ãŸã‚¢ãƒ‹ãƒ¡ãƒ¼ã‚·ãƒ§ãƒ³
         anim.SetBool("fall",true);
     }
 
     public void Reset_move()
     {
-        Player_t.transform.rotation = Quaternion.Euler(0f, 0, 0f);
-        transform.position = playerpos_first;
         anim.SetBool("walk", false);
         anim.SetBool("fall", false);
-        Debug.Log("<color=#0000ffff>ƒvƒŒƒCƒ„[‰Šú‰»</color>\nPlayerpos:" + transform.position);
+        Player_t.transform.rotation = Quaternion.Euler(0f, 0f, 0f);
+        this.transform.position = playerpos_first;
+        moveDirection = Vector3.zero;
+        
+        Debug.Log("<color=#0000ffff>ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼åˆæœŸåŒ–</color>\nPlayerpos:" + transform.position);
     }
 }

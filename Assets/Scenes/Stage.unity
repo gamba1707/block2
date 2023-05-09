@@ -692,7 +692,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 84887915}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0.18, y: 1.21, z: 0.38}
+  m_LocalPosition: {x: 0.18, y: 1.5, z: 1.5}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -1386,6 +1386,7 @@ MonoBehaviour:
   itemtex:
   - {fileID: 21300000, guid: c1f7434625caebe4c877dd7070928add, type: 3}
   - {fileID: 21300000, guid: e3c545749e30c904cb2c39a36c669c12, type: 3}
+  - {fileID: 21300000, guid: a45362e807b176c48bd747c7202d6d56, type: 3}
   - {fileID: 21300000, guid: 70089ec54c0b53845b883ebfd44b3179, type: 3}
 --- !u!1 &229886638
 GameObject:
@@ -3150,6 +3151,7 @@ Transform:
   m_Children:
   - {fileID: 536994279}
   - {fileID: 318047121}
+  - {fileID: 1384611418}
   m_Father: {fileID: 0}
   m_RootOrder: 11
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -3169,11 +3171,13 @@ MonoBehaviour:
   nomalblock: {fileID: 2597779036430718306, guid: 842ac9ca229f27c499216baffdd12a27, type: 3}
   trampolineblock: {fileID: 1968717079340784462, guid: 7e4aa7cf09eaf554791f9a7624dc9d50, type: 3}
   fallblock: {fileID: 2597779036430718306, guid: b69e031da9bee904dab238d5cb02e601, type: 3}
-  goalblock: {fileID: 140098417}
+  downblock: {fileID: 1968717079340784462, guid: 47d5846b4cb0ccb41936d9b5e8ea6e6a, type: 3}
   floor_parent: {fileID: 579555544}
   nomal_parent: {fileID: 536994279}
   trampoline_parent: {fileID: 318047121}
   fall_parent: {fileID: 1076361686}
+  down_parent: {fileID: 1384611418}
+  goalblock: {fileID: 140098417}
 --- !u!1 &713143792
 GameObject:
   m_ObjectHideFlags: 0
@@ -3721,7 +3725,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 963194225}
   m_LocalRotation: {x: 0, y: -0.7071068, z: 0, w: 0.7071068}
-  m_LocalPosition: {x: 8.18, y: 2.71, z: 0.38}
+  m_LocalPosition: {x: 8.18, y: 3, z: 1.5}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -4668,6 +4672,37 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1344511312}
   m_CullTransparentMesh: 1
+--- !u!1 &1384611417
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1384611418}
+  m_Layer: 0
+  m_Name: down_p
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1384611418
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1384611417}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 707564108}
+  m_RootOrder: 2
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1399561551
 GameObject:
   m_ObjectHideFlags: 0
@@ -5551,6 +5586,7 @@ MonoBehaviour:
   add_blocknum_goal: 0
   nomal: 1
   trampoline: 1
+  down: 1
   nomalnum: 20
   blocknum: 10
   selectname: 
@@ -6291,7 +6327,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1791822304}
   m_LocalRotation: {x: -0, y: -0.7071068, z: -0, w: 0.7071068}
-  m_LocalPosition: {x: 8.18, y: 2.71, z: 0.38}
+  m_LocalPosition: {x: 8.18, y: 3, z: 1.5}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:

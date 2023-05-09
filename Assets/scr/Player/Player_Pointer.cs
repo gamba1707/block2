@@ -46,6 +46,11 @@ public class Player_Pointer : MonoBehaviour
                             poolm.GetTranpolineObject(point());//poolManagerに位置を渡してトランポリンを生成させる
                             GameManager.I.Add_Blocknum++;//GameManagerに加算する
                             break;
+                        case "下がるブロック":
+                            Debug.Log("生成したよ");
+                            poolm.GetDownObject(point());//poolManagerに位置を渡してトランポリンを生成させる
+                            GameManager.I.Add_Blocknum++;//GameManagerに加算する
+                            break;
                     }
                 }
                 else if (hit.collider.gameObject.layer == LayerMask.NameToLayer("addBlock"))

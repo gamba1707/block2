@@ -19,8 +19,7 @@ public class downblock : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        Debug.Log(rb.velocity);
-        if(rb.velocity.y<-1f)rb.velocity = new Vector3(0, -1f, 0);
+        if(rb.velocity.y<-1f||rb.velocity.y>0)rb.velocity = new Vector3(0, -1f, 0);
     }
 
     private void OnTriggerEnter(Collider other)
@@ -39,7 +38,7 @@ public class downblock : MonoBehaviour
         rb.useGravity = true;
         
         //YÇæÇØâèúÇµÇƒóéâ∫Ç≥ÇπÇÈ
-        rb.constraints = RigidbodyConstraints.FreezeRotation| RigidbodyConstraints.FreezePositionX;
+        rb.constraints = RigidbodyConstraints.FreezeRotation| RigidbodyConstraints.FreezePositionX | RigidbodyConstraints.FreezePositionZ;
         rb.velocity = new Vector3(0, -1f, 0);
     }
 
