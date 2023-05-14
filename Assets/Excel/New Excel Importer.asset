@@ -9,7 +9,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 58ca32f6bae88d546bdd9c73683b6644, type: 3}
-  m_Name: Jsonconvertor
+  m_Script: {fileID: 11500000, guid: 3e45068a99b96094eb6edcd7a1b7ff5d, type: 3}
+  m_Name: New Excel Importer
   m_EditorClassIdentifier: 
-  jsonAsset: {fileID: 4900000, guid: c083c57a386d18848bb3d841697e224f, type: 3}
+  path: 

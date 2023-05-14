@@ -29,6 +29,8 @@ public class MapData : MonoBehaviour
     [Header("ステージデータ")]
     [SerializeField] private MapData_scrobj mapData_Scrobj;
 
+
+
     void Awake()
     {
         //重複して増えていかないようにない場合はそのままである場合は削除する
@@ -116,16 +118,9 @@ public class MapData : MonoBehaviour
         Debug.Log(mapData_Scrobj.name);
     }
 
-    /*
-    int mapindexOf(string stagename)
+    public string mapname()
     {
-        for (int i = 0; i < mapData_Scrobj.Length; i++)
-        {
-            Debug.Log(mapData_Scrobj[i].name);
-            if (mapData_Scrobj[i].name.Equals(stagename)) return i;
-        }
-        return -1;
+        return mapData_Scrobj.name;
     }
-    */
 
 }

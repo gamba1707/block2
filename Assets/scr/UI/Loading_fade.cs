@@ -51,7 +51,7 @@ public class Loading_fade : MonoBehaviour
         {
             right = fade * Screen.width - 5;
             rectTransform.offsetMax = new Vector2(-right, -top);
-            fade += 0.0025f;
+            fade += 0.005f;
             yield return null;
         }
         yield return new WaitForSecondsRealtime(0.25f);
@@ -73,7 +73,7 @@ public class Loading_fade : MonoBehaviour
         {
             right = fade * Screen.width - 5;//右端からの大きさを決定
             rectTransform.offsetMax = new Vector2(-right, -top);//逐一代入
-            fade -= 0.0025f;//段階を進める
+            fade -= 0.005f;//段階を進める
             yield return null;//フレーム入れる
         }
         yield return new WaitForSecondsRealtime(0.25f);

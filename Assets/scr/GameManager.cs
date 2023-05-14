@@ -153,6 +153,13 @@ public class GameManager : MonoBehaviour
         game_status = GAME_STATUS.GameClear;
         pmove.Clear_move();
     }
+
+    public void OnClear_end()
+    {
+        SaveManager.instance.SaveData(mapdata.mapname(),Add_Blocknum_goal>=Add_Blocknum);
+        OnStageSelect();
+    }
+
     //ポーズ画面をやめる
     public void OnPouseback()
     {
@@ -199,7 +206,6 @@ public class GameManager : MonoBehaviour
         while (LoadUI.Fade_move)
         {
             yield return null;
-            Debug.Log(async.progress);
         }
         yield return null;
         async.allowSceneActivation = true;
