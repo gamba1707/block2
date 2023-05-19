@@ -156,15 +156,15 @@ public class GameManager : MonoBehaviour
 
     public void OnClear_end()
     {
-        SaveManager.instance.SaveData(mapdata.mapname(),Add_Blocknum_goal>=Add_Blocknum);
+        SaveManager.instance.SaveData(mapdata.mapname(),Add_Blocknum,Add_Blocknum_goal);
         OnStageSelect();
     }
 
     //ポーズ画面をやめる
     public void OnPouseback()
     {
-        game_status = GAME_STATUS.Play;
         PousePanel.SetActive(false);
+        game_status = GAME_STATUS.Play;
         Time.timeScale = 1;
     }
     public void OnGameOver()
@@ -183,15 +183,15 @@ public class GameManager : MonoBehaviour
         LoadUI.Fadeout();
 
         while(LoadUI.Fade_move) yield return null;
-
-        Add_Blocknum = 0;//置いたブロック数を初期化
         pmove.Reset_move();//プレイヤー関連の初期化
+        Add_Blocknum = 0;//置いたブロック数を初期化
         pManager.Reset_box();//置いたブロックを初期化
-        GameOverPanel.SetActive(false);//表示しているゲームオーバー画面を消す
+        if(GameOverPanel.activeInHierarchy)GameOverPanel.SetActive(false);//表示しているゲームオーバー画面を消す
+        else if(PousePanel.activeInHierarchy)PousePanel.SetActive(false);
         LoadUI.Fadein();
-        while(LoadUI.Fade_move)yield return null;//ロード画面が終わるまで待つ
-        OnPouseback();//世界が動き出す
-
+        while (LoadUI.Fade_move) yield return null;
+        Time.timeScale = 1;
+        game_status = GAME_STATUS.Play;
     }
 
     public void OnStageSelect()
@@ -208,6 +208,7 @@ public class GameManager : MonoBehaviour
             yield return null;
         }
         yield return null;
+        Time.timeScale = 1;
         async.allowSceneActivation = true;
     }
 

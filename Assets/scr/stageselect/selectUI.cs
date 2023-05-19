@@ -17,19 +17,6 @@ public class selectUI : MonoBehaviour
     {
         //フェードインを見せる
         LoadUI.Fadein();
-        StartCoroutine(open_move());
-    }
-
-    IEnumerator open_move()
-    {
-        yield return null;
-        int num = SaveManager.instance.clearnum();
-        var button = selectbutton_parent.GetChild(num).gameObject.GetComponent<SelectButton>();
-        button.buttonFalse();
-        while (LoadUI.Fade_move)yield return null;
-        
-        Debug.Log(num);
-        button.StageOpen();
     }
 
     //それぞれのステージのボタンが押されたら呼ばれる

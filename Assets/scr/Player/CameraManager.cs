@@ -32,4 +32,8 @@ public class CameraManager : MonoBehaviour
         }
     }
 
+    public void SetStageCamera(Vector3 pos)
+    {
+        stage_vcam.transform.position = pos;
+    }
 }

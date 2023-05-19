@@ -13,6 +13,7 @@ MonoBehaviour:
   m_Name: 1-1
   m_EditorClassIdentifier: 
   clearnum: 7
+  stage_vcampos: {x: 23, y: 6, z: 15}
   floornum: 32
   floorpos:
   - {x: 0, y: 7.5, z: 34.5}

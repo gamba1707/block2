@@ -44,12 +44,12 @@ public class Player_Pointer : MonoBehaviour
                         case "飛べるブロック":
                             Debug.Log("生成したよ");
                             poolm.GetTranpolineObject(point());//poolManagerに位置を渡してトランポリンを生成させる
-                            GameManager.I.Add_Blocknum++;//GameManagerに加算する
+                            GameManager.I.Add_Blocknum += 2;//GameManagerに加算する
                             break;
                         case "下がるブロック":
                             Debug.Log("生成したよ");
                             poolm.GetDownObject(point());//poolManagerに位置を渡してトランポリンを生成させる
-                            GameManager.I.Add_Blocknum++;//GameManagerに加算する
+                            GameManager.I.Add_Blocknum += 2;//GameManagerに加算する
                             break;
                     }
                 }

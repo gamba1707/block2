@@ -13,12 +13,15 @@ public class SaveManager : MonoBehaviour
     // 暗号化鍵<半角32文字（8bit*32文字=256bit）>
     private const string AES_Key_256 = @"5TGB&YHN7UJM(IK<5TGB&YHN7UJM(IK<";
 
+    string dataname;
+    Dictionary<string,int> stagescore =new Dictionary<string,int>();
     [SerializeField] List<string> exclearStagename=new List<string>();
     [SerializeField] List<string> clearStagename=new List<string>();
 
     [System.Serializable]
     public class PlayerData
     {
+        public Dictionary<string, int> stagescore = new Dictionary<string, int>();
         public List<string> exclearStagename;
         public List<string> clearStagename;
     }
@@ -51,34 +54,64 @@ public class SaveManager : MonoBehaviour
     {
         return clearStagename.Count+exclearStagename.Count;
     }
+    public string clearscore(string name)
+    {
+        if(stagescore.ContainsKey(name))return stagescore[name].ToString();
+        return "-";
+    }
 
-    public void SaveData(string stage,bool ex)
+    public void SaveData(string stagename,int add_blocknum,int add_blocknum_goal)
     {
         PlayerData data = new PlayerData();
         StreamWriter writer;
         //一旦自分のリストに登録してからPlayerDataの方にリストごと渡してしまう
         //もし目標と同じかそれより早くクリアしたらexに登録する
+        bool ex = add_blocknum_goal >= add_blocknum;
         if (ex)
         {
-            exclearStagename.Add(stage);
+            exclearStagename.Add(stagename);
             data.exclearStagename = exclearStagename;
         }
         else
         {
-            clearStagename.Add(stage);
+            clearStagename.Add(stagename);
             data.clearStagename = clearStagename;
         }
+        //スコアを記録する
+        //もしもうそのステージ名を持っていれば、スコアを更新するだけにする
+        if (stagescore.ContainsKey(stagename)) stagescore[stagename] = add_blocknum;
+        else stagescore.Add(stagename, add_blocknum);
+        data.stagescore = stagescore;
         //Json形式に変換する
         string jsonstr = JsonUtility.ToJson(data);
         Debug.Log(jsonstr);
         //AESで暗号化する
         jsonstr=EncryptAES(jsonstr);
         //ファイルに書き込む処理
-        writer = new StreamWriter(Application.dataPath + "/savedata.json", false);
+        writer = new StreamWriter(Application.dataPath + "/" + dataname + ".json", false);
         writer.Write(jsonstr);
         writer.Flush();
         writer.Close();
         Debug.Log("セーブが終了しました");
+    }
+
+    void LoadSaveData(string dataname)
+    {
+        this.dataname = dataname;
+        string datastr = "";
+        if(File.Exists(Application.dataPath + "/" + dataname + ".json"))
+        {
+            StreamReader reader;
+            reader = new StreamReader(Application.dataPath + "/" + dataname + ".json");
+            datastr = reader.ReadToEnd();
+            reader.Close();
+            datastr = DecryptAES(datastr);
+            PlayerData data = JsonUtility.FromJson<PlayerData>(datastr);
+            this.exclearStagename = data.exclearStagename;
+            this.clearStagename = data.clearStagename;
+            this.stagescore = data.stagescore;
+        }
+        
     }
 
     //参考サイト：https://yuyu-code.com/programming-languages/c-sharp/aes-encryption-decryption/

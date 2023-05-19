@@ -7,10 +7,11 @@ using UnityEngine.EventSystems;
 public class Map_pointer : MonoBehaviour
 {
     [SerializeField] PoolManager poolm;
+    Camera maincamera;
     // Start is called before the first frame update
     void Start()
     {
-
+        maincamera=Camera.main;
     }
 
     // Update is called once per frame
@@ -19,9 +20,9 @@ public class Map_pointer : MonoBehaviour
 
         if (Input.GetMouseButtonDown(0) && !EventSystem.current.IsPointerOverGameObject())
         {
-            Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+            Ray ray = maincamera.ScreenPointToRay(Input.mousePosition);
             RaycastHit hit;
-            Physics.Raycast(ray, out hit, 10.0f);
+            Physics.Raycast(ray, out hit, maincamera.transform.position.x + 2.5f);
             if(hit.collider == null)
             {
                 //現在のセレクトされているブロックを生成させる
@@ -47,12 +48,12 @@ public class Map_pointer : MonoBehaviour
                     case "飛べるブロック":
                         Debug.Log("生成したよ");
                         poolm.GetTranpolineObject(point());//poolManagerに位置を渡してトランポリンを生成させる
-                        GameManager.I.Add_Blocknum++;//GameManagerに加算する
+                        GameManager.I.Add_Blocknum+=2;//GameManagerに+2加算する
                         break;
                     case "下がるブロック":
                         Debug.Log("生成したよ");
                         poolm.GetDownObject(point());//poolManagerに位置を渡してトランポリンを生成させる
-                        GameManager.I.Add_Blocknum++;//GameManagerに加算する
+                        GameManager.I.Add_Blocknum+=2;//GameManagerに+2加算する
                         break;
                 }
             }
@@ -64,10 +65,14 @@ public class Map_pointer : MonoBehaviour
                     poolm.EraserObject(hit.collider.gameObject);
                 }
             }
-
-            
-
-
+            else if (hit.collider.gameObject.layer == LayerMask.NameToLayer("Edit"))
+            {
+                if (GameManager.I.Selectname.Equals("けしごむ"))
+                {
+                    Debug.Log("消せる対象:" + hit.collider.gameObject.name);
+                    Destroy(hit.collider.gameObject);
+                }
+            }
         }
     }
 

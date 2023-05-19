@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-[CreateAssetMenu(menuName = "MyScriptable/Create CSV Impoter")]
+[CreateAssetMenu(menuName = "ScriptableObject/Create Excel Impoter")]
 public class ExcelImporter : ScriptableObject
 {
     public string path;

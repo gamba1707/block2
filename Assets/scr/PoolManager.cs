@@ -51,7 +51,7 @@ public class PoolManager : MonoBehaviour
 
     public void GetFloorObject(Vector3 pos)
     {
-        Instantiate(nomalblock, pos, Quaternion.identity, floor_parent);
+        Instantiate(floorblock, pos, Quaternion.identity, floor_parent);
     }
 
     public void GetFallObject(Vector3 pos)

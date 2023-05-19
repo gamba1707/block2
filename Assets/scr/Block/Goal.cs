@@ -9,7 +9,7 @@ public class Goal : MonoBehaviour
     {
         if (other.gameObject.CompareTag("Player"))
         {
-            Debug.Log("ÉSÅ[ÉãÇµÇ‹ÇµÇΩ");
+            Debug.Log("<color=red>ÉSÅ[ÉãÇµÇ‹ÇµÇΩ</color>");
             if(other.gameObject.name.Equals("Player"))
                 GameManager.I.OnClear();
             clear_vcam.SetActive(true);
