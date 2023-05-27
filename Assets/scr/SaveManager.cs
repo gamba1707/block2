@@ -1,3 +1,4 @@
+using Org.BouncyCastle.Asn1.Pkcs;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -13,17 +14,21 @@ public class SaveManager : MonoBehaviour
     // 暗号化鍵<半角32文字（8bit*32文字=256bit）>
     private const string AES_Key_256 = @"5TGB&YHN7UJM(IK<5TGB&YHN7UJM(IK<";
 
-    string dataname;
-    Dictionary<string,int> stagescore =new Dictionary<string,int>();
-    [SerializeField] List<string> exclearStagename=new List<string>();
-    [SerializeField] List<string> clearStagename=new List<string>();
+    //読み込むべきセーブデータ名
+    public static string dataname;
+    //
+    public string dateTime;
+    //Dictionary<string, int> stagescore = new Dictionary<string, int>();
+    public List<string> stagescore = new List<string>();
+    public List<string> exclearStagename = new List<string>();
+    public List<string> clearStagename = new List<string>();
 
     [System.Serializable]
     public class PlayerData
     {
-        public Dictionary<string, int> stagescore = new Dictionary<string, int>();
-        public List<string> exclearStagename;
-        public List<string> clearStagename;
+        public string dateTime;
+        //public Dictionary<string, int> stagescore = new Dictionary<string, int>();
+        public List<string> stagescore;
     }
 
     public static SaveManager instance;
@@ -42,51 +47,55 @@ public class SaveManager : MonoBehaviour
         DontDestroyOnLoad(this);
     }
 
-    public bool Clearstage(string name)
+    public bool Clearstage(MapData_scrobj mapdata)
     {
-        return clearStagename.Contains(name);
+        if (stagescore != null && stagescore.Contains(mapdata.name))
+            return mapdata.clearnum < int.Parse(stagescore[stagescore.IndexOf(mapdata.name) + 1]);
+        return false;
     }
-    public bool exClearstage(string name)
+    public bool exClearstage(MapData_scrobj mapdata)
     {
-        return exclearStagename.Contains(name);
+        if (stagescore != null && stagescore.Contains(mapdata.name))
+            return mapdata.clearnum >= int.Parse(stagescore[stagescore.IndexOf(mapdata.name) + 1]);
+        return false;
     }
     public int clearnum()
     {
-        return clearStagename.Count+exclearStagename.Count;
+        return stagescore.Count/2;
     }
     public string clearscore(string name)
     {
-        if(stagescore.ContainsKey(name))return stagescore[name].ToString();
+        if (stagescore.Contains(name)) return stagescore[stagescore.IndexOf(name) + 1];
         return "-";
     }
 
-    public void SaveData(string stagename,int add_blocknum,int add_blocknum_goal)
+    public string getDateTime()
     {
+        return this.dateTime;
+    }
+
+    public void SaveData(string stagename, int add_blocknum, int add_blocknum_goal)
+    {
+        Debug.Log(dataname);
         PlayerData data = new PlayerData();
         StreamWriter writer;
+        data.dateTime = DateTime.Now.ToString("yyyy年M月d日 HH:mm:ss");
         //一旦自分のリストに登録してからPlayerDataの方にリストごと渡してしまう
-        //もし目標と同じかそれより早くクリアしたらexに登録する
-        bool ex = add_blocknum_goal >= add_blocknum;
-        if (ex)
-        {
-            exclearStagename.Add(stagename);
-            data.exclearStagename = exclearStagename;
-        }
+        //もし目標と同じかそれより早くクリアしたらexに登録する//スコアを記録する
+        //もしもうそのステージ名を持っていれば、スコアを更新するだけにする
+        if (stagescore.Contains(stagename)) stagescore[stagescore.IndexOf(stagename) + 1] = add_blocknum.ToString();
         else
         {
-            clearStagename.Add(stagename);
-            data.clearStagename = clearStagename;
+            stagescore.Add(stagename);
+            stagescore.Add(add_blocknum.ToString());
         }
-        //スコアを記録する
-        //もしもうそのステージ名を持っていれば、スコアを更新するだけにする
-        if (stagescore.ContainsKey(stagename)) stagescore[stagename] = add_blocknum;
-        else stagescore.Add(stagename, add_blocknum);
+
         data.stagescore = stagescore;
         //Json形式に変換する
         string jsonstr = JsonUtility.ToJson(data);
         Debug.Log(jsonstr);
         //AESで暗号化する
-        jsonstr=EncryptAES(jsonstr);
+        jsonstr = EncryptAES(jsonstr);
         //ファイルに書き込む処理
         writer = new StreamWriter(Application.dataPath + "/" + dataname + ".json", false);
         writer.Write(jsonstr);
@@ -95,11 +104,13 @@ public class SaveManager : MonoBehaviour
         Debug.Log("セーブが終了しました");
     }
 
-    void LoadSaveData(string dataname)
+    public void LoadSaveData(string name)
     {
-        this.dataname = dataname;
+        dataname = name;
+        Debug.Log(dataname);
+
         string datastr = "";
-        if(File.Exists(Application.dataPath + "/" + dataname + ".json"))
+        if (File.Exists(Application.dataPath + "/" + dataname + ".json"))
         {
             StreamReader reader;
             reader = new StreamReader(Application.dataPath + "/" + dataname + ".json");
@@ -107,12 +118,19 @@ public class SaveManager : MonoBehaviour
             reader.Close();
             datastr = DecryptAES(datastr);
             PlayerData data = JsonUtility.FromJson<PlayerData>(datastr);
-            this.exclearStagename = data.exclearStagename;
-            this.clearStagename = data.clearStagename;
+            this.dateTime = data.dateTime;
             this.stagescore = data.stagescore;
         }
+    }
+
+
+    public void OnDeleteSaveData(string savename)
+    {
+        string dataname = Application.dataPath + "/" + savename + ".json";
+        if (File.Exists(dataname)) File.Delete(dataname);
         
     }
+
 
     //参考サイト：https://yuyu-code.com/programming-languages/c-sharp/aes-encryption-decryption/
     //                  https://magnaga.com/2016/08/29/save-encryption/
@@ -154,7 +172,6 @@ public class SaveManager : MonoBehaviour
         aes.Padding = PaddingMode.PKCS7;
         aes.Mode = CipherMode.CBC;
 
-        Debug.Log(Encoding.UTF8.GetBytes(AES_Key_256).Length);
         aes.IV = Encoding.UTF8.GetBytes(AES_IV_128);
         aes.Key = Encoding.UTF8.GetBytes(AES_Key_256);
 
@@ -170,5 +187,5 @@ public class SaveManager : MonoBehaviour
 
         return (Encoding.UTF8.GetString(planeText));
     }
-    
+
 }

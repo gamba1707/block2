@@ -54,6 +54,7 @@ public class StageSelect : MonoBehaviour
 
             if (Input.GetButtonDown("Submit"))
             {
+                Debug.Log("‰Ÿ‚µ‚½");
                 transform.root.gameObject.GetComponent<selectUI>().OnClickButton(stagedata[stagenum]);
             }
         }
@@ -71,8 +72,8 @@ public class StageSelect : MonoBehaviour
     {
         if (num < 0 || num >= stagedata.Length) return clear;
         else if (num > SaveManager.instance.clearnum()) return gray;
-        else if (SaveManager.instance.exClearstage(stagedata[num].name)) return blue;
-        else if (SaveManager.instance.Clearstage(stagedata[num].name)) return yellow;
+        else if (SaveManager.instance.exClearstage(stagedata[num])) return blue;
+        else if (SaveManager.instance.Clearstage(stagedata[num])) return yellow;
         else if(num==SaveManager.instance.clearnum()) return green;
         return gray;
     }

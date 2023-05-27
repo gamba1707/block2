@@ -21,13 +21,13 @@ public class SelectButton : MonoBehaviour
         //もし目標数<=でクリアしていたら文字をシアン色にする
         //普通にクリアしていたら黄色にする
         //もしクリアデータに入っていなければ非表示にする
-        if (SaveManager.instance.exClearstage(stagedata.name))
+        if (SaveManager.instance.exClearstage(stagedata))
         {
             stagetext.enabled = true;
             GetComponent<Button>().enabled = true;
             stagetext.color = Color.cyan;
         }
-        else if (SaveManager.instance.Clearstage(stagedata.name))
+        else if (SaveManager.instance.Clearstage(stagedata))
         {
             stagetext.enabled = true;
             GetComponent<Button>().enabled = true;

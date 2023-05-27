@@ -163,6 +163,7 @@ public class ExcelToScriptableObject : Editor
         int x_end= (int)sheet.GetRow(0).GetCell(1).NumericCellValue-1;
         //A2にある縦方向の終わり位置を取得
         int y_end= (int)sheet.GetRow(1).GetCell(0).NumericCellValue-1;
+        float y_start = 0;
         Debug.Log(x_end+","+y_end);
         //fallオブジェクトを通り抜けてしまった時用の座標（一番下の+3の位置）
         deadline = (y_end * 1.5f)+3;
@@ -174,10 +175,11 @@ public class ExcelToScriptableObject : Editor
         goalpos = new Vector3(0, (int)sheet.GetRow(y_end + 3).GetCell(2).NumericCellValue, (int)sheet.GetRow(y_end + 3).GetCell(3).NumericCellValue);
         goalpos = new Vector3(0,((startpoint.y-goalpos.y+1)*1.5f)-0.75f, (goalpos.z- startpoint.x) * 1.5f);
         Debug.Log(startpoint);
-        stage_vcampos = new Vector3(23f,y_end/2,x_end/2-1f);
+        
         //2度押した場合用に一応Listを初期化しておく
         floorpos.Clear();
         fallpos.Clear();
+
         //ここから地形データを読み取り
         //左上から横方向に順番に読み取っていく
         for (int i = 0;i<y_end;i++)
@@ -195,6 +197,7 @@ public class ExcelToScriptableObject : Editor
                         {
                             //床Listに座標を計算して格納
                             floorpos.Add(new Vector3(0, (startpoint.y - i) * 1.5f, (j - startpoint.x + 1) * 1.5f));
+                            if ((startpoint.y - i) * 1.5f > y_start) y_start = (startpoint.y - i) * 1.5f;
                         }
                         //その文字がF（奈落）
                         else if (sheet.GetRow(i).GetCell(j).StringCellValue.Equals("F"))
@@ -202,11 +205,16 @@ public class ExcelToScriptableObject : Editor
                             //奈落Listに座標を計算して格納
                             fallpos.Add(new Vector3(0, (startpoint.y - i) * 1.5f, (j-startpoint.x+1) * 1.5f));
                         }
+                        
                         Debug.Log(sheet.GetRow(i).GetCell(j).Address + "     " + sheet.GetRow(i).GetCell(j).StringCellValue+ new Vector3(0, (startpoint.y - i) * 1.5f, (j - startpoint.x+1) * 1.5f));
                     }
                 }
             }
         }
+        float x = Mathf.Abs(goalpos.z / 2) + 10f;
+        if (x < 20) x += 10;
+        stage_vcampos = new Vector3(x, (float)(startpoint.y-(((y_end*1.5)-y_start) / 2)), goalpos.z / 2 );
+        Debug.Log("y_start:"+y_start+"  "+y_end);
     }
 
     //ステージ情報の保存を押したら読み取ったデータをシートの名前でScriptableObjectにする

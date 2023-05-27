@@ -21,16 +21,6 @@ public class Loading_fade : MonoBehaviour
         rectTransform.offsetMax = new Vector2(-right, -top);
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-        /*
-        right = fade * Screen.width - 5;
-        rectTransform.offsetMin = new Vector2(left, bottom);
-        rectTransform.offsetMax = new Vector2(-right, -top);
-        */
-    }
-
     public bool Fade_move
     {
         get { return fade_move; }
@@ -47,9 +37,11 @@ public class Loading_fade : MonoBehaviour
     {
         fade = 0f;
         Fade_move = true;
+        float width = Screen.width;
+        if (width <= 1920) width = 1930;
         while (fade <= 1)
         {
-            right = fade * Screen.width - 5;
+            right = fade * width - 5;
             rectTransform.offsetMax = new Vector2(-right, -top);
             fade += 0.005f;
             yield return null;
@@ -68,10 +60,11 @@ public class Loading_fade : MonoBehaviour
     {
         fade = 1f;//1にする
         Fade_move= true;
-        
+        float width = Screen.width;
+        if (width <= 1920) width = 1930;
         while (fade >= 0)
         {
-            right = fade * Screen.width - 5;//右端からの大きさを決定
+            right = fade * width - 5;//右端からの大きさを決定
             rectTransform.offsetMax = new Vector2(-right, -top);//逐一代入
             fade -= 0.005f;//段階を進める
             yield return null;//フレーム入れる
