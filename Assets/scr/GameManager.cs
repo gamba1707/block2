@@ -5,6 +5,7 @@ using UnityEngine.SocialPlatforms.Impl;
 using TMPro;
 using UnityEngine.SceneManagement;
 using System;
+using UnityEngine.UI;
 
 public class GameManager : MonoBehaviour
 {
@@ -98,7 +99,6 @@ public class GameManager : MonoBehaviour
             mapdata = GameObject.Find("MapData").GetComponent<MapData>();
             mapdata.LoadMapData(edit_mapdata);
         }
-        //mapdata.RoadMapData("Stage1-1​");
         LoadUI.Fadein();//ロード画面を開ける
         game_status = GAME_STATUS.Play;
     }
@@ -133,11 +133,17 @@ public class GameManager : MonoBehaviour
         }
     }
 
-    public void Save(TextMeshProUGUI text)
+    public void Save(TMP_InputField inputField)
     {
-        Debug.Log(text.text);
+        Debug.Log(inputField.text);
         //mapdata.OnMapSave_json(text.text,Add_Blocknum,pManager.Floor_parent,pManager.Fall_parent);
-        mapdata.OnMapSave_scrobj(text.text, Add_Blocknum, pManager.Floor_parent, pManager.Fall_parent,pManager.Goalpos);
+        mapdata.OnMapSave_json(inputField.text, Add_Blocknum, pManager.Floor_parent, pManager.Fall_parent,pManager.Goalpos);
+    }
+    public void SetAdd_Blocknum_Create(TMP_InputField inputField)
+    {
+        int n;
+        bool isInt=int.TryParse(inputField.text.ToString(),out n);
+        if (isInt)Add_Blocknum = n;
     }
 
 
@@ -183,7 +189,7 @@ public class GameManager : MonoBehaviour
         LoadUI.Fadeout();
 
         while(LoadUI.Fade_move) yield return null;
-        pmove.Reset_move();//プレイヤー関連の初期化
+        if(!Editmode) pmove.Reset_move();//プレイヤー関連の初期化
         Add_Blocknum = 0;//置いたブロック数を初期化
         pManager.Reset_box();//置いたブロックを初期化
         if(GameOverPanel.activeInHierarchy)GameOverPanel.SetActive(false);//表示しているゲームオーバー画面を消す

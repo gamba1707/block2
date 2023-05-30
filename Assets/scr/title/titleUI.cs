@@ -1,15 +1,21 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.IO;
+using TMPro;
 using UnityEngine;
 
 public class titleUI : MonoBehaviour
 {
     [SerializeField]GameObject panel1,modepanel,SaveLoadPanel;
     [SerializeField] int state;
-    bool interval;
     // Start is called before the first frame update
-    void Start()
+    void Awake()
     {
+        if(File.Exists(Application.dataPath + "/Setting.json"))
+        {
+            SaveManager.instance.LoadSaveData_Setting();
+            Screen.SetResolution(SaveManager.instance.getWidth(), SaveManager.instance.getHeight(), SaveManager.instance.getFullscreen());
+        }
         
     }
 
@@ -21,14 +27,8 @@ public class titleUI : MonoBehaviour
             panel1.SetActive(false);
             modepanel.SetActive(true);
             state = 1;
-            interval = true;
             Invoke("interval_off", 0.5f);
         }
-    }
-
-    void interval_off()
-    {
-        interval = false;
     }
 
     public void OnStoryMode()
@@ -37,8 +37,9 @@ public class titleUI : MonoBehaviour
         SaveLoadPanel.SetActive(true);
     }
 
-    public void OnData1()
+    public void OnReturnModePanel()
     {
-
+        modepanel.SetActive(true);
+        SaveLoadPanel.SetActive(false);
     }
 }

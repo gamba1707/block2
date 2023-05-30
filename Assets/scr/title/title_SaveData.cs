@@ -84,4 +84,9 @@ public class title_SaveData : MonoBehaviour
         confPanel.SetActive(false);
         settextdata(selectdata);
     }
+
+    public void OnReturnDelete()
+    {
+        confPanel.SetActive(false);
+    }
 }

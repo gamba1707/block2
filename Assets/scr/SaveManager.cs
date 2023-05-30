@@ -2,6 +2,7 @@ using Org.BouncyCastle.Asn1.Pkcs;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Data;
 using System.IO;
 using System.Security.Cryptography;
 using System.Text;
@@ -9,6 +10,23 @@ using UnityEngine;
 
 public class SaveManager : MonoBehaviour
 {
+    [System.Serializable]
+    public class PlayerData
+    {
+        public string dateTime;
+        public List<string> stagescore;
+    }
+
+    [Serializable]
+    public class Setting
+    {
+        public bool fullScreen;
+        public int screen_w;
+        public int screen_h;
+    }
+
+    public static SaveManager instance;
+
     // 初期化ベクトル"<半角16文字（1byte=8bit, 8bit*16=128bit>"
     private const string AES_IV_128 = @"pf69DL6GrWFyZcMK";
     // 暗号化鍵<半角32文字（8bit*32文字=256bit）>
@@ -16,22 +34,13 @@ public class SaveManager : MonoBehaviour
 
     //読み込むべきセーブデータ名
     public static string dataname;
-    //
-    public string dateTime;
-    //Dictionary<string, int> stagescore = new Dictionary<string, int>();
-    public List<string> stagescore = new List<string>();
-    public List<string> exclearStagename = new List<string>();
-    public List<string> clearStagename = new List<string>();
-
-    [System.Serializable]
-    public class PlayerData
-    {
-        public string dateTime;
-        //public Dictionary<string, int> stagescore = new Dictionary<string, int>();
-        public List<string> stagescore;
-    }
-
-    public static SaveManager instance;
+    //セーブデータ
+    private string dateTime;//セーブされた日付
+    private List<string> stagescore = new List<string>();//クリアしたステージ名とスコア
+    //設定数値
+    private bool fullScreen;
+    private int screen_w;
+    private int screen_h;
 
     void Awake()
     {
@@ -61,17 +70,63 @@ public class SaveManager : MonoBehaviour
     }
     public int clearnum()
     {
-        return stagescore.Count/2;
+        Debug.Log(stagescore.Count);
+        if (stagescore.Count >= 2) return stagescore.Count / 2;
+        return 0;
     }
     public string clearscore(string name)
     {
         if (stagescore.Contains(name)) return stagescore[stagescore.IndexOf(name) + 1];
         return "-";
     }
-
     public string getDateTime()
     {
         return this.dateTime;
+    }
+
+    public bool getFullscreen()
+    {
+        return this.fullScreen;
+    }
+    public int getWidth()
+    {
+        return this.screen_w;
+    }
+    public int getHeight()
+    {
+        return this.screen_h;
+    }
+
+    public void SaveData_Setting(bool mode,int w,int h)
+    {
+        Debug.Log("設定ファイル保存");
+        Setting setting = new Setting();
+        StreamWriter writer;
+        setting.fullScreen = mode;
+        setting.screen_w = w;
+        setting.screen_h = h;
+        //Json形式に変換する
+        string jsonstr = JsonUtility.ToJson(setting);
+        //ファイルに書き込む処理
+        writer = new StreamWriter(Application.dataPath + "/Setting.json", false);
+        writer.Write(jsonstr);
+        writer.Flush();
+        writer.Close();
+        Debug.Log("設定ファイル完了");
+    }
+
+    public void LoadSaveData_Setting()
+    {
+        StreamReader reader;
+        string datastr = "";
+        reader = new StreamReader(Application.dataPath + "/Setting.json");
+        datastr = reader.ReadToEnd();
+        reader.Close();
+        Setting data = JsonUtility.FromJson<Setting>(datastr);
+        this.fullScreen=data.fullScreen;
+        this.screen_w=data.screen_w;
+        this.screen_h=data.screen_h;
+        Debug.Log("設定ファイル完了");
     }
 
     public void SaveData(string stagename, int add_blocknum, int add_blocknum_goal)
@@ -81,9 +136,12 @@ public class SaveManager : MonoBehaviour
         StreamWriter writer;
         data.dateTime = DateTime.Now.ToString("yyyy年M月d日 HH:mm:ss");
         //一旦自分のリストに登録してからPlayerDataの方にリストごと渡してしまう
-        //もし目標と同じかそれより早くクリアしたらexに登録する//スコアを記録する
         //もしもうそのステージ名を持っていれば、スコアを更新するだけにする
-        if (stagescore.Contains(stagename)) stagescore[stagescore.IndexOf(stagename) + 1] = add_blocknum.ToString();
+        if (stagescore.Contains(stagename))
+        {
+            if (int.Parse(stagescore[stagescore.IndexOf(stagename) + 1]) > add_blocknum)
+                stagescore[stagescore.IndexOf(stagename) + 1] = add_blocknum.ToString();
+        }
         else
         {
             stagescore.Add(stagename);
@@ -121,6 +179,11 @@ public class SaveManager : MonoBehaviour
             this.dateTime = data.dateTime;
             this.stagescore = data.stagescore;
         }
+        else
+        {
+            this.dateTime = null;
+            this.stagescore.Clear();
+        }
     }
 
 
@@ -128,7 +191,7 @@ public class SaveManager : MonoBehaviour
     {
         string dataname = Application.dataPath + "/" + savename + ".json";
         if (File.Exists(dataname)) File.Delete(dataname);
-        
+
     }
 
 

@@ -224,8 +224,6 @@ public class ExcelToScriptableObject : Editor
         var obj = ScriptableObject.CreateInstance<MapData_scrobj>();
         //•Û‚µ‚Ä‚¢‚½ƒf[ƒ^‚ğŠ„‚è“–‚Ä‚é
         obj.clearnum = clearnum;
-        obj.floornum = fallpos.Count;
-        obj.fallnum = fallpos.Count;
         obj.floorpos = floorpos.ToArray();
         obj.fallpos = fallpos.ToArray();
         obj.goalpos = goalpos;
