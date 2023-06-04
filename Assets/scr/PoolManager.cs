@@ -17,17 +17,17 @@ public class PoolManager : MonoBehaviour
         //GameManager‚Ì•û‚Åİ’è‚³‚ê‚½”’l‚Å‰Šú‰»‚·‚é
         nomalnum = GameManager.I.Nomalnum;
         blocknum = GameManager.I.Blocknum;
-        if (GameManager.I.Trampoline) trampolinenum = blocknum;
-        if(GameManager.I.Down) downnum = blocknum;
+        trampolinenum = blocknum;
+        downnum = blocknum;
         //w’è‚³‚ê‚Ä‚¢‚é‚à‚Ì‚ğw’è‚³‚ê‚½”¶¬‚·‚é
         for (int i = 0;i<nomalnum;i++)
         {
-            if(GameManager.I.Nomal)Instantiate(nomalblock, new Vector3(0,0,-5), Quaternion.identity, nomal_parent);
+            Instantiate(nomalblock, new Vector3(0,0,-5), Quaternion.identity, nomal_parent);
         }
         for(int i = 0; i < blocknum; i++)
         {
-            if (GameManager.I.Trampoline) Instantiate(trampolineblock, new Vector3(0, 0, -5), Quaternion.identity, trampoline_parent);
-            if (GameManager.I.Down) Instantiate(downblock, new Vector3(0, 0, -5), Quaternion.identity, down_parent);
+            Instantiate(trampolineblock, new Vector3(0, 0, -5), Quaternion.identity, trampoline_parent);
+            Instantiate(downblock, new Vector3(0, 0, -5), Quaternion.identity, down_parent);
         
         }
 

@@ -27,6 +27,16 @@ public class Loading_fade : MonoBehaviour
         set { fade_move = value; }
     }
 
+    public void Open()
+    {
+        top = -5f;
+        bottom = -5f;
+        left = -5f;
+        right = Screen.width;
+        rectTransform.offsetMin = new Vector2(left, bottom);
+        rectTransform.offsetMax = new Vector2(-right, -top);
+    }
+
     public void Fadein()
     {
         Debug.Log("フェードイン");

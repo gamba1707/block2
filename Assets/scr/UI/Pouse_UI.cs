@@ -4,6 +4,13 @@ using UnityEngine;
 
 public class Pouse_UI : MonoBehaviour
 {
+    [SerializeField] GameObject selectbutton, titlebutton;
+
+    private void Start()
+    {
+        if(MapData.mapinstance.Createmode) selectbutton.SetActive(false);
+        else titlebutton.SetActive(false);
+    }
     //ÉQÅ[ÉÄÇ…ñﬂÇÈ
     public void OnReturnGame()
     {
@@ -18,5 +25,9 @@ public class Pouse_UI : MonoBehaviour
     public void OnReturnSelect()
     {
         GameManager.I.OnStageSelect();
+    }
+    public void OnTitleButton()
+    {
+        GameManager.I.OnTitleBack();
     }
 }

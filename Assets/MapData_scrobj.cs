@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class MapData_scrobj : ScriptableObject
 {
+    public bool bossstage;
     public int clearnum;
     public Vector3 stage_vcampos;
     public Vector3[] floorpos;

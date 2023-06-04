@@ -11,16 +11,20 @@ public class GameManager : MonoBehaviour
 {
     public static GameManager I;
 
-    [Header("Editerモード")]
+    [Header("Editerモード(編集している)")]
     [SerializeField] private bool editmode;
     [SerializeField] private MapData_scrobj edit_mapdata;
+
 
     [Header("ゲームの状態")]
     [SerializeField] private GAME_STATUS game_status;
     private enum GAME_STATUS { Play, GameClear, Pause, GameOver }
 
-    [Header("セーブ")]
-    [SerializeField] private MapData mapdata;
+    [Header("マップデータ")]
+    private MapData mapdata;
+
+    [Header("最初に表示するステージ名テキスト")]
+    [SerializeField] private TextMeshProUGUI StagenameText;
 
     [Header("Player_move(Playerに付いてる)")]
     [SerializeField] private Player_move pmove;
@@ -37,15 +41,14 @@ public class GameManager : MonoBehaviour
     [Header("ロード画面")]
     [SerializeField] private Loading_fade LoadUI;
 
+    [Header("ロード画面")]
+    [SerializeField] private noise_move noise;
+
     [Header("現在までに出現させたブロック数")]
     [SerializeField] private int add_blocknum;
     [Header("目標のブロック数")]
     [SerializeField] private int add_blocknum_goal;
 
-    [Header("このステージで使うブロック")]
-    [SerializeField] private bool nomal;
-    [SerializeField] private bool trampoline;
-    [SerializeField] private bool down;
 
     [Header("通常のブロック（初期化時に控えておく数）")]
     [SerializeField] private int nomalnum;
@@ -58,7 +61,6 @@ public class GameManager : MonoBehaviour
     [Header("プレイヤーの位置（一マス単位）")]
     [SerializeField] private Vector3 playerpos;
 
-    string stagename;
 
 
     //ゲーム開始直後に処理を行う
@@ -89,18 +91,31 @@ public class GameManager : MonoBehaviour
 
     private void Start()
     {
+        game_status = GAME_STATUS.Pause;
+        mapdata = GameObject.Find("MapData").GetComponent<MapData>();
         if (Editmode)
         {
             Debug.Log("<color=cyan>EditMode</color>");
-            mapdata.LoadMapData(edit_mapdata);
+            if (mapdata.jsonpath_enable())
+            {
+                mapdata.LoadMapData_Create();
+            }
+            else
+            {
+                mapdata.LoadMapData(edit_mapdata);
+            }
+        }
+        else if (MapData.mapinstance.Createmode)
+        {
+            mapdata.LoadMapData_Create();
         }
         else
         {
-            mapdata = GameObject.Find("MapData").GetComponent<MapData>();
             mapdata.LoadMapData(edit_mapdata);
         }
+        SetStagename(mapdata.mapname());
         LoadUI.Fadein();//ロード画面を開ける
-        game_status = GAME_STATUS.Play;
+        
     }
     public void SetFloorblock(Vector3[] pos)
     {
@@ -121,9 +136,20 @@ public class GameManager : MonoBehaviour
         pManager.GetGoalObject(pos);
     }
 
+    public void SetStagename(string s)
+    {
+        StagenameText.text= s;
+        if (s.Equals(""))
+        {
+            StagenameText.enabled = false;
+            game_status = GAME_STATUS.Play;
+        }
+    }
+
 
     private void Update()
     {
+
         //tabキーを押すとポーズ画面を出す
         if (Input.GetKeyDown(KeyCode.Tab)&&gamestate("Play"))
         {
@@ -162,8 +188,17 @@ public class GameManager : MonoBehaviour
 
     public void OnClear_end()
     {
-        SaveManager.instance.SaveData(mapdata.mapname(),Add_Blocknum,Add_Blocknum_goal);
-        OnStageSelect();
+        if (MapData.mapinstance.Createmode)
+        {
+            LoadUI.Fadeout();
+            StartCoroutine(Scene_move("title"));
+        }
+        else
+        {
+            SaveManager.instance.SaveData(mapdata.mapname(), Add_Blocknum, Add_Blocknum_goal);
+            OnStageSelect();
+        }
+        
     }
 
     //ポーズ画面をやめる
@@ -187,11 +222,11 @@ public class GameManager : MonoBehaviour
     IEnumerator GameReset_move()
     {
         LoadUI.Fadeout();
-
         while(LoadUI.Fade_move) yield return null;
         if(!Editmode) pmove.Reset_move();//プレイヤー関連の初期化
         Add_Blocknum = 0;//置いたブロック数を初期化
         pManager.Reset_box();//置いたブロックを初期化
+        noise.noise_reset();
         if(GameOverPanel.activeInHierarchy)GameOverPanel.SetActive(false);//表示しているゲームオーバー画面を消す
         else if(PousePanel.activeInHierarchy)PousePanel.SetActive(false);
         LoadUI.Fadein();
@@ -203,11 +238,16 @@ public class GameManager : MonoBehaviour
     public void OnStageSelect()
     {
         LoadUI.Fadeout();
-        StartCoroutine(StageSelect_move());
+        StartCoroutine(Scene_move("Select"));
     }
-    IEnumerator StageSelect_move()
+    public void OnTitleBack()
     {
-        var async = SceneManager.LoadSceneAsync("Select");
+        LoadUI.Fadeout();
+        StartCoroutine(Scene_move("title"));
+    }
+    IEnumerator Scene_move(string scenename)
+    {
+        var async = SceneManager.LoadSceneAsync(scenename);
         async.allowSceneActivation = false;
         while (LoadUI.Fade_move)
         {
@@ -224,6 +264,7 @@ public class GameManager : MonoBehaviour
     {
         get { return editmode; }
     }
+    
     public int Add_Blocknum
     {
         get { return add_blocknum; }
@@ -233,19 +274,6 @@ public class GameManager : MonoBehaviour
     {
         get { return add_blocknum_goal; }
         set { add_blocknum_goal = value; }
-    }
-
-    public bool Nomal
-    {
-        get { return nomal; }
-    }
-    public bool Trampoline
-    {
-        get { return trampoline; }
-    }
-    public bool Down
-    {
-        get { return down; }
     }
 
     public int Nomalnum

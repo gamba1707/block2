@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.18028378, g: 0.22571412, b: 0.30692285, a: 1}
+  m_IndirectSpecularColor: {r: 0.18028334, g: 0.22571328, b: 0.3069217, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -696,9 +696,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 60227509fe6d4824ba5afa38b11dbe87, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  dateTime: 
-  exclearStagename: []
-  clearStagename: []
 --- !u!4 &1156469462
 Transform:
   m_ObjectHideFlags: 0
@@ -902,7 +899,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 63f22389cba7bd24fb81f886b0d12772, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  path: StageData
+  createmode: 0
 --- !u!4 &1341358662
 Transform:
   m_ObjectHideFlags: 0
@@ -1154,6 +1151,8 @@ MonoBehaviour:
   clear: {fileID: 2100000, guid: 7e7632e06d7c6f54a97d9a6f16f8344f, type: 2}
   gray: {fileID: 2100000, guid: 87d193c0e71330d469e35632e21e6a46, type: 2}
   stagedata:
+  - {fileID: 11400000, guid: 3ca2d557c31696247b645df827ee48f8, type: 2}
+  - {fileID: 11400000, guid: 09f9f1289684f3947ba392f383fd123c, type: 2}
   - {fileID: 11400000, guid: 846630d9d40cd0140a8cd745a935b368, type: 2}
   - {fileID: 11400000, guid: bdeca46bf929cd946b380d79b88f384e, type: 2}
   - {fileID: 11400000, guid: bf499aa2b5f144d468ab7961c18f24a0, type: 2}

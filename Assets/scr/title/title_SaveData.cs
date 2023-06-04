@@ -6,6 +6,7 @@ using UnityEngine.SceneManagement;
 
 public class title_SaveData : MonoBehaviour
 {
+    [SerializeField] MapData_scrobj firststagedata;
     [SerializeField] bool deleteMode;
     [SerializeField] int selectdata;
     [SerializeField] GameObject confPanel;
@@ -57,7 +58,17 @@ public class title_SaveData : MonoBehaviour
         else
         {
             SaveManager.instance.LoadSaveData("SaveData" + selectdata);
-            SceneManager.LoadScene("Select");
+            if (System.IO.File.Exists(Application.dataPath + "/SaveData" + selectdata + ".json"))
+            {
+                
+                SceneManager.LoadScene("Select");
+            }
+            else
+            {
+                MapData.mapinstance.setMapData(firststagedata);
+                SceneManager.LoadScene("Stage");
+            }
+            
         }
     }
 

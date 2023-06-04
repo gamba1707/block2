@@ -70,7 +70,6 @@ public class SaveManager : MonoBehaviour
     }
     public int clearnum()
     {
-        Debug.Log(stagescore.Count);
         if (stagescore.Count >= 2) return stagescore.Count / 2;
         return 0;
     }
