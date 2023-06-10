@@ -32,7 +32,18 @@ public class Loading_fade : MonoBehaviour
         top = -5f;
         bottom = -5f;
         left = -5f;
-        right = Screen.width;
+        
+        if(Screen.width<1920) right = 1930;
+        else right = Screen.width;
+        rectTransform.offsetMin = new Vector2(left, bottom);
+        rectTransform.offsetMax = new Vector2(-right, -top);
+    }
+    public void Close()
+    {
+        top = -5f;
+        bottom = -5f;
+        left = -5f;
+        right = -5;
         rectTransform.offsetMin = new Vector2(left, bottom);
         rectTransform.offsetMax = new Vector2(-right, -top);
     }
@@ -40,6 +51,7 @@ public class Loading_fade : MonoBehaviour
     public void Fadein()
     {
         Debug.Log("フェードイン");
+        Close();
         StartCoroutine("fadein_move");
     }
     //実際にfadeoutを動かしているのはコチラ
@@ -53,10 +65,13 @@ public class Loading_fade : MonoBehaviour
         {
             right = fade * width - 5;
             rectTransform.offsetMax = new Vector2(-right, -top);
-            fade += 0.005f;
-            yield return null;
+            fade += 0.025f;
+            yield return new WaitForSecondsRealtime(0.01f);
         }
         yield return new WaitForSecondsRealtime(0.25f);
+        Open();
+        yield return null;
+        Debug.Log("width:" + width + ",right:" + rectTransform.offsetMax);
         Fade_move = false;
     }
 
@@ -76,10 +91,13 @@ public class Loading_fade : MonoBehaviour
         {
             right = fade * width - 5;//右端からの大きさを決定
             rectTransform.offsetMax = new Vector2(-right, -top);//逐一代入
-            fade -= 0.005f;//段階を進める
-            yield return null;//フレーム入れる
+            fade -= 0.025f;//段階を進める
+            yield return new WaitForSecondsRealtime(0.01f);
         }
         yield return new WaitForSecondsRealtime(0.25f);
+        Close();
+        yield return null;
+        Debug.Log("width:"+width+",right:"+ rectTransform.offsetMax);
         Fade_move = false;
     }
 }

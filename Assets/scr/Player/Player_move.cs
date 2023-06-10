@@ -19,6 +19,8 @@ public class Player_move : MonoBehaviour
     [SerializeField] private Vector3 playerpos_first;
     [SerializeField] private float speed=5F;
     [SerializeField] private bool falling;
+
+    AudioSource audioSource;
     // Start is called before the first frame update
     void Start()
     {
@@ -27,6 +29,8 @@ public class Player_move : MonoBehaviour
         Player_t = transform.GetChild(0).gameObject;
         anim = GetComponentInChildren<Animator>();
         playerpos_first = transform.position;
+
+        audioSource = GetComponent<AudioSource>();
     }
 
     // Update is called once per frame
@@ -77,6 +81,7 @@ public class Player_move : MonoBehaviour
             moveDirection = new Vector3(Direction.x, gravityDirection.y + moveDirection.y, Direction.z);
             moveDirection = transform.TransformDirection(moveDirection);
         }
+
     }
 
     private void OnTriggerStay(Collider other)
@@ -86,7 +91,7 @@ public class Player_move : MonoBehaviour
             //キャラクターコントローラーの接地精度が低いのであるけどここで初期化
             gravityDirection = new Vector3(0, 0, 0);
             moveDirection.y = 6.2f;
-            Debug.Log("kiffnsofo"+ moveDirection.y);
+            audioSource.PlayOneShot(audioSource.clip);
         }
     }
 

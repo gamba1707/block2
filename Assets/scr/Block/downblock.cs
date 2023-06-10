@@ -24,7 +24,6 @@ public class downblock : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        Debug.Log(other.gameObject.tag);
         if (other.gameObject.name.Equals("Player"))
         {
             meshRenderer.material= downmaterial;

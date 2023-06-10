@@ -16,14 +16,10 @@ public class CreateStageButtons : MonoBehaviour
     void Start()
     {
         LoadUI = transform.root.Find("LoadPanel").GetComponent<Loading_fade>();
-        
+        //解像度を変更されるとなぜか意味不明な数値にスケールを変更されるため
+        transform.localScale = new Vector3(1, 1, 1);
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
 
     public void OnnewCreate()
     {

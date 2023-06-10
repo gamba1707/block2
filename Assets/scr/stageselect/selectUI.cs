@@ -19,6 +19,12 @@ public class selectUI : MonoBehaviour
         LoadUI.Fadein();
     }
 
+    public void OnTitleBack()
+    {
+        LoadUI.Fadeout();
+        StartCoroutine(LoadScene("title"));
+    }
+
     //それぞれのステージのボタンが押されたら呼ばれる
     public void OnClickButton(MapData_scrobj stagedata)
     {
@@ -26,11 +32,11 @@ public class selectUI : MonoBehaviour
         LoadUI.Fadeout();
         //それぞれのボタンにアタッチされているステージデータを渡す
         mapData.setMapData(stagedata);
-        StartCoroutine(LoadStageScene());
+        StartCoroutine(LoadScene("Stage"));
     }
-    private IEnumerator LoadStageScene()
+    private IEnumerator LoadScene(string scenename)
     {
-        var async = SceneManager.LoadSceneAsync("Stage");
+        var async = SceneManager.LoadSceneAsync(scenename);
 
         async.allowSceneActivation = false;
         while (LoadUI.Fade_move) yield return null;

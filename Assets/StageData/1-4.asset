@@ -12,9 +12,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fa9bb295bfe98a34db2a0915e96d55ca, type: 3}
   m_Name: 1-4
   m_EditorClassIdentifier: 
+  bossstage: 0
   clearnum: 14
-  stage_vcampos: {x: 28.75, y: 5.25, z: 18.75}
-  floornum: 12
+  stage_vcampos: {x: 38.178, y: 4.5, z: 21}
   floorpos:
   - {x: 0, y: 10.5, z: 25.5}
   - {x: 0, y: 10.5, z: 37.5}
@@ -94,7 +94,6 @@ MonoBehaviour:
   - {x: 0, y: -1.5, z: 39}
   - {x: 0, y: -1.5, z: 40.5}
   - {x: 0, y: -1.5, z: 42}
-  fallnum: 12
   fallpos:
   - {x: 0, y: -3, z: -4.5}
   - {x: 0, y: -3, z: -3}
@@ -108,5 +107,7 @@ MonoBehaviour:
   - {x: 0, y: -3, z: 45}
   - {x: 0, y: -3, z: 46.5}
   - {x: 0, y: -3, z: 48}
+  Trampolinepos: []
+  Downpos: []
   goalpos: {x: 0, y: 2.25, z: 37.5}
-  deadline: 21
+  deadline: -12

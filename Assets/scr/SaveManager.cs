@@ -1,4 +1,3 @@
-using Org.BouncyCastle.Asn1.Pkcs;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -23,6 +22,8 @@ public class SaveManager : MonoBehaviour
         public bool fullScreen;
         public int screen_w;
         public int screen_h;
+        public float bgmvolume;
+        public float sevolume;
     }
 
     public static SaveManager instance;
@@ -41,6 +42,10 @@ public class SaveManager : MonoBehaviour
     private bool fullScreen;
     private int screen_w;
     private int screen_h;
+    private float bgmvolume;
+    private float sevolume;
+
+    StatusText statustext;
 
     void Awake()
     {
@@ -54,10 +59,18 @@ public class SaveManager : MonoBehaviour
             Destroy(gameObject);
         }
         DontDestroyOnLoad(this);
+
+
+    }
+
+    private void Start()
+    {
+        statustext= GameObject.Find("statusText").GetComponent<StatusText>();
     }
 
     public bool Clearstage(MapData_scrobj mapdata)
     {
+        
         if (stagescore != null && stagescore.Contains(mapdata.name))
             return mapdata.clearnum < int.Parse(stagescore[stagescore.IndexOf(mapdata.name) + 1]);
         return false;
@@ -83,27 +96,52 @@ public class SaveManager : MonoBehaviour
         return this.dateTime;
     }
 
-    public bool getFullscreen()
+    public bool FullScreen
     {
-        return this.fullScreen;
+        get { return this.fullScreen; }
+        set { this.fullScreen = value; }
     }
-    public int getWidth()
+    public int Width
     {
-        return this.screen_w;
+        get { return this.screen_w; }
+        set { this.screen_w= value; }
     }
-    public int getHeight()
+    public int Height
     {
-        return this.screen_h;
+        get { return this.screen_h; }
+        set { this.screen_h = value; }
     }
 
-    public void SaveData_Setting(bool mode,int w,int h)
+    public float BGMVolume
+    {
+        get { return this.bgmvolume; }
+        set { this.bgmvolume = value; }
+    }
+    public float SEVolume
+    {
+        get { return this.sevolume; }
+        set { this.sevolume = value; }
+    }
+
+    public void init_Setting()
+    {
+        FullScreen = true;
+        Width = Screen.resolutions[Screen.resolutions.Length-1].width;
+        Height = Screen.resolutions[Screen.resolutions.Length-1].height;
+        BGMVolume = 1.0f;
+        SEVolume = 1.0f;
+    }
+
+    public void SaveData_Setting()
     {
         Debug.Log("設定ファイル保存");
         Setting setting = new Setting();
         StreamWriter writer;
-        setting.fullScreen = mode;
-        setting.screen_w = w;
-        setting.screen_h = h;
+        setting.fullScreen = FullScreen;
+        setting.screen_w = Width;
+        setting.screen_h = Height;
+        setting.bgmvolume = BGMVolume;
+        setting.sevolume = SEVolume;
         //Json形式に変換する
         string jsonstr = JsonUtility.ToJson(setting);
         //ファイルに書き込む処理
@@ -111,6 +149,7 @@ public class SaveManager : MonoBehaviour
         writer.Write(jsonstr);
         writer.Flush();
         writer.Close();
+        statustext.SetStatusText("設定ファイル保存完了");
         Debug.Log("設定ファイル完了");
     }
 
@@ -122,10 +161,11 @@ public class SaveManager : MonoBehaviour
         datastr = reader.ReadToEnd();
         reader.Close();
         Setting data = JsonUtility.FromJson<Setting>(datastr);
-        this.fullScreen=data.fullScreen;
-        this.screen_w=data.screen_w;
-        this.screen_h=data.screen_h;
-        Debug.Log("設定ファイル完了");
+        FullScreen=data.fullScreen;
+        Width=data.screen_w;
+        Height=data.screen_h;
+        BGMVolume = data.bgmvolume;
+        SEVolume = data.sevolume;
     }
 
     public void SaveData(string stagename, int add_blocknum, int add_blocknum_goal)
@@ -190,7 +230,6 @@ public class SaveManager : MonoBehaviour
     {
         string dataname = Application.dataPath + "/" + savename + ".json";
         if (File.Exists(dataname)) File.Delete(dataname);
-
     }
 
 

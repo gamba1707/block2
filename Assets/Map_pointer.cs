@@ -36,6 +36,14 @@ public class Map_pointer : MonoBehaviour
                         poolm.GetFallObject(point());//poolManagerに位置を渡して生成させる
                         Debug.Log("生成したよ");
                         break;
+                    case "地形飛べるブロック":
+                        Debug.Log("生成したよ");
+                        poolm.GetTrampolineObject_before(point());//poolManagerに位置を渡してトランポリンを生成させる
+                        break;
+                    case "地形下がるブロック":
+                        Debug.Log("生成したよ");
+                        poolm.GetDownObject_before(point());//poolManagerに位置を渡してトランポリンを生成させる
+                        break;
                     case "ゴール":
                         poolm.GetGoalObject_edit(point());//poolManagerに位置を渡して移動
                         Debug.Log("生成したよ");

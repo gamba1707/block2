@@ -14,14 +14,24 @@ public class title_Create : MonoBehaviour
     void Start()
     {
         string path = Application.dataPath + "/StageData_Create";
-        files = Directory.GetFiles(path, "*.json", SearchOption.AllDirectories);
-        foreach (string file in files)
+        if(Directory.Exists(path))
         {
-            Debug.Log(file);
-            GameObject listButton = Instantiate(CreateLoadButton) as GameObject;
-            listButton.transform.SetParent(Content);
-            listButton.GetComponent<CreateStageButtons>().Path = file;
+            Debug.Log(path+"フォルダーありました。");
+            files = Directory.GetFiles(path, "*.json", SearchOption.AllDirectories);
+            foreach (string file in files)
+            {
+                Debug.Log(file);
+                GameObject listButton = Instantiate(CreateLoadButton) as GameObject;
+                listButton.transform.SetParent(Content);
+                listButton.GetComponent<CreateStageButtons>().Path = file;
+            }
         }
+        else
+        {
+            Debug.Log(path + "フォルダー無かったので作っておきました。");
+            Directory.CreateDirectory(path);
+        }
+        
         
     }
 

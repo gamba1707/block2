@@ -60,17 +60,10 @@ public class clime : MonoBehaviour
         while (f <= 1.0f)
         {
             transform.root.position = Vector3.Slerp(startpos, endpos, f);
-            f += 0.025f;
-            yield return null;  
+            f += 0.05f;
+            Debug.Log(f);
+            yield return new WaitForSecondsRealtime(0.005f);  
         }
-        /*子オブジェクトの座標を登るときだけ変換させて登り切った後に
-        親オブジェクトに反映させて子オブジェクトの値を初期化する
-        Vector3 playerpos =transform.root.position;
-        playerpos.x += transform.localPosition.x;
-        playerpos.y += transform.localPosition.y;
-        playerpos.z += transform.localPosition.z;
-        transform.root.position= playerpos;
-        transform.localPosition= new Vector3(0f,0f,0f);*/
     }
 
 }

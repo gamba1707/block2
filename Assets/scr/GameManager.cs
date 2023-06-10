@@ -6,6 +6,7 @@ using TMPro;
 using UnityEngine.SceneManagement;
 using System;
 using UnityEngine.UI;
+using System.IO;
 
 public class GameManager : MonoBehaviour
 {
@@ -25,6 +26,9 @@ public class GameManager : MonoBehaviour
 
     [Header("最初に表示するステージ名テキスト")]
     [SerializeField] private TextMeshProUGUI StagenameText;
+
+    [Header("ステータステキスト")]
+    [SerializeField] StatusText statustext;
 
     [Header("Player_move(Playerに付いてる)")]
     [SerializeField] private Player_move pmove;
@@ -77,6 +81,7 @@ public class GameManager : MonoBehaviour
 
     private void OnGUI()
     {
+        /*
         if(Editmode)
         {
             GUIStyle style = new GUIStyle();
@@ -86,6 +91,7 @@ public class GameManager : MonoBehaviour
             string s2 = "\n現在のステージ："+edit_mapdata.name;
             GUI.Label(new Rect(200, 0, Screen.width, Screen.height), s+s2, style);
         }
+        */
     }
 
 
@@ -104,6 +110,7 @@ public class GameManager : MonoBehaviour
             {
                 mapdata.LoadMapData(edit_mapdata);
             }
+            game_status = GAME_STATUS.Play;
         }
         else if (MapData.mapinstance.Createmode)
         {
@@ -113,7 +120,7 @@ public class GameManager : MonoBehaviour
         {
             mapdata.LoadMapData(edit_mapdata);
         }
-        SetStagename(mapdata.mapname());
+        SetStagename(mapdata.mapname_text());
         LoadUI.Fadein();//ロード画面を開ける
         
     }
@@ -131,6 +138,21 @@ public class GameManager : MonoBehaviour
             pManager.GetFallObject(pos[i]);
         }
     }
+    public void SetBeforeTrampolineblock(Vector3[] pos)
+    {
+        for(int i = 0;i< pos.Length; i++)
+        {
+            pManager.GetTrampolineObject_before(pos[i]);
+        }
+    }
+    public void SetBeforeDownblock(Vector3[] pos)
+    {
+        for(int i = 0;i< pos.Length; i++)
+        {
+            pManager.GetDownObject_before(pos[i]);
+        }
+    }
+
     public void SetGoalblock(Vector3 pos)
     {
         pManager.GetGoalObject(pos);
@@ -157,21 +179,48 @@ public class GameManager : MonoBehaviour
             PousePanel.SetActive(true);
             Time.timeScale = 0;
         }
+        if (MapData.mapinstance.Deadline >= Playerpos.y) OnGameReset();
     }
 
+    //===============================
+    //クリエイトモードセーブボタン用
     public void Save(TMP_InputField inputField)
     {
         Debug.Log(inputField.text);
-        //mapdata.OnMapSave_json(text.text,Add_Blocknum,pManager.Floor_parent,pManager.Fall_parent);
-        mapdata.OnMapSave_json(inputField.text, Add_Blocknum, pManager.Floor_parent, pManager.Fall_parent,pManager.Goalpos);
+        Debug.Log(inputField.text.Equals(""));
+        
+        if (inputField.text.Equals(""))
+        {//もし空欄で押された場合はエラー的な文で返す
+            statustext.SetStatusText("<color=red>ステージ名を入れてください</color>");
+        }
+        else
+        {//大丈夫そうならステージデータを保存してしまう
+            if (Directory.Exists(Application.dataPath + "/StageData_Create"))
+            {
+                mapdata.OnMapSave_json(inputField.text, Add_Blocknum, pManager.Floor_parent, pManager.Fall_parent, pManager.Trampoline_parent_before, pManager.Down_parent_before, pManager.Goalpos);
+            }
+            else
+            {
+
+            }
+                
+            statustext.SetStatusText("Stage_Create/" + inputField.text + ".jsonに保存しました");
+        }
     }
+
+    //クリエイトモードでセーブボタンを押した時
+    //入力された目標数を取得する
     public void SetAdd_Blocknum_Create(TMP_InputField inputField)
     {
         int n;
+        //変換を試みる
         bool isInt=int.TryParse(inputField.text.ToString(),out n);
+        //ちゃんと半角数字なら適応する
+        //違いそうならエラー文で返す
         if (isInt)Add_Blocknum = n;
+        else statustext.SetStatusText("<color=red>目標数に半角数字を入力してください</color>");
     }
-
+    //===============================
 
     //名前を与えると現在ゲームがどれの状態なのか教えてくれる
     public bool gamestate(string s)
@@ -183,6 +232,7 @@ public class GameManager : MonoBehaviour
     public void OnClear()
     {
         game_status = GAME_STATUS.GameClear;
+        statustext.SetStatusText("セーブ中");
         pmove.Clear_move();
     }
 
@@ -195,6 +245,7 @@ public class GameManager : MonoBehaviour
         }
         else
         {
+            Debug.Log("save"+mapdata.mapname());
             SaveManager.instance.SaveData(mapdata.mapname(), Add_Blocknum, Add_Blocknum_goal);
             OnStageSelect();
         }

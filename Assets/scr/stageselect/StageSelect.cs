@@ -17,12 +17,16 @@ public class StageSelect : MonoBehaviour
     [SerializeField] TextMeshProUGUI StageText;
     [SerializeField] TextMeshProUGUI ScoreText;
 
+    AudioSource audioSource;
+
     bool interval;
 
     // Start is called before the first frame update
     void Start()
     {
-        stagenum = SaveManager.instance.clearnum();
+        if(SaveManager.instance.clearnum()>= stagedata.Length) stagenum = SaveManager.instance.clearnum()-1;
+        else stagenum = SaveManager.instance.clearnum();
+        audioSource = GetComponent<AudioSource>();
         setstageinfo();
     }
 
@@ -42,12 +46,14 @@ public class StageSelect : MonoBehaviour
             if (Input.GetAxis("Horizontal") < 0 && stagenum > 0)
             {
                 stagenum--;
+                audioSource.PlayOneShot(audioSource.clip);
                 setstageinfo();
             }
             //右に押した場合、現在の位置がクリア数より小さい場合
-            if (Input.GetAxis("Horizontal") > 0 && stagenum < SaveManager.instance.clearnum() && stagenum < stagedata.Length)
+            if (Input.GetAxis("Horizontal") > 0 && stagenum < SaveManager.instance.clearnum() && stagenum+1 < stagedata.Length)
             {
                 stagenum++;
+                audioSource.PlayOneShot(audioSource.clip);
                 setstageinfo();
             }
             //==========================
@@ -55,6 +61,7 @@ public class StageSelect : MonoBehaviour
             if (Input.GetButtonDown("Submit"))
             {
                 Debug.Log("押した");
+                audioSource.PlayOneShot(audioSource.clip);
                 transform.root.gameObject.GetComponent<selectUI>().OnClickButton(stagedata[stagenum]);
             }
         }

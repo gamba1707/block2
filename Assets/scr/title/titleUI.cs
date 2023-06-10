@@ -8,17 +8,21 @@ public class titleUI : MonoBehaviour
 {
     [SerializeField]GameObject panel1,modepanel,SaveLoadPanel,CreatePanel,OptionPanel;
     [SerializeField] private Loading_fade LoadUI;
+    AudioSource audioSource;
 
-    // Start is called before the first frame update
-    void Awake()
+    private void Awake()
     {
-        if(File.Exists(Application.dataPath + "/Setting.json"))
+        audioSource = GetComponent<AudioSource>();
+        if (File.Exists(Application.dataPath + "/Setting.json"))
         {
             SaveManager.instance.LoadSaveData_Setting();
-            Screen.SetResolution(SaveManager.instance.getWidth(), SaveManager.instance.getHeight(), SaveManager.instance.getFullscreen());
+            Screen.SetResolution(SaveManager.instance.Width, SaveManager.instance.Height, SaveManager.instance.FullScreen);
         }
-
-        
+        else
+        {
+            SaveManager.instance.init_Setting();
+            Screen.SetResolution(SaveManager.instance.Width, SaveManager.instance.Height, SaveManager.instance.FullScreen);
+        }
     }
 
     private void Start()
@@ -40,6 +44,7 @@ public class titleUI : MonoBehaviour
         {
             panel1.SetActive(false);
             modepanel.SetActive(true);
+            audioSource.PlayOneShot(audioSource.clip);
         }
     }
 
@@ -67,5 +72,12 @@ public class titleUI : MonoBehaviour
         if (SaveLoadPanel.activeInHierarchy) SaveLoadPanel.SetActive(false);
         else if (CreatePanel.activeInHierarchy) CreatePanel.SetActive(false);
         else if (OptionPanel.activeInHierarchy) OptionPanel.SetActive(false);
+    }
+
+    public void OnReturnModePanel_option()
+    {
+        modepanel.SetActive(true);
+        OptionPanel.SetActive(false);
+        SaveManager.instance.SaveData_Setting();
     }
 }
