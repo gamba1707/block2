@@ -60,7 +60,7 @@ public class Player_move : MonoBehaviour
             }
             else//空中にいる場合
             {
-                falling = true;//FixcedUpdateの方で処理
+                falling = true;
             }
 
             //動いているときは常に押されている方向を向いてほしい
@@ -81,6 +81,7 @@ public class Player_move : MonoBehaviour
             moveDirection = new Vector3(Direction.x, gravityDirection.y + moveDirection.y, Direction.z);
             moveDirection = transform.TransformDirection(moveDirection);
         }
+        
 
     }
 
@@ -129,8 +130,8 @@ public class Player_move : MonoBehaviour
         anim.SetBool("walk", false);
         anim.SetBool("fall", false);
         Player_t.transform.rotation = Quaternion.Euler(0f, 0f, 0f);
+        x = 0;
         moveDirection = Vector3.zero;
-        
         Debug.Log("<color=#0000ffff>プレイヤー初期化</color>\nPlayerpos:" + transform.position);
     }
 }

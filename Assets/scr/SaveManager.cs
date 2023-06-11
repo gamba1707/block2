@@ -65,6 +65,11 @@ public class SaveManager : MonoBehaviour
 
     private void Start()
     {
+        statustext = GameObject.Find("statusText").GetComponent<StatusText>();
+    }
+
+    private void OnLevelWasLoaded()
+    {
         statustext= GameObject.Find("statusText").GetComponent<StatusText>();
     }
 
@@ -214,9 +219,18 @@ public class SaveManager : MonoBehaviour
             datastr = reader.ReadToEnd();
             reader.Close();
             datastr = DecryptAES(datastr);
-            PlayerData data = JsonUtility.FromJson<PlayerData>(datastr);
-            this.dateTime = data.dateTime;
-            this.stagescore = data.stagescore;
+            if (datastr.Equals(""))
+            {
+                this.dateTime = null;
+                this.stagescore.Clear();
+            }
+            else
+            {
+                PlayerData data = JsonUtility.FromJson<PlayerData>(datastr);
+                this.dateTime = data.dateTime;
+                this.stagescore = data.stagescore;
+            }
+            
         }
         else
         {
@@ -264,7 +278,7 @@ public class SaveManager : MonoBehaviour
     }
 
     //•œ†ˆ—
-    public static string DecryptAES(string text)
+    public string DecryptAES(string text)
     {
         Aes aes = Aes.Create();
         //AES‚Ìİ’è(ˆÃ†‚Æ“¯‚¶)
@@ -284,9 +298,19 @@ public class SaveManager : MonoBehaviour
         MemoryStream memoryStream = new MemoryStream(encrypted);
         CryptoStream cryptStream = new CryptoStream(memoryStream, decryptor, CryptoStreamMode.Read);
 
-        cryptStream.Read(planeText, 0, planeText.Length);
+        try
+        {
+            cryptStream.Read(planeText, 0, planeText.Length);
+            return (Encoding.UTF8.GetString(planeText));
+        }
+        catch(Exception ex)
+        {
+            Debug.LogError(ex.Message);
+            statustext.SetStatusText("ƒtƒ@ƒCƒ‹‚ª”j‘¹‚µ‚Ä‚¢‚Ü‚·...íœ‚µ‚Ä‚­‚¾‚³‚¢...");
+        }
+        
 
-        return (Encoding.UTF8.GetString(planeText));
+        return "";
     }
 
 }

@@ -19,7 +19,7 @@ public class GameManager : MonoBehaviour
 
     [Header("ゲームの状態")]
     [SerializeField] private GAME_STATUS game_status;
-    private enum GAME_STATUS { Play, GameClear, Pause, GameOver }
+    private enum GAME_STATUS { Play, GameClear, Pause, GameOver}
 
     [Header("マップデータ")]
     private MapData mapdata;
@@ -201,7 +201,8 @@ public class GameManager : MonoBehaviour
             }
             else
             {
-
+                Directory.CreateDirectory(Application.dataPath + "/StageData_Create");
+                mapdata.OnMapSave_json(inputField.text, Add_Blocknum, pManager.Floor_parent, pManager.Fall_parent, pManager.Trampoline_parent_before, pManager.Down_parent_before, pManager.Goalpos);
             }
                 
             statustext.SetStatusText("Stage_Create/" + inputField.text + ".jsonに保存しました");
@@ -274,7 +275,8 @@ public class GameManager : MonoBehaviour
     {
         LoadUI.Fadeout();
         while(LoadUI.Fade_move) yield return null;
-        if(!Editmode) pmove.Reset_move();//プレイヤー関連の初期化
+        Time.timeScale = 1;
+        if (!Editmode) pmove.Reset_move();//プレイヤー関連の初期化
         Add_Blocknum = 0;//置いたブロック数を初期化
         pManager.Reset_box();//置いたブロックを初期化
         noise.noise_reset();
@@ -282,7 +284,7 @@ public class GameManager : MonoBehaviour
         else if(PousePanel.activeInHierarchy)PousePanel.SetActive(false);
         LoadUI.Fadein();
         while (LoadUI.Fade_move) yield return null;
-        Time.timeScale = 1;
+        if (!Editmode) pmove.Reset_move();//プレイヤー関連の初期化
         game_status = GAME_STATUS.Play;
     }
 

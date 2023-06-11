@@ -10,7 +10,7 @@ public class title_SaveData : MonoBehaviour
     [SerializeField] bool deleteMode;
     [SerializeField] int selectdata;
     [SerializeField] GameObject confPanel;
-    [SerializeField] TextMeshProUGUI header, SaveData1, SaveData2, SaveData3,deleteButton;
+    [SerializeField] TextMeshProUGUI header, SaveData1, SaveData2, SaveData3, deleteButton;
     private void OnEnable()
     {
         settextdata(1);
@@ -18,29 +18,34 @@ public class title_SaveData : MonoBehaviour
         settextdata(3);
     }
 
-    void settextdata(int num)
+    TextMeshProUGUI num2textdata(int num)
     {
-        TextMeshProUGUI text=null;
         switch (num)
         {
             case 1:
-                text = SaveData1;
-                break;
+                return SaveData1;
             case 2:
-                text = SaveData2;
-                break;
+                return SaveData2;
             case 3:
-                text = SaveData3;
-                break;
+                return SaveData3;
             default:
                 Debug.LogError("数字割り当てを見直してみてください");
-                break;
+                return null;
         }
+    }
+
+    void settextdata(int num)
+    {
+        
         Debug.Log(Application.dataPath + "/SaveData" + num + ".json");
+        TextMeshProUGUI text = num2textdata(num);
         if (System.IO.File.Exists(Application.dataPath + "/SaveData" + num + ".json"))
         {
             SaveManager.instance.LoadSaveData("SaveData" + num);
-            text.text = SaveManager.instance.getDateTime()+"\nクリア数："+SaveManager.instance.clearnum();
+            Debug.Log(SaveManager.instance.getDateTime() == null);
+            if (SaveManager.instance.getDateTime() == null) text.text = "<color=red>ファイル破損";
+            else
+                text.text = SaveManager.instance.getDateTime() + "\nクリア数：" + SaveManager.instance.clearnum();
         }
         else
         {
@@ -57,18 +62,22 @@ public class title_SaveData : MonoBehaviour
         }
         else
         {
-            SaveManager.instance.LoadSaveData("SaveData" + selectdata);
-            if (System.IO.File.Exists(Application.dataPath + "/SaveData" + selectdata + ".json"))
+            if (!num2textdata(selectdata).text.Equals("<color=red>ファイル破損"))
             {
-                
-                SceneManager.LoadScene("Select");
-            }
-            else
-            {
-                MapData.mapinstance.setMapData(firststagedata);
-                SceneManager.LoadScene("Stage");
+                SaveManager.instance.LoadSaveData("SaveData" + selectdata);
+                if (System.IO.File.Exists(Application.dataPath + "/SaveData" + selectdata + ".json"))
+                {
+
+                    SceneManager.LoadScene("Select");
+                }
+                else
+                {
+                    MapData.mapinstance.setMapData(firststagedata);
+                    SceneManager.LoadScene("Stage");
+                }
             }
             
+
         }
     }
 
@@ -85,7 +94,7 @@ public class title_SaveData : MonoBehaviour
         {
             deleteMode = true;
             header.text = "セーブデータ　<color=red>削除モード";
-            deleteButton.text= "戻る";
+            deleteButton.text = "戻る";
         }
     }
 
