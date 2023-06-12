@@ -29,9 +29,11 @@ public class SaveManager : MonoBehaviour
     public static SaveManager instance;
 
     // 初期化ベクトル"<半角16文字（1byte=8bit, 8bit*16=128bit>"
-    private const string AES_IV_128 = @"pf69DL6GrWFyZcMK";
+    private const string AES_IV_128 = @"hG9PtAuatfJbdgBm";
     // 暗号化鍵<半角32文字（8bit*32文字=256bit）>
-    private const string AES_Key_256 = @"5TGB&YHN7UJM(IK<5TGB&YHN7UJM(IK<";
+    private const string AES_Key_256 = @"AMJVgHnRNdUez5yYKJiVbwCdj8MyZUfZ";
+
+
 
     //読み込むべきセーブデータ名
     public static string dataname;
@@ -149,11 +151,21 @@ public class SaveManager : MonoBehaviour
         setting.sevolume = SEVolume;
         //Json形式に変換する
         string jsonstr = JsonUtility.ToJson(setting);
-        //ファイルに書き込む処理
-        writer = new StreamWriter(Application.dataPath + "/Setting.json", false);
-        writer.Write(jsonstr);
-        writer.Flush();
-        writer.Close();
+        if (Application.platform ==RuntimePlatform.WebGLPlayer)
+        {
+            Debug.Log("WebGL版処理");
+            PlayerPrefs.SetString("Setting",jsonstr);
+            PlayerPrefs.Save();
+        }
+        else
+        {
+            //ファイルに書き込む処理
+            writer = new StreamWriter(Application.dataPath + "/Setting.json", false);
+            writer.Write(jsonstr);
+            writer.Flush();
+            writer.Close();
+        }
+        
         statustext.SetStatusText("設定ファイル保存完了");
         Debug.Log("設定ファイル完了");
     }
@@ -162,15 +174,46 @@ public class SaveManager : MonoBehaviour
     {
         StreamReader reader;
         string datastr = "";
-        reader = new StreamReader(Application.dataPath + "/Setting.json");
-        datastr = reader.ReadToEnd();
-        reader.Close();
-        Setting data = JsonUtility.FromJson<Setting>(datastr);
-        FullScreen=data.fullScreen;
-        Width=data.screen_w;
-        Height=data.screen_h;
-        BGMVolume = data.bgmvolume;
-        SEVolume = data.sevolume;
+        if (Application.platform == RuntimePlatform.WebGLPlayer)
+        {
+            Debug.Log("WebGL版処理");
+            datastr = PlayerPrefs.GetString("Setting","");
+            if (datastr.Equals(""))
+            {
+                init_Setting();
+            }
+            else
+            {
+                Setting data = JsonUtility.FromJson<Setting>(datastr);
+                FullScreen = data.fullScreen;
+                Width = data.screen_w;
+                Height = data.screen_h;
+                BGMVolume = data.bgmvolume;
+                SEVolume = data.sevolume;
+            }
+        }
+        else
+        {
+            if (File.Exists(Application.dataPath + "/Setting.json"))
+            {
+                reader = new StreamReader(Application.dataPath + "/Setting.json");
+                datastr = reader.ReadToEnd();
+                reader.Close();
+                Setting data = JsonUtility.FromJson<Setting>(datastr);
+                FullScreen = data.fullScreen;
+                Width = data.screen_w;
+                Height = data.screen_h;
+                BGMVolume = data.bgmvolume;
+                SEVolume = data.sevolume;
+            }
+            else
+            {
+                init_Setting();
+            }
+                
+        }
+        
+        
     }
 
     public void SaveData(string stagename, int add_blocknum, int add_blocknum_goal)
@@ -198,11 +241,21 @@ public class SaveManager : MonoBehaviour
         Debug.Log(jsonstr);
         //AESで暗号化する
         jsonstr = EncryptAES(jsonstr);
-        //ファイルに書き込む処理
-        writer = new StreamWriter(Application.dataPath + "/" + dataname + ".json", false);
-        writer.Write(jsonstr);
-        writer.Flush();
-        writer.Close();
+        if (Application.platform == RuntimePlatform.WebGLPlayer)
+        {
+            Debug.Log("WebGL版処理");
+            PlayerPrefs.SetString(dataname, jsonstr);
+            PlayerPrefs.Save();
+        }
+        else
+        {
+            //ファイルに書き込む処理
+            writer = new StreamWriter(Application.dataPath + "/" + dataname + ".json", false);
+            writer.Write(jsonstr);
+            writer.Flush();
+            writer.Close();
+        }
+        
         Debug.Log("セーブが終了しました");
     }
 
@@ -212,13 +265,11 @@ public class SaveManager : MonoBehaviour
         Debug.Log(dataname);
 
         string datastr = "";
-        if (File.Exists(Application.dataPath + "/" + dataname + ".json"))
+        if (Application.platform == RuntimePlatform.WebGLPlayer)
         {
-            StreamReader reader;
-            reader = new StreamReader(Application.dataPath + "/" + dataname + ".json");
-            datastr = reader.ReadToEnd();
-            reader.Close();
-            datastr = DecryptAES(datastr);
+            Debug.Log("WebGL版処理");
+            datastr=PlayerPrefs.GetString(dataname,"");
+            
             if (datastr.Equals(""))
             {
                 this.dateTime = null;
@@ -226,24 +277,57 @@ public class SaveManager : MonoBehaviour
             }
             else
             {
+                datastr = DecryptAES(datastr);
                 PlayerData data = JsonUtility.FromJson<PlayerData>(datastr);
                 this.dateTime = data.dateTime;
                 this.stagescore = data.stagescore;
             }
-            
         }
         else
         {
-            this.dateTime = null;
-            this.stagescore.Clear();
+            if (File.Exists(Application.dataPath + "/" + dataname + ".json"))
+            {
+                StreamReader reader;
+                reader = new StreamReader(Application.dataPath + "/" + dataname + ".json");
+                datastr = reader.ReadToEnd();
+                reader.Close();
+                datastr = DecryptAES(datastr);
+                if (datastr.Equals(""))
+                {
+                    this.dateTime = null;
+                    this.stagescore.Clear();
+                }
+                else
+                {
+                    PlayerData data = JsonUtility.FromJson<PlayerData>(datastr);
+                    this.dateTime = data.dateTime;
+                    this.stagescore = data.stagescore;
+                }
+
+            }
+            else
+            {
+                this.dateTime = null;
+                this.stagescore.Clear();
+            }
         }
+        
     }
 
 
     public void OnDeleteSaveData(string savename)
     {
-        string dataname = Application.dataPath + "/" + savename + ".json";
-        if (File.Exists(dataname)) File.Delete(dataname);
+        if (Application.platform == RuntimePlatform.WebGLPlayer)
+        {
+            Debug.Log("WebGL版処理");
+            PlayerPrefs.DeleteKey(savename);
+        }
+        else
+        {
+            string dataname = Application.dataPath + "/" + savename + ".json";
+            if (File.Exists(dataname)) File.Delete(dataname);
+        }
+        
     }
 
 

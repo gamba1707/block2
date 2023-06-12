@@ -39,18 +39,34 @@ public class title_SaveData : MonoBehaviour
         
         Debug.Log(Application.dataPath + "/SaveData" + num + ".json");
         TextMeshProUGUI text = num2textdata(num);
-        if (System.IO.File.Exists(Application.dataPath + "/SaveData" + num + ".json"))
-        {
+
             SaveManager.instance.LoadSaveData("SaveData" + num);
-            Debug.Log(SaveManager.instance.getDateTime() == null);
-            if (SaveManager.instance.getDateTime() == null) text.text = "<color=red>ファイル破損";
+        if (Application.platform == RuntimePlatform.WebGLPlayer)
+        {
+            if(PlayerPrefs.GetString("SaveData" + num, "").Equals(""))
+            {
+                text.text = "新しいデータ";
+            }
             else
+            {
                 text.text = SaveManager.instance.getDateTime() + "\nクリア数：" + SaveManager.instance.clearnum();
+            }
         }
         else
         {
-            text.text = "新しいデータ";
+            if (System.IO.File.Exists(Application.dataPath + "/SaveData" + num + ".json"))
+            {
+                Debug.Log(SaveManager.instance.getDateTime() == null);
+                if (SaveManager.instance.getDateTime() == null) text.text = "<color=red>ファイル破損";
+                else
+                    text.text = SaveManager.instance.getDateTime() + "\nクリア数：" + SaveManager.instance.clearnum();
+            }
+            else
+            {
+                text.text = "新しいデータ";
+            }
         }
+            
     }
 
     public void LoadSaveData(int datanum)
@@ -65,16 +81,36 @@ public class title_SaveData : MonoBehaviour
             if (!num2textdata(selectdata).text.Equals("<color=red>ファイル破損"))
             {
                 SaveManager.instance.LoadSaveData("SaveData" + selectdata);
-                if (System.IO.File.Exists(Application.dataPath + "/SaveData" + selectdata + ".json"))
+                if (Application.platform == RuntimePlatform.WebGLPlayer)
                 {
-
-                    SceneManager.LoadScene("Select");
+                    if (PlayerPrefs.GetString("SaveData" + selectdata, "").Equals(""))
+                    {
+                        Debug.Log("初期読み込みS");
+                        MapData.mapinstance.setMapData(firststagedata);
+                        Debug.Log("初期読み込みE");
+                        SceneManager.LoadScene("Stage");
+                    }
+                    else
+                    {
+                        SceneManager.LoadScene("Select");
+                    }
                 }
                 else
                 {
-                    MapData.mapinstance.setMapData(firststagedata);
-                    SceneManager.LoadScene("Stage");
+                    
+                    if (System.IO.File.Exists(Application.dataPath + "/SaveData" + selectdata + ".json"))
+                    {
+
+                        SceneManager.LoadScene("Select");
+                    }
+                    else
+                    {
+                        MapData.mapinstance.setMapData(firststagedata);
+                        SceneManager.LoadScene("Stage");
+                    }
                 }
+
+
             }
             
 

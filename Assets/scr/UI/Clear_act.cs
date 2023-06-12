@@ -10,12 +10,17 @@ public class Clear_act : MonoBehaviour
     void OnEffect()
     {
         effect.SetActive(true);
+        Invoke("effect_reset",0.5f);
+    }
+
+    void effect_reset()
+    {
+        effect.SetActive(false);
     }
 
     //プレイヤーのゴール演出が終わると呼び出されます
     void Onmove_End()
     {
-        //if(SceneManager.GetActiveScene().)
         GameManager.I.OnClear_end();
     }
 }

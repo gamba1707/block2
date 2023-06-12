@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using UnityEngine.UI;
+using TMPro;
 
 public class itemManager : MonoBehaviour
 {
@@ -22,7 +23,7 @@ public class itemManager : MonoBehaviour
             toggle[i]=transform.GetChild(i).GetComponent<Toggle>();
             toggle[i].name= itemtex[i].name;//名前を画像名に変更
             toggle[i].targetGraphic.GetComponent<Image>().sprite = itemtex[i];//画像を書き換える
-            transform.GetChild(i).Find("Label").GetComponent<Text>().text = itemtex[i].name;//画像名にテキストを設定
+            transform.GetChild(i).Find("Label＿TMP").GetComponent<TextMeshProUGUI>().text = itemtex[i].name;//画像名にテキストを設定
         }
         GameManager.I.Selectname = toggleGroup.ActiveToggles().First().name;
         Debug.Log("今選択されている：" + GameManager.I.Selectname);

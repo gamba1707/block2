@@ -68,7 +68,6 @@ public class Loading_fade : MonoBehaviour
             fade += 0.025f;
             yield return new WaitForSecondsRealtime(0.01f);
         }
-        yield return new WaitForSecondsRealtime(0.25f);
         Open();
         yield return null;
         Debug.Log("width:" + width + ",right:" + rectTransform.offsetMax);
@@ -94,7 +93,6 @@ public class Loading_fade : MonoBehaviour
             fade -= 0.025f;//íiäKÇêiÇﬂÇÈ
             yield return new WaitForSecondsRealtime(0.01f);
         }
-        yield return new WaitForSecondsRealtime(0.25f);
         Close();
         yield return null;
         Debug.Log("width:"+width+",right:"+ rectTransform.offsetMax);

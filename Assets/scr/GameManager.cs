@@ -165,6 +165,7 @@ public class GameManager : MonoBehaviour
         {
             StagenameText.enabled = false;
             game_status = GAME_STATUS.Play;
+            pmove.start_move();
         }
     }
 
@@ -276,7 +277,7 @@ public class GameManager : MonoBehaviour
         LoadUI.Fadeout();
         while(LoadUI.Fade_move) yield return null;
         Time.timeScale = 1;
-        if (!Editmode) pmove.Reset_move();//プレイヤー関連の初期化
+         pmove.Reset_move();//プレイヤー関連の初期化
         Add_Blocknum = 0;//置いたブロック数を初期化
         pManager.Reset_box();//置いたブロックを初期化
         noise.noise_reset();
@@ -284,8 +285,8 @@ public class GameManager : MonoBehaviour
         else if(PousePanel.activeInHierarchy)PousePanel.SetActive(false);
         LoadUI.Fadein();
         while (LoadUI.Fade_move) yield return null;
-        if (!Editmode) pmove.Reset_move();//プレイヤー関連の初期化
         game_status = GAME_STATUS.Play;
+        pmove.start_move();
     }
 
     public void OnStageSelect()

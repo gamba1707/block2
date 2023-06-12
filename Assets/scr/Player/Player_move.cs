@@ -127,11 +127,19 @@ public class Player_move : MonoBehaviour
     public void Reset_move()
     {
         this.transform.position = playerpos_first;
+        anim.SetTrigger("reset");
         anim.SetBool("walk", false);
-        anim.SetBool("fall", false);
+        anim.SetBool("fall",true);
+        
         Player_t.transform.rotation = Quaternion.Euler(0f, 0f, 0f);
         x = 0;
         moveDirection = Vector3.zero;
+        anim.SetBool("fall",false);
         Debug.Log("<color=#0000ffff>プレイヤー初期化</color>\nPlayerpos:" + transform.position);
+    }
+
+    public void start_move()
+    {
+        anim.SetTrigger("start");
     }
 }

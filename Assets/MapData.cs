@@ -144,14 +144,14 @@ public class MapData : MonoBehaviour
     public string mapname()
     {
         string name = "";
-        if(Createmode&&jsonpath_enable()) name=System.IO.Path.GetFileNameWithoutExtension(jsonpath);
+        if(Application.platform != RuntimePlatform.WebGLPlayer && Createmode&&jsonpath_enable()) name=System.IO.Path.GetFileNameWithoutExtension(jsonpath);
         else if (mapData_Scrobj != null) name= mapData_Scrobj.name;
         return name;
     }
     public string mapname_text()
     {
         string name = "";
-        if(Createmode&&jsonpath_enable()) name=System.IO.Path.GetFileNameWithoutExtension(jsonpath);
+        if(Application.platform != RuntimePlatform.WebGLPlayer && Createmode &&jsonpath_enable()) name=System.IO.Path.GetFileNameWithoutExtension(jsonpath);
         else if (mapData_Scrobj != null) name=mapData_Scrobj.name;
         if (name.IndexOf('Åu') != -1) name=name.Insert(name.IndexOf('Åu'),"\n");
         return name;

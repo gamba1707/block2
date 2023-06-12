@@ -6,23 +6,16 @@ using UnityEngine;
 
 public class titleUI : MonoBehaviour
 {
-    [SerializeField]GameObject panel1,modepanel,SaveLoadPanel,CreatePanel,OptionPanel;
+    [SerializeField] GameObject panel1, modepanel, SaveLoadPanel, CreatePanel, OptionPanel;
     [SerializeField] private Loading_fade LoadUI;
     AudioSource audioSource;
 
     private void Awake()
     {
         audioSource = GetComponent<AudioSource>();
-        if (File.Exists(Application.dataPath + "/Setting.json"))
-        {
-            SaveManager.instance.LoadSaveData_Setting();
-            Screen.SetResolution(SaveManager.instance.Width, SaveManager.instance.Height, SaveManager.instance.FullScreen);
-        }
-        else
-        {
-            SaveManager.instance.init_Setting();
-            Screen.SetResolution(SaveManager.instance.Width, SaveManager.instance.Height, SaveManager.instance.FullScreen);
-        }
+        SaveManager.instance.LoadSaveData_Setting();
+        Screen.SetResolution(SaveManager.instance.Width, SaveManager.instance.Height, SaveManager.instance.FullScreen);
+
     }
 
     private void Start()
@@ -40,7 +33,7 @@ public class titleUI : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (Input.anyKey&& panel1.activeInHierarchy)
+        if (Input.anyKey && panel1.activeInHierarchy)
         {
             panel1.SetActive(false);
             modepanel.SetActive(true);

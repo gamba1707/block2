@@ -10,6 +10,7 @@ public class title_Option : MonoBehaviour
 {
 
     [SerializeField] TMP_Dropdown dropdown;
+    [SerializeField] TextMeshProUGUI Option_text;
     [SerializeField] TextMeshProUGUI Button_Windowtext;
     [SerializeField] Slider bgmslider,seslider;
     int selectnum;
@@ -19,29 +20,38 @@ public class title_Option : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        resolutions = Screen.resolutions;
-        resolutions=resolutions.Distinct().ToArray();
-        Array.Reverse(resolutions);
-        Debug.Log(resolutions);
-        Debug.Log(SaveManager.instance.Width + " x " + SaveManager.instance.Height);
-        for (int i = 0; i < resolutions.Length; i++)
+        if (Application.platform != RuntimePlatform.WebGLPlayer)
         {
-            resolutionlist.Add(resolutions[i].width + " x " + resolutions[i].height);
-            Debug.Log(resolutions[i].width + " x " + resolutions[i].height);
-            if (SaveManager.instance.Width == resolutions[i].width && SaveManager.instance.Height == resolutions[i].height)
-                selectnum = i;
+            resolutions = Screen.resolutions;
+            resolutions = resolutions.Distinct().ToArray();
+            Array.Reverse(resolutions);
+            Debug.Log(resolutions);
+            Debug.Log(SaveManager.instance.Width + " x " + SaveManager.instance.Height);
+            for (int i = 0; i < resolutions.Length; i++)
+            {
+                resolutionlist.Add(resolutions[i].width + " x " + resolutions[i].height);
+                Debug.Log(resolutions[i].width + " x " + resolutions[i].height);
+                if (SaveManager.instance.Width == resolutions[i].width && SaveManager.instance.Height == resolutions[i].height)
+                    selectnum = i;
+            }
+
+            dropdown.ClearOptions();
+            dropdown.AddOptions(resolutionlist);
+            dropdown.value = selectnum;
+
+
+
+            if (Screen.fullScreen) Button_Windowtext.text = "フルスクリーン";
+            else Button_Windowtext.text = "ウィンドウ";
         }
-        
-        dropdown.ClearOptions();
-        dropdown.AddOptions(resolutionlist);
-        dropdown.value = selectnum;
+        else
+        {
+            Option_text.text = "\r\n\r\n\r\n\r\n音量\r\n　BGM\r\n　SE";
+        }
+            
 
-        bgmslider.value = SaveManager.instance.BGMVolume*10;
-        seslider.value = SaveManager.instance.SEVolume*10;
-
-        if (Screen.fullScreen) Button_Windowtext.text = "フルスクリーン";
-        else Button_Windowtext.text = "ウィンドウ";
-
+        bgmslider.value = SaveManager.instance.BGMVolume * 10;
+        seslider.value = SaveManager.instance.SEVolume * 10;
     }
 
     public void OnScreenMode()
