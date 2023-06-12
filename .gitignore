@@ -21,6 +21,9 @@
 # Font File
 [Aa]ssets/Font/
 
+# BGM File
+[Aa]ssets/bgmse/
+
 # Visual Studio cache directory
 .vs/
 
