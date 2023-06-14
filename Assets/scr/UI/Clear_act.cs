@@ -1,24 +1,27 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.SceneManagement;
 
+//ゴールした時やスタート時にエフェクトを出す
 public class Clear_act : MonoBehaviour
 {
+    //エフェクト
     [SerializeField] GameObject effect;
 
+    //エフェクトを表示する（アニメーションから呼び出される）
     void OnEffect()
     {
+        //エフェクトを表示する
         effect.SetActive(true);
-        Invoke("effect_reset",0.5f);
+        //良いころ合いで消す
+        Invoke("effect_reset", 0.5f);
     }
 
+    //エフェクトを非表示にする
     void effect_reset()
     {
         effect.SetActive(false);
     }
 
-    //プレイヤーのゴール演出が終わると呼び出されます
+    //プレイヤーのゴール演出が終わるとアニメーションから呼び出されます
     void Onmove_End()
     {
         GameManager.I.OnClear_end();

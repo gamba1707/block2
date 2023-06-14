@@ -11,13 +11,16 @@ public class StageBGMManager : MonoBehaviour
     [SerializeField] AudioClip stage0BGM;
     [SerializeField] AudioClip stage1BGM;
     [SerializeField] AudioClip stage2BGM;
+    [SerializeField] AudioClip stage3BGM;
     // Start is called before the first frame update
     void Start()
     {
         audioSource = GetComponent<AudioSource>();
         Debug.Log(MapData.mapinstance.mapname().Substring(0, 1));
+        Debug.Log("BOSS:"+ MapData.mapinstance.Boss);
         if (MapData.mapinstance.Boss)
         {
+
             audioSource.clip = BOSSBGM;
         }
         else
@@ -33,6 +36,9 @@ public class StageBGMManager : MonoBehaviour
                 case "2":
                     audioSource.clip = stage2BGM;
                     break;
+                case "3":
+                    audioSource.clip = stage3BGM;
+                    break;
             }
         }
         audioSource.Play();
@@ -41,6 +47,9 @@ public class StageBGMManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-
+        if (GameManager.I.gamestate("GameClear"))
+        {
+            audioSource.Stop();
+        }
     }
 }

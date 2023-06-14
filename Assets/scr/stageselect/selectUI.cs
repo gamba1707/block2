@@ -12,9 +12,11 @@ public class selectUI : MonoBehaviour
     [SerializeField] private Transform selectbutton_parent;
     //ステージデータ（ボタンが押されたときにそれぞれにアタッチされているデータを渡す為）
     [SerializeField] MapData mapData;
+    [SerializeField] GameObject LoadingUI;
 
     private void Start()
     {
+        LoadingUI.SetActive(false);
         //フェードインを見せる
         LoadUI.Fadein();
     }
@@ -36,10 +38,16 @@ public class selectUI : MonoBehaviour
     }
     private IEnumerator LoadScene(string scenename)
     {
-        var async = SceneManager.LoadSceneAsync(scenename);
-
-        async.allowSceneActivation = false;
+        LoadingUI.SetActive(true);
         while (LoadUI.Fade_move) yield return null;
-        async.allowSceneActivation = true;
+        
+        var async = SceneManager.LoadSceneAsync(scenename);
+        
+        
+        while (!async.isDone)
+        {
+            Debug.Log(async.progress);
+            yield return null;
+        }
     }
 }

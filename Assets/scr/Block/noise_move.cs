@@ -1,40 +1,43 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
+//ボスステージで追いかけてくるノイズ
 public class noise_move : MonoBehaviour
 {
-    Vector3 firstpos;
-    // Start is called before the first frame update
+    //初期値に戻すための格納場所
+    private Vector3 firstpos;
+    
     void Start()
     {
-        Invoke("Start_Check", 0.5f);
+        //ボスステージじゃなければこのオブジェクトは消しておく
+        if (!MapData.mapinstance.Boss) this.gameObject.SetActive(false);
+        //初期値登録
         firstpos = transform.position;
     }
-    void Start_Check()
-    {
-        if (!MapData.mapinstance.Boss)this.gameObject.SetActive(false);
-    }
 
-    // Update is called once per frame
     void FixedUpdate()
     {
+        //プレイ中なら
         if (GameManager.I.gamestate("Play"))
         {
+            //右方向に移動させる
             transform.position += new Vector3(0, 0, 0.025f);
         }
     }
 
     private void OnTriggerEnter(Collider other)
     {
+        //プレイ中で、Playerに当たったら
         if (GameManager.I.gamestate("Play") && other.gameObject.name.Equals("Player"))
         {
+            //ゲームオーバーにする
             GameManager.I.OnGameOver();
         }
     }
 
+    //リセットで呼ばれる
     public void noise_reset()
     {
+        //初期値に戻す
         transform.position = firstpos;
     }
 }

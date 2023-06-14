@@ -1,16 +1,15 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
+//ストーリーモードの地形データ
 public class MapData_scrobj : ScriptableObject
 {
-    public bool bossstage;
-    public int clearnum;
-    public Vector3 stage_vcampos;
-    public Vector3[] floorpos;
-    public Vector3[] fallpos;
-    public Vector3[] Trampolinepos;
-    public Vector3[] Downpos;
-    public Vector3 goalpos;
-    public float deadline;
+    public bool bossstage;//ボスステージか？
+    public int clearnum;//目標クリア数
+    public Vector3 stage_vcampos;//全体を映すカメラ
+    public Vector3[] floorpos;//床ブロックの位置
+    public Vector3[] fallpos;//奈落ブロックの位置
+    public Vector3[] Trampolinepos;//地形飛べるブロックの位置
+    public Vector3[] Downpos;//地形下がるブロックの位置
+    public Vector3 goalpos;//ゴール位置
+    public float deadline;//自動的に計算するデッドライン
 }

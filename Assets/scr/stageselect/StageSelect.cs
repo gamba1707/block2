@@ -62,6 +62,8 @@ public class StageSelect : MonoBehaviour
             {
                 Debug.Log("‰Ÿ‚µ‚½");
                 audioSource.PlayOneShot(audioSource.clip);
+                //‚Ç‚¤‚µ‚Ä‚àUI‚ÌŠÖŒWã“§–¾‚É‚µ‚È‚¢‚Æ•¶š‚ªŒ©Ø‚ê‚é‚½‚ß
+                rightcube.material = clear;
                 transform.root.gameObject.GetComponent<selectUI>().OnClickButton(stagedata[stagenum]);
             }
         }
