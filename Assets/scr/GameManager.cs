@@ -1,10 +1,9 @@
-﻿using System.Collections;
+using System.Collections;
 using UnityEngine;
 using TMPro;
 using UnityEngine.SceneManagement;
 using System;
 using System.IO;
-
 
 //ステージシーンで全てを持っているスクリプト
 public class GameManager : MonoBehaviour
@@ -18,7 +17,7 @@ public class GameManager : MonoBehaviour
 
     [Header("ゲームの状態")]
     [SerializeField] private GAME_STATUS game_status;
-    private enum GAME_STATUS { Play, GameClear, Pause, GameOver }
+    private enum GAME_STATUS { Play, GameClear, Pause, GameOver, Perform }
 
     [Header("マップデータ")]
     private MapData mapdata;
@@ -31,6 +30,9 @@ public class GameManager : MonoBehaviour
 
     [Header("Player_move(Playerに付いてる)")]
     [SerializeField] private Player_move pmove;
+
+    [Header("Player_life")]
+    [SerializeField] private Player_life player_life;
 
     [Header("PoolManager(addBlock)")]
     [SerializeField] private PoolManager pManager;
@@ -46,6 +48,9 @@ public class GameManager : MonoBehaviour
 
     [Header("ロード画面")]
     [SerializeField] private noise_move noise;
+
+    [Header("ラスボス")]
+    [SerializeField] private BossManager bossManager;
 
     [Header("現在までに出現させたブロック数")]
     [SerializeField] private int add_blocknum;
@@ -63,6 +68,8 @@ public class GameManager : MonoBehaviour
 
     [Header("プレイヤーの位置（一マス単位）")]
     [SerializeField] private Vector3 playerpos;
+
+    private bool load_scene;
 
 
     private void Awake()
@@ -171,6 +178,12 @@ public class GameManager : MonoBehaviour
             pManager.GetDownObject_before(pos[i]);
         }
     }
+    //地形下がるブロック
+    public void SetDownblock(Vector3 pos)
+    {
+        pManager.GetDownObject(pos);
+    }
+
     //ゴール場所
     public void SetGoalblock(Vector3 pos)
     {
@@ -187,8 +200,17 @@ public class GameManager : MonoBehaviour
         {
             //消す（ブロックの生成に影響するため）
             StagenameText.enabled = false;
-            //始める
-            game_status = GAME_STATUS.Play;
+            if (MapData.mapinstance.Last)
+            {
+                //
+                game_status = GAME_STATUS.Perform;
+            }
+            else
+            {
+                //始める
+                game_status = GAME_STATUS.Play;
+
+            }
             //出現する演出をする
             pmove.start_move();
         }
@@ -216,8 +238,8 @@ public class GameManager : MonoBehaviour
             }
         }
 
-        //もし奈落をすり抜けて落ちてしまったら強制的にリセットする
-        if (MapData.mapinstance.Deadline >= Playerpos.y) OnGameReset();
+        //もし奈落をすり抜けて落ちてしまったら強制的にゲームオーバーにする
+        if (MapData.mapinstance.Deadline >= Playerpos.y) OnGameOver();
     }
 
     //===============================
@@ -273,6 +295,12 @@ public class GameManager : MonoBehaviour
         return false;
     }
 
+    public void OnPerform_end()
+    {
+        //
+        game_status = GAME_STATUS.Play;
+    }
+
     //クリアするとGoal.csから呼ばれる
     public void OnClear()
     {
@@ -281,7 +309,8 @@ public class GameManager : MonoBehaviour
         //ステータスにセーブを表示する
         statustext.SetStatusText("セーブ中");
         //クリアした動きをさせる
-        pmove.Clear_move();
+        if (MapData.mapinstance.Last) OnClear_end();
+        else pmove.Clear_move();
     }
 
     //プレイヤーが演出で消えた後呼ばれる
@@ -293,14 +322,26 @@ public class GameManager : MonoBehaviour
             //ロード画面
             LoadUI.Fadeout();
             //タイトルに飛ばす
-            StartCoroutine(Scene_move("title"));
+            if (!load_scene) StartCoroutine(Scene_move("title"));
+            load_scene = true;
+        }
+        else if (MapData.mapinstance.Last)
+        {
+            //ストーリーモード
+            pmove.end_move();
+            Debug.Log("save" + mapdata.mapname());
+            //クリアしたことをセーブする
+            SaveManager.instance.SaveData(mapdata.mapname(), Add_Blocknum, Add_Blocknum_goal);
+            //タイトルに飛ばす
+            if (!load_scene) StartCoroutine(Scene_move("Ending"));
+            load_scene = true;
         }
         else
         {
             //ストーリーモード
             Debug.Log("save" + mapdata.mapname());
             //クリアしたことをセーブする
-            SaveManager.instance.SaveData(mapdata.mapname(), Add_Blocknum);
+            SaveManager.instance.SaveData(mapdata.mapname(), Add_Blocknum, Add_Blocknum_goal);
             //ステージセレクトに帰る
             OnStageSelect();
         }
@@ -322,10 +363,31 @@ public class GameManager : MonoBehaviour
     {
         //状態をゲームオーバーにする
         game_status = GAME_STATUS.GameOver;
-        //プレイヤーをゲームオーバー風な見た目にする
-        pmove.GameOver_move();
+        if (mapdata.Last)
+        {
+            StartCoroutine(Ongameover_last());
+        }
+        else
+        {
+            //プレイヤーをゲームオーバー風な見た目にする
+            pmove.GameOver_move();
+            //ゲームオーバーのパネルを出す
+            GameOverPanel.SetActive(true);
+        }
+    }
+
+    IEnumerator Ongameover_last()
+    {
+        pManager.GetNomalObject(playerpos);
+
+        //プレイヤー
+        pmove.GameOver_last_move();
+        yield return new WaitForSecondsRealtime(1f);
+        pmove.GameOver_last_se();
+        yield return new WaitForSecondsRealtime(1.5f);
         //ゲームオーバーのパネルを出す
         GameOverPanel.SetActive(true);
+        StopCoroutine(Ongameover_last());
     }
 
     //リセットすると呼ばれる
@@ -342,6 +404,9 @@ public class GameManager : MonoBehaviour
         while (LoadUI.Fade_move) yield return null;
         //挙動がおかしいので1にする
         Time.timeScale = 1;
+
+        if (mapdata.Last) mapdata.LoadMapData(edit_mapdata);
+
         //プレイヤー関連の初期化
         pmove.Reset_move();
         //置いたブロック数を初期化
@@ -350,10 +415,16 @@ public class GameManager : MonoBehaviour
         pManager.Reset_box();
         //とりあえずボスステージの位置を初期値に戻す
         noise.noise_reset();
+
+        bossManager.OnReset();
+        player_life.OnReset();
         //表示しているゲームオーバー画面を消す
         if (GameOverPanel.activeInHierarchy) GameOverPanel.SetActive(false);
         //ポーズ画面を消す
         else if (PousePanel.activeInHierarchy) PousePanel.SetActive(false);
+
+
+
         //明転する
         LoadUI.Fadein();
         //しきるまで待つ
@@ -368,35 +439,43 @@ public class GameManager : MonoBehaviour
     public void OnStageSelect()
     {
         LoadUI.Fadeout();
-        StartCoroutine(Scene_move("Select"));
+        if (!load_scene) StartCoroutine(Scene_move("Select"));
+        load_scene = true;
     }
 
     //タイトルに戻る
     public void OnTitleBack()
     {
         LoadUI.Fadeout();
-        StartCoroutine(Scene_move("title"));
+        if (!load_scene) StartCoroutine(Scene_move("title"));
+        load_scene = true;
     }
 
     //シーン移動時にフェードもしつつシーン読み込みもしたかった
     IEnumerator Scene_move(string scenename)
     {
-        //シーン読み込む
-        var async = SceneManager.LoadSceneAsync(scenename);
-        //ちょっと待ってもらう
-        async.allowSceneActivation = false;
-        //フェードが終わるまで待つ
-        while (LoadUI.Fade_move)
-        {
-            yield return null;
-        }
-        yield return null;
         //動きをもとに戻す
         Time.timeScale = 1;
-        //移動する
-        async.allowSceneActivation = true;
+        if (MapData.mapinstance.Last) yield return new WaitForSecondsRealtime(3f);
+        LoadUI.Fadeout();
+        //暗転するまで待つ
+        while (LoadUI.Fade_move) yield return null;
+
+        //シーン読み込み
+        var async = SceneManager.LoadSceneAsync(scenename);
+
+        while (!async.isDone)
+        {
+            Debug.Log(async.progress);
+            yield return null;
+        }
     }
 
+    public void OnBossBlock()
+    {
+        pmove.Boss_Block_move();
+        player_life.OnBossBlock();
+    }
 
     //以下プロパティ
     public bool Editmode

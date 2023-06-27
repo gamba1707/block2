@@ -1,33 +1,40 @@
 using System.Collections.Generic;
 using UnityEngine;
-
 using System.IO;
 using NPOI.SS.UserModel;
 using UnityEditor;
 
+//Excelã‹ã‚‰ã‚¹ãƒ†ãƒ¼ã‚¸ãƒ‡ãƒ¼ã‚¿ã‚’æ§‹ç¯‰ã™ã‚‹Editoræ‹¡å¼µ
 [CustomEditor(typeof(ExcelImporter))]
 public class ExcelToScriptableObject : Editor
 {
-    bool OnSheetLoad,OnDataLoad;
-    [SerializeField] int clearnum;
-    [SerializeField] float deadline;
-    [SerializeField] Vector3 goalpos;
-    [SerializeField] Vector3 stage_vcampos;
-    [SerializeField] List<Vector3> floorpos = new List<Vector3>();
-    [SerializeField] List<Vector3> fallpos = new List<Vector3>();
-    [SerializeField] List<Vector3> Trampolinepos = new List<Vector3>();
-    [SerializeField] List<Vector3> Downpos = new List<Vector3>();
+    //ã‚·ãƒ¼ãƒˆã‚’èª­ã¿è¾¼ã‚“ã ã€ãƒ‡ãƒ¼ã‚¿ã‚’èª­ã¿è¾¼ã‚“ã 
+    bool OnSheetLoad, OnDataLoad;
 
+    //èª­ã¿å–ã£ãŸã‚¹ãƒ†ãƒ¼ã‚¸ãƒ‡ãƒ¼ã‚¿ãŸã¡
+    [SerializeField] int clearnum;//ã‚¯ãƒªã‚¢æ•°
+    [SerializeField] float deadline;//ãƒ‡ãƒƒãƒ‰ãƒ©ã‚¤ãƒ³ï¼ˆè‡ªå‹•è¨ˆç®—ï¼‰
+    [SerializeField] Vector3 goalpos;//ã‚´ãƒ¼ãƒ«ä½ç½®
+    [SerializeField] Vector3 stage_vcampos;//å…¨ä½“ã‚«ãƒ¡ãƒ©ã®ä½ç½®
+    [SerializeField] List<Vector3> floorpos = new List<Vector3>();//åºŠãƒ–ãƒ­ãƒƒã‚¯
+    [SerializeField] List<Vector3> fallpos = new List<Vector3>();//å¥ˆè½ãƒ–ãƒ­ãƒƒã‚¯
+    [SerializeField] List<Vector3> Trampolinepos = new List<Vector3>();//åœ°å½¢ãƒˆãƒ©ãƒ³ãƒãƒªãƒ³ãƒ–ãƒ­ãƒƒã‚¯
+    [SerializeField] List<Vector3> Downpos = new List<Vector3>();//åœ°å½¢ä¸‹ãŒã‚‹ãƒ–ãƒ­ãƒƒã‚¯
+
+    //ã‚¤ãƒ³ã‚¹ãƒšã‚¯ã‚¿ãƒ¼ã§è¡¨ç¤ºã™ã‚‹ã‚„ã¤
     public override void OnInspectorGUI()
     {
-        //ƒAƒ^ƒbƒ`‚³‚ê‚½î•ñ‚ğó‚¯æ‚éˆ×
+        //ã‚¢ã‚¿ãƒƒãƒã•ã‚ŒãŸæƒ…å ±ã‚’å—ã‘å–ã‚‹ç‚º
         var excelImpoter = target as ExcelImporter;
-        
-        DrawDefaultInspector();
-        EditorGUILayout.LabelField("ƒV[ƒg“Ç‚İ‚İ");
 
-        //ƒCƒ“ƒXƒyƒNƒ^[‚ÉD&D‚·‚é‚ÆƒpƒX‚ğo‚µ‚Ä‚­‚ê‚é
-        //ˆø—pƒTƒCƒghttps://warapuri.com/post/24185933889/unity-inspector-editor%E4%B8%8A%E3%81%ABdragdrop%E3%81%97%E3%81%9F%E3%81%84
+        //ãƒ‘ã‚¹ã¯ã“ã“ã§è¡¨ç¤ºã™ã‚‹
+        DrawDefaultInspector();
+        //ãƒ©ãƒ™ãƒ«è¡¨ç¤º
+        EditorGUILayout.LabelField("ã‚·ãƒ¼ãƒˆèª­ã¿è¾¼ã¿");
+
+        //====================================
+        //ã‚¤ãƒ³ã‚¹ãƒšã‚¯ã‚¿ãƒ¼ã«D&Dã™ã‚‹ã¨ãƒ‘ã‚¹ã‚’å‡ºã—ã¦ãã‚Œã‚‹
+        //å¼•ç”¨ã‚µã‚¤ãƒˆã€€https://warapuri.com/post/24185933889/unity-inspector-editor%E4%B8%8A%E3%81%ABdragdrop%E3%81%97%E3%81%9F%E3%81%84
         var evt = Event.current;
 
         var dropArea = GUILayoutUtility.GetRect(0.0f, 50.0f, GUILayout.ExpandWidth(true));
@@ -56,201 +63,200 @@ public class ExcelToScriptableObject : Editor
                 Event.current.Use();
                 break;
         }
-        
-        //“Ç‚İ‚İƒ{ƒ^ƒ“
-        if (GUILayout.Button("ƒV[ƒgî•ñ‚Ì“Ç‚İ‚İ"))
+        //====================================
+
+        //èª­ã¿è¾¼ã¿ãƒœã‚¿ãƒ³
+        if (GUILayout.Button("ã‚·ãƒ¼ãƒˆæƒ…å ±ã®èª­ã¿è¾¼ã¿"))
         {
-            Debug.Log("ƒV[ƒgî•ñ‚Ì“Ç‚İ‚İ‚ğŠJn‚µ‚Ä‚¢‚Ü‚·");
+            Debug.Log("ã‚·ãƒ¼ãƒˆæƒ…å ±ã®èª­ã¿è¾¼ã¿ã‚’é–‹å§‹ã—ã¦ã„ã¾ã™");
             try
             {
-                //ƒV[ƒg‚Ìî•ñ‚ğ“Ç‚İæ‚é
+                //ã‚·ãƒ¼ãƒˆã®æƒ…å ±ã‚’èª­ã¿å–ã‚‹
                 OnLoadSheet(excelImpoter);
-                //ƒV[ƒg‚ğ“Ç‚İ‚ñ‚¾‚Æ‚¢‚¤‚±‚Æ‚Å’Ç‰Á‚Åî•ñ‚ğ•\¦‚³‚¹‚é
+                //ã‚·ãƒ¼ãƒˆã‚’èª­ã¿è¾¼ã‚“ã ã¨ã„ã†ã“ã¨ã§è¿½åŠ ã§æƒ…å ±ã‚’è¡¨ç¤ºã•ã›ã‚‹
                 OnSheetLoad = true;
             }
             catch (FileNotFoundException e)
             {
-                Debug.LogError("“Ç‚İ‚Şƒtƒ@ƒCƒ‹‚ª‚ ‚è‚Ü‚¹‚ñB\n"+e);
+                Debug.LogError("èª­ã¿è¾¼ã‚€ãƒ•ã‚¡ã‚¤ãƒ«ãŒã‚ã‚Šã¾ã›ã‚“ã€‚\n" + e);
             }
             catch (IOException e)
             {
-                Debug.LogError("‚¨‚»‚ç‚­ƒtƒ@ƒCƒ‹‚ªŠJ‚¢‚½‚Ü‚Ü‚É‚È‚Á‚Ä‚¢‚Ü‚·B\n" + e);
+                Debug.LogError("ãŠãã‚‰ããƒ•ã‚¡ã‚¤ãƒ«ãŒé–‹ã„ãŸã¾ã¾ã«ãªã£ã¦ã„ã¾ã™ã€‚\n" + e);
             }
-            
         }
-        //ƒV[ƒg‚ğ“Ç‚İæ‚Á‚½Œã•\¦‚·‚é
+
+        //ã‚·ãƒ¼ãƒˆã‚’èª­ã¿å–ã£ãŸå¾Œè¡¨ç¤ºã™ã‚‹
         if (OnSheetLoad)
         {
-            //Œ„ŠÔ
+            //éš™é–“
             EditorGUILayout.Space(20);
-            //ƒ^ƒCƒgƒ‹ƒ‰ƒxƒ‹
-            EditorGUILayout.LabelField("ƒV[ƒg‚Ìw’è");
-            //ƒV[ƒg‚ğƒvƒ‹ƒ_ƒEƒ“‚Å‘I‚×‚é‚â‚Âiƒvƒ‹ƒ_ƒEƒ“‚Í”š‚ÅŠÇ—‚³‚ê‚Ä‚¢‚é‚Ì‚Å‘ã“üj
-            //iƒ‰ƒxƒ‹–¼A”Ô†A‚»‚Ì”Ô†‚É‘Î‰‚·‚éƒV[ƒg–¼j
-            excelImpoter.selectsheet = EditorGUILayout.Popup("ƒV[ƒg–¼", excelImpoter.selectsheet, excelImpoter.sheetNameList.ToArray());
-            //ƒXƒe[ƒWî•ñ‚Ì“Ç‚İ‚İƒ{ƒ^ƒ“‚ğ‰Ÿ‚µ‚½‚ç
-            if (GUILayout.Button("ƒXƒe[ƒWî•ñ‚Ì“Ç‚İ‚İ"))
+            //ã‚¿ã‚¤ãƒˆãƒ«ãƒ©ãƒ™ãƒ«
+            EditorGUILayout.LabelField("ã‚·ãƒ¼ãƒˆã®æŒ‡å®š");
+            //ã‚·ãƒ¼ãƒˆã‚’ãƒ—ãƒ«ãƒ€ã‚¦ãƒ³ã§é¸ã¹ã‚‹ã‚„ã¤ï¼ˆãƒ—ãƒ«ãƒ€ã‚¦ãƒ³ã¯æ•°å­—ã§ç®¡ç†ã•ã‚Œã¦ã„ã‚‹ã®ã§ä»£å…¥ï¼‰
+            //ï¼ˆãƒ©ãƒ™ãƒ«åã€ç•ªå·ã€ãã®ç•ªå·ã«å¯¾å¿œã™ã‚‹ã‚·ãƒ¼ãƒˆåï¼‰
+            excelImpoter.selectsheet = EditorGUILayout.Popup("ã‚·ãƒ¼ãƒˆå", excelImpoter.selectsheet, excelImpoter.sheetNameList.ToArray());
+
+            //ã‚¹ãƒ†ãƒ¼ã‚¸æƒ…å ±ã®èª­ã¿è¾¼ã¿ãƒœã‚¿ãƒ³ã‚’æŠ¼ã—ãŸã‚‰
+            if (GUILayout.Button("ã‚¹ãƒ†ãƒ¼ã‚¸æƒ…å ±ã®èª­ã¿è¾¼ã¿"))
             {
                 try
                 {
-                    //ÀÛ‚É’†‚Ìƒf[ƒ^‚ğ“Ç‚İæ‚Á‚Äƒf[ƒ^‚É‚·‚é
+                    //å®Ÿéš›ã«ä¸­ã®ãƒ‡ãƒ¼ã‚¿ã‚’èª­ã¿å–ã£ã¦ãƒ‡ãƒ¼ã‚¿ã«ã™ã‚‹
                     OnLoadData(excelImpoter);
+                    //èª­ã¿è¾¼ã‚“ã ã“ã¨ã«ã™ã‚‹
                     OnDataLoad = true;
                 }
                 catch (FileNotFoundException e)
                 {
-                    Debug.LogError("“Ç‚İ‚Şƒtƒ@ƒCƒ‹‚ª‚ ‚è‚Ü‚¹‚ñB\n" + e);
+                    Debug.LogError("èª­ã¿è¾¼ã‚€ãƒ•ã‚¡ã‚¤ãƒ«ãŒã‚ã‚Šã¾ã›ã‚“ã€‚\n" + e);
                 }
                 catch (IOException e)
                 {
-                    Debug.LogError("‚¨‚»‚ç‚­ƒtƒ@ƒCƒ‹‚ªŠJ‚¢‚½‚Ü‚Ü‚É‚È‚Á‚Ä‚¢‚Ü‚·B\n" + e);
+                    Debug.LogError("ãŠãã‚‰ããƒ•ã‚¡ã‚¤ãƒ«ãŒé–‹ã„ãŸã¾ã¾ã«ãªã£ã¦ã„ã¾ã™ã€‚\n" + e);
                 }
             }
         }
-        //ƒV[ƒg‚ğw’è‚µ‚Ä’nŒ`‚ğ“Ç‚İ‚ñ‚¾‚ç•\¦
-        if(OnDataLoad)
+
+        //ã‚·ãƒ¼ãƒˆã‚’æŒ‡å®šã—ã¦åœ°å½¢ã‚’èª­ã¿è¾¼ã‚“ã ã‚‰è¡¨ç¤º
+        if (OnDataLoad)
         {
-            //‹ó”’
+            //ç©ºç™½
             EditorGUILayout.Space(20);
-            //‚±‚ê‚ğæ“¾
+            //ã“ã‚Œã‚’å–å¾—
             var so = new SerializedObject(this);
-            //“Ç‚İæ‚Á‚½ƒf[ƒ^‚ğŠm”F‚Ì‚½‚ß•\¦
-            EditorGUILayout.IntField("–Ú•WƒNƒŠƒA”",clearnum);
-            EditorGUILayout.Vector3Field("ƒS[ƒ‹’n“_",goalpos);
-            EditorGUILayout.Vector3Field("‘S‘ÌƒJƒƒ‰À•W",stage_vcampos);
+            //èª­ã¿å–ã£ãŸãƒ‡ãƒ¼ã‚¿ã‚’ç¢ºèªã®ãŸã‚è¡¨ç¤º
+            EditorGUILayout.IntField("ç›®æ¨™ã‚¯ãƒªã‚¢æ•°", clearnum);
+            EditorGUILayout.Vector3Field("ã‚´ãƒ¼ãƒ«åœ°ç‚¹", goalpos);
+            EditorGUILayout.FloatField("ãƒ‡ãƒƒãƒ‰ãƒ©ã‚¤ãƒ³ï¼ˆæœ€çµ‚ãƒ–ãƒ­ãƒƒã‚¯ã®-10åœ°ç‚¹ï¼‰", deadline);
+            EditorGUILayout.Vector3Field("å…¨ä½“ã‚«ãƒ¡ãƒ©åº§æ¨™", stage_vcampos);
             EditorGUILayout.PropertyField(so.FindProperty("floorpos"), true);
             EditorGUILayout.PropertyField(so.FindProperty("fallpos"), true);
             EditorGUILayout.PropertyField(so.FindProperty("Trampolinepos"), true);
             EditorGUILayout.PropertyField(so.FindProperty("Downpos"), true);
-            //ƒXƒe[ƒWî•ñ‚Ì•Û‘¶ƒ{ƒ^ƒ“
-            if (GUILayout.Button("ƒXƒe[ƒWî•ñ‚Ì•Û‘¶"))
+            //ã‚¹ãƒ†ãƒ¼ã‚¸æƒ…å ±ã®ä¿å­˜ãƒœã‚¿ãƒ³
+            if (GUILayout.Button("ã‚¹ãƒ†ãƒ¼ã‚¸æƒ…å ±ã®ä¿å­˜"))
             {
-                //“Ç‚İæ‚Á‚½ƒf[ƒ^‚ğ‚Ü‚Æ‚ß‚ÄScriptableObject‚É‚·‚éi–¼‘O‚ÍExcel‚ÌƒV[ƒg–¼‚Åj
+                //èª­ã¿å–ã£ãŸãƒ‡ãƒ¼ã‚¿ã‚’ã¾ã¨ã‚ã¦ScriptableObjectã«ã™ã‚‹ï¼ˆåå‰ã¯Excelã®ã‚·ãƒ¼ãƒˆåã§ï¼‰
                 Debug.Log(excelImpoter.sheetNameList[excelImpoter.selectsheet]);
                 OnSaveObj(excelImpoter.sheetNameList[excelImpoter.selectsheet]);
             }
         }
-
     }
 
-    //ƒf[ƒ^‚ğó‚¯æ‚Á‚ÄExcel‚ÌƒV[ƒg–¼‚ğ‘S‚ÄList‚ÉŠi”[‚·‚é
+    //ãƒ‡ãƒ¼ã‚¿ã‚’å—ã‘å–ã£ã¦Excelã®ã‚·ãƒ¼ãƒˆåã‚’å…¨ã¦Listã«æ ¼ç´ã™ã‚‹
     void OnLoadSheet(ExcelImporter excel)
     {
-        //‰Ÿ‚µ‚½‚Æ‚«‚Ì•À‚Ñ‡‚É•ÏX‚µ‚½‚¢‚½‚ßA‰Šú‰»‚·‚é
+        //æŠ¼ã—ãŸã¨ãã®ä¸¦ã³é †ã«å¤‰æ›´ã—ãŸã„ãŸã‚ã€åˆæœŸåŒ–ã™ã‚‹
         excel.sheetNameList.Clear();
-        //w’è‚³‚ê‚½ƒpƒX‚É‚ ‚éExcel‚ğæ“¾
+        //æŒ‡å®šã•ã‚ŒãŸãƒ‘ã‚¹ã«ã‚ã‚‹Excelã‚’å–å¾—
         IWorkbook book = WorkbookFactory.Create(@excel.path);
-        //for•¶‚Å‰ñ‚Á‚ÄƒV[ƒg–¼‚ğ‘S‚ÄList‚ÉŠi”[
+        //foræ–‡ã§å›ã£ã¦ã‚·ãƒ¼ãƒˆåã‚’å…¨ã¦Listã«æ ¼ç´
         for (int i = 0; i < book.NumberOfSheets; i++)
         {
             excel.sheetNameList.Add(book.GetSheetAt(i).SheetName);
         }
     }
 
-    //ƒf[ƒ^‚ğ‚à‚ç‚Á‚Ä‘I‘ğ‚³‚ê‚½ƒV[ƒg‚É‚ ‚é’nŒ`ƒf[ƒ^‚ğÀ•W‚È‚Ç‚É•ÏŠ·‚µ‚ÄŠi”[‚µ‚Ä‚¨‚­
+    //ãƒ‡ãƒ¼ã‚¿ã‚’ã‚‚ã‚‰ã£ã¦é¸æŠã•ã‚ŒãŸã‚·ãƒ¼ãƒˆã«ã‚ã‚‹åœ°å½¢ãƒ‡ãƒ¼ã‚¿ã‚’åº§æ¨™ãªã©ã«å¤‰æ›ã—ã¦æ ¼ç´ã—ã¦ãŠã
     void OnLoadData(ExcelImporter excel)
     {
-        //w’è‚³‚ê‚½ƒpƒX‚É‚ ‚éExcel‚ğæ“¾
+        //æŒ‡å®šã•ã‚ŒãŸãƒ‘ã‚¹ã«ã‚ã‚‹Excelã‚’å–å¾—
         IWorkbook book = WorkbookFactory.Create(@excel.path);
-        //w’è‚³‚ê‚½ƒV[ƒg‚ğæ“¾
-        ISheet sheet=book.GetSheetAt(excel.selectsheet);
-        //sheet.GetRow(s”Ô†-1).GetCell(—ñ”Ô†-1);
-        //ŠeƒV[ƒg‚Ì¶ã‚É‚ ‚éE‚ÌˆÊ’uî•ñ‚ğæ“¾
-        //B1‚É‚ ‚é‰¡•ûŒü‚ÌI‚í‚èˆÊ’u‚ğæ“¾
-        int x_end= (int)sheet.GetRow(0).GetCell(1).NumericCellValue-1;
-        //A2‚É‚ ‚éc•ûŒü‚ÌI‚í‚èˆÊ’u‚ğæ“¾
-        int y_end= (int)sheet.GetRow(1).GetCell(0).NumericCellValue-1;
-        float y_start = 0;
-        Debug.Log(x_end+","+y_end);
-        
-        //c‚ÌI‚í‚èˆÊ’u‚Ì‚·‚®‰º‚É‚ ‚é–Ú•W”‚ğæ“¾
-        clearnum= (int)sheet.GetRow(y_end+1).GetCell(2).NumericCellValue;
-        //ƒXƒ^[ƒg’n“_‚Ìˆê‚Â‰º‚ğ(0,0,0)‚É‚·‚é‚½‚ß‚ÉƒXƒ^[ƒgˆÊ’u‚ğæ“¾
-        Vector2 startpoint=new Vector2((int)sheet.GetRow(y_end + 2).GetCell(3).NumericCellValue, (int)sheet.GetRow(y_end + 2).GetCell(2).NumericCellValue);
-        //fallƒIƒuƒWƒFƒNƒg‚ğ’Ê‚è”²‚¯‚Ä‚µ‚Ü‚Á‚½—p‚ÌÀ•Wiˆê”Ô‰º‚Ì+3‚ÌˆÊ’uj
-        deadline = -1*Mathf.Abs((y_end * 1.5f)-startpoint.y + 3);
-        //ƒS[ƒ‹ˆÊ’u‚ğæ“¾iƒS[ƒ‹‚¾‚¯‚Í‚¿‚å‚Á‚ÆˆÊ’u‚ª‚¸‚ê‚é‚Ì‚Å2’iŠK‚É•ª‚¯‚Ä•ÏŠ·‚µ‚ÄŠi”[j
+        //æŒ‡å®šã•ã‚ŒãŸã‚·ãƒ¼ãƒˆã‚’å–å¾—
+        ISheet sheet = book.GetSheetAt(excel.selectsheet);
+        //sheet.GetRow(è¡Œç•ªå·-1).GetCell(åˆ—ç•ªå·-1);
+        //å„ã‚·ãƒ¼ãƒˆã®å·¦ä¸Šã«ã‚ã‚‹Eã®ä½ç½®æƒ…å ±ã‚’å–å¾—
+        //B1ã«ã‚ã‚‹æ¨ªæ–¹å‘ã®èª­ã¿å–ã‚Šçµ‚ã‚ã‚Šä½ç½®ã‚’å–å¾—
+        int x_end = (int)sheet.GetRow(0).GetCell(1).NumericCellValue - 1;
+        //A2ã«ã‚ã‚‹ç¸¦æ–¹å‘ã®èª­ã¿å–ã‚Šçµ‚ã‚ã‚Šä½ç½®ã‚’å–å¾—
+        int y_end = (int)sheet.GetRow(1).GetCell(0).NumericCellValue - 1;
+        Debug.Log(x_end + "," + y_end);
+
+        //ç¸¦ã®çµ‚ã‚ã‚Šä½ç½®ã®ã™ãä¸‹ã«ã‚ã‚‹ç›®æ¨™æ•°ã‚’å–å¾—
+        clearnum = (int)sheet.GetRow(y_end + 1).GetCell(2).NumericCellValue;
+        //ã‚¹ã‚¿ãƒ¼ãƒˆåœ°ç‚¹ã®ä¸€ã¤ä¸‹ã‚’(0,0,0)ã«ã™ã‚‹ãŸã‚ã«ã‚¹ã‚¿ãƒ¼ãƒˆä½ç½®ã‚’å–å¾—
+        Vector2 startpoint = new Vector2((int)sheet.GetRow(y_end + 2).GetCell(3).NumericCellValue, (int)sheet.GetRow(y_end + 2).GetCell(2).NumericCellValue);
+        //fallã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã‚’é€šã‚ŠæŠœã‘ã¦ã—ã¾ã£ãŸæ™‚ç”¨ã®åº§æ¨™ï¼ˆä¸€ç•ªä¸‹ã®+3ã®ä½ç½®ï¼‰
+        deadline = -1 * Mathf.Abs((y_end * 1.5f) - startpoint.y + 3);
+        //ã‚´ãƒ¼ãƒ«ä½ç½®ã‚’å–å¾—ï¼ˆã‚´ãƒ¼ãƒ«ã ã‘ã¯ã¡ã‚‡ã£ã¨ä½ç½®ãŒãšã‚Œã‚‹ã®ã§2æ®µéšã«åˆ†ã‘ã¦å¤‰æ›ã—ã¦æ ¼ç´ï¼‰
         goalpos = new Vector3(0, (int)sheet.GetRow(y_end + 3).GetCell(2).NumericCellValue, (int)sheet.GetRow(y_end + 3).GetCell(3).NumericCellValue);
-        goalpos = new Vector3(0,((startpoint.y-goalpos.y+1)*1.5f)-0.75f, (goalpos.z- startpoint.x) * 1.5f);
+        goalpos = new Vector3(0, ((startpoint.y - goalpos.y + 1) * 1.5f) - 0.75f, (goalpos.z - startpoint.x) * 1.5f);
         Debug.Log(startpoint);
-        
-        //2“x‰Ÿ‚µ‚½ê‡—p‚Éˆê‰List‚ğ‰Šú‰»‚µ‚Ä‚¨‚­
+
+        //2åº¦æŠ¼ã—ãŸå ´åˆç”¨ã«ä¸€å¿œListã‚’åˆæœŸåŒ–ã—ã¦ãŠã
         floorpos.Clear();
         fallpos.Clear();
         Trampolinepos.Clear();
         Downpos.Clear();
 
-        //‚±‚±‚©‚ç’nŒ`ƒf[ƒ^‚ğ“Ç‚İæ‚è
-        //¶ã‚©‚ç‰¡•ûŒü‚É‡”Ô‚É“Ç‚İæ‚Á‚Ä‚¢‚­
-        for (int i = 0;i<y_end;i++)
+        //ã“ã“ã‹ã‚‰åœ°å½¢ãƒ‡ãƒ¼ã‚¿ã‚’èª­ã¿å–ã‚Š
+        //å·¦ä¸Šã‹ã‚‰æ¨ªæ–¹å‘ã«é †ç•ªã«èª­ã¿å–ã£ã¦ã„ã
+        for (int i = 0; i < y_end; i++)
         {
-            for(int j = 0; j < x_end; j++)
+            for (int j = 0; j < x_end; j++)
             {
-                //ˆês‰½‚à‚È‚¢‚ÆƒGƒ‰[‚É‚È‚é‚Ì‚Åis‚É‰½‚©‚ ‚é&&‚»‚Ìis‚Æj—ñ‚ÌƒZƒ‹‚É‰½‚©‚ ‚é
-                if(sheet.GetRow(i)!=null&& sheet.GetRow(i).GetCell(j) != null)
+                //ä¸€è¡Œä½•ã‚‚ãªã„ã¨ã‚¨ãƒ©ãƒ¼ã«ãªã‚‹ã®ã§iè¡Œã«ä½•ã‹ã‚ã‚‹&&ãã®iè¡Œã¨jåˆ—ã®ã‚»ãƒ«ã«ä½•ã‹ã‚ã‚‹
+                if (sheet.GetRow(i) != null && sheet.GetRow(i).GetCell(j) != null)
                 {
-                    //‚»‚ÌƒZƒ‹‚Ìƒ^ƒCƒv‚Í•¶š—ñH
+                    //ãã®ã‚»ãƒ«ã®ã‚¿ã‚¤ãƒ—ã¯æ–‡å­—åˆ—ï¼Ÿ
                     if (sheet.GetRow(i).GetCell(j).CellType == CellType.String)
                     {
-                        //‚»‚Ì•¶š‚ªTi•’Ê‚Ì°j‚Ìê‡
-                        if (sheet.GetRow(i).GetCell(j).StringCellValue.Equals("T"))
+                        switch (sheet.GetRow(i).GetCell(j).StringCellValue)
                         {
-                            //°List‚ÉÀ•W‚ğŒvZ‚µ‚ÄŠi”[
-                            floorpos.Add(new Vector3(0, (startpoint.y - i) * 1.5f, (j - startpoint.x + 1) * 1.5f));
-                            if ((startpoint.y - i) * 1.5f > y_start) y_start = (startpoint.y - i) * 1.5f;
-                        }
-                        //‚»‚Ì•¶š‚ªFi“Ş—j
-                        else if (sheet.GetRow(i).GetCell(j).StringCellValue.Equals("F"))
-                        {
-                            //“Ş—List‚ÉÀ•W‚ğŒvZ‚µ‚ÄŠi”[
-                            fallpos.Add(new Vector3(0, (startpoint.y - i) * 1.5f, (j-startpoint.x+1) * 1.5f));
-                        }
-                        else if (sheet.GetRow(i).GetCell(j).StringCellValue.Equals("TT"))
-                        {
-                            //List‚ÉÀ•W‚ğŒvZ‚µ‚ÄŠi”[
-                            Trampolinepos.Add(new Vector3(0, (startpoint.y - i) * 1.5f, (j - startpoint.x + 1) * 1.5f));
-                        }
-                        else if (sheet.GetRow(i).GetCell(j).StringCellValue.Equals("TD"))
-                        {
-                            //List‚ÉÀ•W‚ğŒvZ‚µ‚ÄŠi”[
-                            Downpos.Add(new Vector3(0, (startpoint.y - i) * 1.5f, (j - startpoint.x + 1) * 1.5f));
+                            case "T"://ãã®æ–‡å­—ãŒTï¼ˆæ™®é€šã®åºŠï¼‰ã®å ´åˆ
+                                //åºŠListã«åº§æ¨™ã‚’è¨ˆç®—ã—ã¦æ ¼ç´
+                                floorpos.Add(new Vector3(0, (startpoint.y - i) * 1.5f, (j - startpoint.x + 1) * 1.5f));
+                                break;
+                            case "F"://ãã®æ–‡å­—ãŒFï¼ˆå¥ˆè½ï¼‰
+                                //å¥ˆè½Listã«åº§æ¨™ã‚’è¨ˆç®—ã—ã¦æ ¼ç´
+                                fallpos.Add(new Vector3(0, (startpoint.y - i) * 1.5f, (j - startpoint.x + 1) * 1.5f));
+                                break;
+                            case "TT"://åœ°å½¢ãƒˆãƒ©ãƒ³ãƒãƒªãƒ³ãƒ–ãƒ­ãƒƒã‚¯
+                                //Listã«åº§æ¨™ã‚’è¨ˆç®—ã—ã¦æ ¼ç´
+                                Trampolinepos.Add(new Vector3(0, (startpoint.y - i) * 1.5f, (j - startpoint.x + 1) * 1.5f));
+                                break;
+                            case "TD"://åœ°å½¢ä¸‹ãŒã‚‹
+                                //Listã«åº§æ¨™ã‚’è¨ˆç®—ã—ã¦æ ¼ç´
+                                Downpos.Add(new Vector3(0, (startpoint.y - i) * 1.5f, (j - startpoint.x + 1) * 1.5f));
+                                break;
                         }
 
-                        Debug.Log(sheet.GetRow(i).GetCell(j).Address + "     " + sheet.GetRow(i).GetCell(j).StringCellValue+ new Vector3(0, (startpoint.y - i) * 1.5f, (j - startpoint.x+1) * 1.5f));
+                        Debug.Log(sheet.GetRow(i).GetCell(j).Address + "     " + sheet.GetRow(i).GetCell(j).StringCellValue + new Vector3(0, (startpoint.y - i) * 1.5f, (j - startpoint.x + 1) * 1.5f));
                     }
                 }
             }
         }
 
-        //‘S‘ÌƒJƒƒ‰‚ÌˆÊ’uŒvZ
-        //‘S‘Ì‚ğˆÚ‚·‚É‚Íi‰œs‚«,c•ûŒü‚ÌˆÊ’u,‰¡•ûŒü‚ÌˆÊ’uj‚ğŒvZ‚·‚é
-        //‚»‚Ì‚É‘½•ª’¼ŠpOŠpŒ`‚Ì1:1:ã2‚İ‚½‚¢‚È‚â‚Â‚É‚È‚ê‚Î‰œs‚«‚ÌˆÊ’u‚ğŒvZ‚Å‚«‚é‚Æv‚Á‚½
-        //ˆê‰‰¡•ûŒü‚Ì1‚Æc•ûŒü‚Ì1‚ğŒvZ‚µ‚Ä‘å‚«‚©‚Á‚½•û‚ğ‰œs‚«‚ÌˆÊ’u‚Æ‚µ‚ÄÌ—p‚·‚é
-        float x = Mathf.Abs(x_end / 2)*1.5f *1.414f;
-        float y= Mathf.Abs(y_end / 2)* 1.5f *1.414f;
-        //‰¡’·ƒXƒe[ƒW‚È‚çã‚Ì–½—ßAc’·ƒXƒe[ƒW‚È‚ç‰º‚Ì–½—ß
-        if(x>=y)stage_vcampos = new Vector3(x, (startpoint.y-(y_end/2))*1.5f, ((x_end/2)-startpoint.x)*1.5f);
+        //å…¨ä½“ã‚«ãƒ¡ãƒ©ã®ä½ç½®è¨ˆç®—
+        //å…¨ä½“ã‚’ç§»ã™ã«ã¯ï¼ˆå¥¥è¡Œã,ç¸¦æ–¹å‘ã®ä½ç½®,æ¨ªæ–¹å‘ã®ä½ç½®ï¼‰ã‚’è¨ˆç®—ã™ã‚‹
+        //ãã®æ™‚ã«å¤šåˆ†ç›´è§’ä¸‰è§’å½¢ã®1:1:âˆš2ã¿ãŸã„ãªã‚„ã¤ã«ãªã‚Œã°å¥¥è¡Œãã®ä½ç½®ã‚’è¨ˆç®—ã§ãã‚‹ã¨æ€ã£ãŸ
+        //ä¸€å¿œæ¨ªæ–¹å‘ã®âˆš2ã¨ç¸¦æ–¹å‘ã®âˆš2ã‚’è¨ˆç®—ã—ã¦å¤§ãã‹ã£ãŸæ–¹ã‚’å¥¥è¡Œãã®ä½ç½®ã¨ã—ã¦æ¡ç”¨ã™ã‚‹
+        float x = Mathf.Abs(x_end / 2) * 1.5f * 1.414f;
+        float y = Mathf.Abs(y_end / 2) * 1.5f * 1.414f;
+        //æ¨ªé•·ã‚¹ãƒ†ãƒ¼ã‚¸ãªã‚‰ä¸Šã®å‘½ä»¤ã€ç¸¦é•·ã‚¹ãƒ†ãƒ¼ã‚¸ãªã‚‰ä¸‹ã®å‘½ä»¤
+        if (x >= y) stage_vcampos = new Vector3(x, (startpoint.y - (y_end / 2)) * 1.5f, ((x_end / 2) - startpoint.x) * 1.5f);
         else stage_vcampos = new Vector3(y, (startpoint.y - (y_end / 2)) * 1.5f, ((x_end / 2) - startpoint.x) * 1.5f);
-        Debug.Log("ŒŸ“¢x"+x+ "    ŒŸ“¢y" + y);
+        Debug.Log("æ¤œè¨x" + x + "    æ¤œè¨y" + y);
     }
 
-    //ƒXƒe[ƒWî•ñ‚Ì•Û‘¶‚ğ‰Ÿ‚µ‚½‚ç“Ç‚İæ‚Á‚½ƒf[ƒ^‚ğƒV[ƒg‚Ì–¼‘O‚ÅScriptableObject‚É‚·‚é
+    //ã‚¹ãƒ†ãƒ¼ã‚¸æƒ…å ±ã®ä¿å­˜ã‚’æŠ¼ã—ãŸã‚‰èª­ã¿å–ã£ãŸãƒ‡ãƒ¼ã‚¿ã‚’ã‚·ãƒ¼ãƒˆã®åå‰ã§ScriptableObjectã«ã™ã‚‹
     void OnSaveObj(string name)
     {
-        //’nŒ`ƒf[ƒ^‚ÌŒ³‚ª“ü‚Á‚Ä‚¢‚éMapData_scrobj‚ÌƒCƒ“ƒXƒ^ƒ“ƒX‚ğì‚é
+        //åœ°å½¢ãƒ‡ãƒ¼ã‚¿ã®å…ƒãŒå…¥ã£ã¦ã„ã‚‹MapData_scrobjã®ã‚¤ãƒ³ã‚¹ã‚¿ãƒ³ã‚¹ã‚’ä½œã‚‹
         var obj = ScriptableObject.CreateInstance<MapData_scrobj>();
-        //•Û‚µ‚Ä‚¢‚½ƒf[ƒ^‚ğŠ„‚è“–‚Ä‚é
+        //ä¿æŒã—ã¦ã„ãŸãƒ‡ãƒ¼ã‚¿ã‚’å‰²ã‚Šå½“ã¦ã‚‹
         obj.clearnum = clearnum;
         obj.floorpos = floorpos.ToArray();
         obj.fallpos = fallpos.ToArray();
-        obj.Trampolinepos= Trampolinepos.ToArray();
+        obj.Trampolinepos = Trampolinepos.ToArray();
         obj.Downpos = Downpos.ToArray();
         obj.goalpos = goalpos;
         obj.stage_vcampos = stage_vcampos;
-        obj.deadline= deadline;
-        //ƒtƒHƒ‹ƒ_[‚ª‘¶İ‚µ‚È‚¢‚È‚çì‚é
-        if (!System.IO.Directory.Exists("Assets/StageData")) System.IO.Directory.CreateDirectory(Application.dataPath + "/StageData");
-        //ScriptableObject‚ğì¬
+        obj.deadline = deadline;
+        //ãƒ•ã‚©ãƒ«ãƒ€ãƒ¼ãŒå­˜åœ¨ã—ãªã„ãªã‚‰ä½œã‚‹
+        if (!Directory.Exists("Assets/StageData")) Directory.CreateDirectory(Application.dataPath + "/StageData");
+        //ScriptableObjectã‚’ä½œæˆ
         AssetDatabase.CreateAsset(obj, Path.Combine("Assets/StageData", name + ".asset"));
     }
 }

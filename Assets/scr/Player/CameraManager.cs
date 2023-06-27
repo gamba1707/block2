@@ -3,41 +3,41 @@ using System.Collections;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-//ƒJƒƒ‰‚È‚Ç‚Ì‹@”\‚ğŠÇ—
+//ã‚«ãƒ¡ãƒ©ãªã©ã®æ©Ÿèƒ½ã‚’ç®¡ç†
 public class CameraManager : MonoBehaviour
 {
-    //ƒJƒƒ‰ŠÖ˜A
-    [SerializeField] CinemachineBrain brain;//ƒJƒƒ‰ŠÇ—‚Ì’†•
-    [SerializeField] CinemachineVirtualCamera Player_vcam;//Player‚ğ’Ç‚Á‚Ä‚éƒJƒƒ‰
-    [SerializeField] CinemachineVirtualCamera stage_vcam;//ƒXƒe[ƒW‘S‘Ì‚ÌƒJƒƒ‰
-    [SerializeField] CinemachineVirtualCamera clear_vcam;//ƒS[ƒ‹‚ÌƒJƒƒ‰
-    [SerializeField] CinemachineVirtualCamera startmovie_vcam;//ƒXƒ^[ƒg‚Ì“®‚«—pƒJƒƒ‰
+    //ã‚«ãƒ¡ãƒ©é–¢é€£
+    [SerializeField] CinemachineBrain brain;//ã‚«ãƒ¡ãƒ©ç®¡ç†ã®ä¸­æ¢
+    [SerializeField] CinemachineVirtualCamera Player_vcam;//Playerã‚’è¿½ã£ã¦ã‚‹ã‚«ãƒ¡ãƒ©
+    [SerializeField] CinemachineVirtualCamera stage_vcam;//ã‚¹ãƒ†ãƒ¼ã‚¸å…¨ä½“ã®ã‚«ãƒ¡ãƒ©
+    [SerializeField] CinemachineVirtualCamera clear_vcam;//ã‚´ãƒ¼ãƒ«ã®ã‚«ãƒ¡ãƒ©
+    [SerializeField] CinemachineVirtualCamera startmovie_vcam;//ã‚¹ã‚¿ãƒ¼ãƒˆæ™‚ã®å‹•ãç”¨ã‚«ãƒ¡ãƒ©
 
-    [Header("ƒ[ƒh‰æ–Ê")]
+    [Header("ãƒ­ãƒ¼ãƒ‰ç”»é¢")]
     [SerializeField] private Loading_fade LoadUI;
 
     private void Start()
     {
-        //ƒXƒe[ƒW‚ğÅ‰‚É‰f‚µ‚Ä‚¢‚­‚ ‚ê‚ğ“®‚©‚·
+        //ã‚¹ãƒ†ãƒ¼ã‚¸ã‚’æœ€åˆã«æ˜ ã—ã¦ã„ãã‚ã‚Œã‚’å‹•ã‹ã™
         StartCoroutine(startmovie_move());
-        //‘S‘ÌƒJƒƒ‰‚ğƒIƒt‚É‚·‚é
+        //å…¨ä½“ã‚«ãƒ¡ãƒ©ã‚’ã‚ªãƒ•ã«ã™ã‚‹
         stage_vcam.enabled = false;
     }
 
-    //ƒXƒ^[ƒg‚Ì‰‰o
+    //ã‚¹ã‚¿ãƒ¼ãƒˆæ™‚ã®æ¼”å‡º
     IEnumerator startmovie_move()
     {
-        //‚¿‚å‚Á‚Æ‘Ò‚Â
+        //ã¡ã‚‡ã£ã¨å¾…ã¤
         yield return new WaitForSecondsRealtime(0.5f);
-        //‚Ü‚¾ƒtƒF[ƒh‚ªI‚í‚Á‚Ä‚È‚¯‚ê‚Î‘Ò‚Â
+        //ã¾ã ãƒ•ã‚§ãƒ¼ãƒ‰ãŒçµ‚ã‚ã£ã¦ãªã‘ã‚Œã°å¾…ã¤
         while (LoadUI.Fade_move) yield return null;
-        //ƒS[ƒ‹•t‹ß‚Éİ’u‚µ‚½ƒJƒƒ‰‚ğ”ñ•\¦‚É‚µ‚ÄA©“®‚ÅƒvƒŒƒCƒ„[‚ÌƒJƒƒ‰‚ÉˆÚ‚è•Ï‚í‚é
+        //ã‚´ãƒ¼ãƒ«ä»˜è¿‘ã«è¨­ç½®ã—ãŸã‚«ãƒ¡ãƒ©ã‚’éè¡¨ç¤ºã«ã—ã¦ã€è‡ªå‹•ã§ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ã®ã‚«ãƒ¡ãƒ©ã«ç§»ã‚Šå¤‰ã‚ã‚‹
         startmovie_vcam.enabled = false;
-        //ˆê’U‘Ò‚Â
+        //ä¸€æ—¦å¾…ã¤
         yield return null;
-        //ƒJƒƒ‰‚ÌˆÚ“®‚ªI‚í‚é‚Ü‚Å‘Ò‚Â
+        //ã‚«ãƒ¡ãƒ©ã®ç§»å‹•ãŒçµ‚ã‚ã‚‹ã¾ã§å¾…ã¤
         while (brain.ActiveBlend != null) yield return null;
-        //ƒXƒe[ƒW–¼‚ğÁ‚·iƒQ[ƒ€ƒXƒ^[ƒg‚àŒ“‚Ë‚éj
+        //ã‚¹ãƒ†ãƒ¼ã‚¸åã‚’æ¶ˆã™ï¼ˆã‚²ãƒ¼ãƒ ã‚¹ã‚¿ãƒ¼ãƒˆã‚‚å…¼ã­ã‚‹ï¼‰
         GameManager.I.SetStagename("");
     }
 
@@ -45,40 +45,40 @@ public class CameraManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        //ƒV[ƒ“–¼‚ªƒXƒe[ƒW
+        //ã‚·ãƒ¼ãƒ³åãŒã‚¹ãƒ†ãƒ¼ã‚¸
         if (SceneManager.GetActiveScene().name.Equals("Stage"))
         {
-            //ƒQ[ƒ€ƒvƒŒƒC’†
+            //ã‚²ãƒ¼ãƒ ãƒ—ãƒ¬ã‚¤ä¸­
             if (GameManager.I.gamestate("Play"))
             {
-                //‰EƒNƒŠƒbƒN‰Ÿ‚µ‚½‚ç
+                //å³ã‚¯ãƒªãƒƒã‚¯æŠ¼ã—ãŸã‚‰
                 if (Input.GetMouseButtonDown(1))
                 {
-                    //‘S‘ÌƒJƒƒ‰‚ğƒIƒ“‚É‚·‚é
+                    //å…¨ä½“ã‚«ãƒ¡ãƒ©ã‚’ã‚ªãƒ³ã«ã™ã‚‹
                     stage_vcam.enabled = true;
                 }
-                //‰EƒNƒŠƒbƒN‚ğ—£‚µ‚½‚ç
+                //å³ã‚¯ãƒªãƒƒã‚¯ã‚’é›¢ã—ãŸã‚‰
                 else if (Input.GetMouseButtonUp(1))
                 {
-                    //‘S‘ÌƒJƒƒ‰‚ğƒIƒt‚É‚·‚é
+                    //å…¨ä½“ã‚«ãƒ¡ãƒ©ã‚’ã‚ªãƒ•ã«ã™ã‚‹
                     stage_vcam.enabled = false;
                 }
             }
         }
     }
 
-    //‘S‘ÌƒJƒƒ‰‚ÌˆÊ’u‚ğİ’è
+    //å…¨ä½“ã‚«ãƒ¡ãƒ©ã®ä½ç½®ã‚’è¨­å®š
     public void SetStageCamera(Vector3 pos)
     {
         stage_vcam.transform.position = pos;
     }
 
-    //ƒNƒŠƒGƒCƒgƒ‚[ƒh‚ÌcˆÚ“®ƒ{ƒ^ƒ“
+    //ã‚¯ãƒªã‚¨ã‚¤ãƒˆãƒ¢ãƒ¼ãƒ‰ã®ç¸¦ç§»å‹•ãƒœã‚¿ãƒ³
     public void OnMoveCamera_Y(float move)
     {
         stage_vcam.transform.position += new Vector3(0, move, 0);
     }
-    //ƒNƒŠƒGƒCƒgƒ‚[ƒh‚Ì‰¡ˆÚ“®ƒ{ƒ^ƒ“
+    //ã‚¯ãƒªã‚¨ã‚¤ãƒˆãƒ¢ãƒ¼ãƒ‰ã®æ¨ªç§»å‹•ãƒœã‚¿ãƒ³
     public void OnMoveCamera_Z(float move)
     {
         stage_vcam.transform.position += new Vector3(0, 0, move);

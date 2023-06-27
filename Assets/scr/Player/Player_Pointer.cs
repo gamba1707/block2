@@ -1,63 +1,68 @@
 using System;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
+//ã‚¹ãƒˆãƒ¼ãƒªãƒ¼ãƒ¢ãƒ¼ãƒ‰é™å®šã®ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆç”Ÿæˆç®¡ç†
 public class Player_Pointer : MonoBehaviour
 {
+    //ã‚¢ã‚¤ãƒ†ãƒ ã‚’å®Ÿéš›ã«ç®¡ç†ã—ã¦ã„ã‚‹ãƒ—ãƒ¼ãƒ«ç®¡ç†
     [SerializeField] PoolManager poolm;
-    Vector3 clickpos = Vector3.zero;
-    float camera_length;
-    // Start is called before the first frame update
+    //ãƒ¡ã‚¤ãƒ³ã‚«ãƒ¡ãƒ©æ ¼ç´ç”¨
+    Camera maincamera;
+
     void Start()
     {
-        camera_length = Camera.main.transform.position.x;
+        //ãƒ¡ã‚¤ãƒ³ã‚«ãƒ¡ãƒ©ã‚’æ ¼ç´
+        maincamera = Camera.main;
     }
 
     // Update is called once per frame
     void Update()
     {
-        //¶ƒNƒŠƒbƒN‰Ÿ‚µ‚½uŠÔ‚©‚ÂUI‚ğ‰Ÿ‚µ‚½‚Æ‚«‚Å‚Í‚È‚¢‚Æ‚«
-        if (Input.GetMouseButtonDown(0)&&!EventSystem.current.IsPointerOverGameObject())
+        //å·¦ã‚¯ãƒªãƒƒã‚¯æŠ¼ã—ãŸç¬é–“ã‹ã¤UIã‚’æŠ¼ã—ãŸã¨ãã§ã¯ãªã„ã¨ã
+        if (Input.GetMouseButtonDown(0) && !EventSystem.current.IsPointerOverGameObject())
         {
-            Debug.Log("UI?:"+EventSystem.current.IsPointerOverGameObject());
+            Debug.Log("UI?:" + EventSystem.current.IsPointerOverGameObject());
+            //å…‰ç·šã‚’ãƒã‚¦ã‚¹ãƒã‚¤ãƒ³ã‚¿ãƒ¼ã®å…ˆã¸å‡ºã—ã¦
             Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
             RaycastHit hit;
-            Physics.Raycast(ray, out hit, Camera.main.transform.position.x+2.5f);
-            //‰½‚à‚È‚¢‚Æ‚±‚ë‚É¶¬‚·‚éê‡
-            //¶¬ˆÊ’u‚ªƒvƒŒƒCƒ„[‚ÌˆÊ’u‚Å‚Í‚È‚¢
-            Debug.Log(point());
-            if (!(GameManager.I.Playerpos == point()))
+            //å…‰ç·šã®é•·ã•ã¯å¥¥è¡Œã+2.5ç¨‹åº¦ã§
+            Physics.Raycast(ray, out hit, maincamera.transform.position.x + 2.5f);
+
+            //ãƒ—ãƒ¬ã‚¤ä¸­ã§ã€ç”Ÿæˆä½ç½®ãŒãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ã®ä½ç½®ã§ã¯ãªã„
+            if (GameManager.I.gamestate("Play") && !(GameManager.I.Playerpos == point()))
             {
-                //¶¬‚µ‚æ‚¤‚Æ‚µ‚Ä‚¢‚éêŠ‚É‰½‚à‚È‚¢iˆê‰°‚Å‚Í‚È‚¢‚©‚à”»’è‚·‚éj
-                if (hit.collider==null)
+                //ç”Ÿæˆã—ã‚ˆã†ã¨ã—ã¦ã„ã‚‹å ´æ‰€ã«ä½•ã‚‚ãªã„ï¼ˆä¸€å¿œåºŠã§ã¯ãªã„ã‹ã‚‚åˆ¤å®šã™ã‚‹ï¼‰
+                if (hit.collider == null)
                 {
-                    //Œ»İ‚ÌƒZƒŒƒNƒg‚³‚ê‚Ä‚¢‚éƒuƒƒbƒN‚ğ¶¬‚³‚¹‚é
+                    //ç¾åœ¨ã®ã‚»ãƒ¬ã‚¯ãƒˆã•ã‚Œã¦ã„ã‚‹ãƒ–ãƒ­ãƒƒã‚¯ã‚’ç”Ÿæˆã•ã›ã‚‹
                     switch (GameManager.I.Selectname)
                     {
-                        case "•’Ê‚ÌƒuƒƒbƒN":
-                            poolm.GetNomalObject(point());//poolManager‚ÉˆÊ’u‚ğ“n‚µ‚Ä¶¬‚³‚¹‚é
-                            GameManager.I.Add_Blocknum++;//GameManager‚É‰ÁZ‚·‚é
-                            Debug.Log("¶¬‚µ‚½‚æ");
+                        case "æ™®é€šã®ãƒ–ãƒ­ãƒƒã‚¯":
+                            poolm.GetNomalObject(point());//poolManagerã«ä½ç½®ã‚’æ¸¡ã—ã¦ç”Ÿæˆã•ã›ã‚‹
+                            if (!MapData.mapinstance.Last) GameManager.I.Add_Blocknum++;//GameManagerã«åŠ ç®—ã™ã‚‹
+                            Debug.Log("ç”Ÿæˆã—ãŸã‚ˆ");
                             break;
-                        case "”ò‚×‚éƒuƒƒbƒN":
-                            Debug.Log("¶¬‚µ‚½‚æ");
-                            poolm.GetTranpolineObject(point());//poolManager‚ÉˆÊ’u‚ğ“n‚µ‚Äƒgƒ‰ƒ“ƒ|ƒŠƒ“‚ğ¶¬‚³‚¹‚é
-                            GameManager.I.Add_Blocknum += 2;//GameManager‚É‰ÁZ‚·‚é
+                        case "é£›ã¹ã‚‹ãƒ–ãƒ­ãƒƒã‚¯":
+                            Debug.Log("ç”Ÿæˆã—ãŸã‚ˆ");
+                            poolm.GetTranpolineObject(point());//poolManagerã«ä½ç½®ã‚’æ¸¡ã—ã¦ãƒˆãƒ©ãƒ³ãƒãƒªãƒ³ã‚’ç”Ÿæˆã•ã›ã‚‹
+                            if (!MapData.mapinstance.Last) GameManager.I.Add_Blocknum += 2;//GameManagerã«åŠ ç®—ã™ã‚‹
                             break;
-                        case "‰º‚ª‚éƒuƒƒbƒN":
-                            Debug.Log("¶¬‚µ‚½‚æ");
-                            poolm.GetDownObject(point());//poolManager‚ÉˆÊ’u‚ğ“n‚µ‚Äƒgƒ‰ƒ“ƒ|ƒŠƒ“‚ğ¶¬‚³‚¹‚é
-                            GameManager.I.Add_Blocknum += 2;//GameManager‚É‰ÁZ‚·‚é
+                        case "ä¸‹ãŒã‚‹ãƒ–ãƒ­ãƒƒã‚¯":
+                            Debug.Log("ç”Ÿæˆã—ãŸã‚ˆ");
+                            poolm.GetDownObject(point());//poolManagerã«ä½ç½®ã‚’æ¸¡ã—ã¦ãƒˆãƒ©ãƒ³ãƒãƒªãƒ³ã‚’ç”Ÿæˆã•ã›ã‚‹
+                            if (!MapData.mapinstance.Last) GameManager.I.Add_Blocknum += 2;//GameManagerã«åŠ ç®—ã™ã‚‹
                             break;
                     }
                 }
                 else if (hit.collider.gameObject.layer == LayerMask.NameToLayer("addBlock"))
                 {
-                    if (GameManager.I.Selectname.Equals("‚¯‚µ‚²‚Ş"))
+                    //è‡ªåˆ†ã§è¿½åŠ ã—ãŸã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã®å ´åˆ
+                    //æ¶ˆã—ã‚´ãƒ ã‚’é¸æŠã—ã¦ã„ãŸã‚‰
+                    if (GameManager.I.Selectname.Equals("ã‘ã—ã”ã‚€"))
                     {
-                        Debug.Log("Á‚¹‚é‘ÎÛ:" + hit.collider.gameObject.name);
+                        //ãã®ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã‚’æ¶ˆã™
+                        Debug.Log("æ¶ˆã›ã‚‹å¯¾è±¡:" + hit.collider.gameObject.name);
                         poolm.EraserObject(hit.collider.gameObject);
                     }
                 }
@@ -65,20 +70,24 @@ public class Player_Pointer : MonoBehaviour
         }
     }
 
+    //ãƒã‚¤ãƒ³ã‚¿ãƒ¼ã®ä½ç½®ã‹ã‚‰ãƒ¯ãƒ¼ãƒ«ãƒ‰åº§æ¨™ã«å¤‰æ›ã™ã‚‹
     Vector3 point()
     {
-        // ƒ}ƒEƒX‚Ìƒ|ƒCƒ“ƒ^‚ª‚ ‚éƒXƒNƒŠ[ƒ“À•W‚ğæ“¾
+        // ãƒã‚¦ã‚¹ã®ãƒã‚¤ãƒ³ã‚¿ãŒã‚ã‚‹ã‚¹ã‚¯ãƒªãƒ¼ãƒ³åº§æ¨™ã‚’å–å¾—
         Vector3 screen_point = Input.mousePosition;
-        // z ‚É³‚µ‚¢ƒJƒƒ‰‚Ì‹——£i‚±‚ÌƒQ[ƒ€‚Å‚ÍXÀ•Wj‚ğ“ü‚ê‚È‚¢‚Æ³‚µ‚­•ÏŠ·‚Å‚«‚È‚¢
-        screen_point.z = Camera.main.transform.position.x;
-        // ƒXƒNƒŠ[ƒ“À•W‚ğƒ[ƒ‹ƒhÀ•W‚É•ÏŠ·
-        Vector3 world_position = Camera.main.ScreenToWorldPoint(screen_point);
-        //ƒ{ƒbƒNƒX‚Í1.5‚İ‚È‚Ì‚Å1.5‚Ì”{”‚ÌˆÊ’u‚É•ÏŠ·
+        // z ã«æ­£ã—ã„ã‚«ãƒ¡ãƒ©ã®è·é›¢ï¼ˆã“ã®ã‚²ãƒ¼ãƒ ã§ã¯Xåº§æ¨™ï¼‰ã‚’å…¥ã‚Œãªã„ã¨æ­£ã—ãå¤‰æ›ã§ããªã„
+        screen_point.z = maincamera.transform.position.x;
+        // ã‚¹ã‚¯ãƒªãƒ¼ãƒ³åº§æ¨™ã‚’ãƒ¯ãƒ¼ãƒ«ãƒ‰åº§æ¨™ã«å¤‰æ›
+        Vector3 world_position = maincamera.ScreenToWorldPoint(screen_point);
+        //ãƒœãƒƒã‚¯ã‚¹ã¯1.5åˆ»ã¿ãªã®ã§1.5ã®å€æ•°ã®ä½ç½®ã«å¤‰æ›
         float y = (float)Math.Round((world_position.y / 1.5f), 0, MidpointRounding.AwayFromZero) * 1.5f;
         float z = (float)Math.Round((world_position.z / 1.5f), 0, MidpointRounding.AwayFromZero) * 1.5f;
-        world_position.x = 0;
-        world_position.y = y;
-        world_position.z = z;
+
+        world_position.x = 0;//å¥¥è¡Œãã¯ãªã—
+        world_position.y = y;//é«˜ã•
+        world_position.z = z;//æ¨ªæ–¹å‘
+
+        //ä½ç½®ã‚’è¿”ã™
         return world_position;
     }
 

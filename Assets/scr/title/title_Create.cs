@@ -3,61 +3,61 @@ using System.IO;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-//ƒ^ƒCƒgƒ‹‰æ–Ê‚ÌƒNƒŠƒGƒCƒgƒ‚[ƒh‚ğŠÇ—‚·‚é
+//ã‚¿ã‚¤ãƒˆãƒ«ç”»é¢ã®ã‚¯ãƒªã‚¨ã‚¤ãƒˆãƒ¢ãƒ¼ãƒ‰ã‚’ç®¡ç†ã™ã‚‹
 public class title_Create : MonoBehaviour
 {
-    //ƒtƒFƒCƒh‰æ–Ê
+    //ãƒ•ã‚§ã‚¤ãƒ‰ç”»é¢
     [SerializeField] private Loading_fade LoadUI;
-    //ƒXƒNƒ[ƒ‹ƒrƒ…[‚ÌÀÛ‚É•¨‚ğ”z’u‚µ‚Ä‚¢‚­ƒIƒuƒWƒFƒNƒg
+    //ã‚¹ã‚¯ãƒ­ãƒ¼ãƒ«ãƒ“ãƒ¥ãƒ¼ã®å®Ÿéš›ã«ç‰©ã‚’é…ç½®ã—ã¦ã„ãã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆ
     [SerializeField] Transform Content;
-    //ƒ{ƒ^ƒ“‚ÌƒvƒŒƒnƒu
+    //ãƒœã‚¿ãƒ³ã®ãƒ—ãƒ¬ãƒãƒ–
     [SerializeField] GameObject CreateLoadButton;
-    //Jsonƒtƒ@ƒCƒ‹‚ÌƒpƒX‘S‚Ä
+    //Jsonãƒ•ã‚¡ã‚¤ãƒ«ã®ãƒ‘ã‚¹å…¨ã¦
     [SerializeField] string[] files;
 
 
     void Start()
     {
-        //ƒNƒŠƒGƒCƒgƒ‚[ƒh‚ÌƒtƒHƒ‹ƒ_[ˆÊ’u
+        //ã‚¯ãƒªã‚¨ã‚¤ãƒˆãƒ¢ãƒ¼ãƒ‰ã®ãƒ•ã‚©ãƒ«ãƒ€ãƒ¼ä½ç½®
         string path = Application.dataPath + "/StageData_Create";
-        //ƒtƒHƒ‹ƒ_[‚ª‘¶İ‚·‚é‚©
+        //ãƒ•ã‚©ãƒ«ãƒ€ãƒ¼ãŒå­˜åœ¨ã™ã‚‹ã‹
         if (Directory.Exists(path))
         {
-            Debug.Log(path + "ƒtƒHƒ‹ƒ_[‚ ‚è‚Ü‚µ‚½B");
-            //‚»‚ÌƒtƒHƒ‹ƒ_[“à‚É‚ ‚éJsonƒtƒ@ƒCƒ‹‚ÌƒpƒX‚ğ‘S‚ÄŠi”[‚·‚é
+            Debug.Log(path + "ãƒ•ã‚©ãƒ«ãƒ€ãƒ¼ã‚ã‚Šã¾ã—ãŸã€‚");
+            //ãã®ãƒ•ã‚©ãƒ«ãƒ€ãƒ¼å†…ã«ã‚ã‚‹Jsonãƒ•ã‚¡ã‚¤ãƒ«ã®ãƒ‘ã‚¹ã‚’å…¨ã¦æ ¼ç´ã™ã‚‹
             files = Directory.GetFiles(path, "*.json", SearchOption.AllDirectories);
-            //ƒtƒ@ƒCƒ‹‚ğ‚»‚ê‚¼‚ê“Ç‚Ş
+            //ãƒ•ã‚¡ã‚¤ãƒ«ã‚’ãã‚Œãã‚Œèª­ã‚€
             foreach (string file in files)
             {
                 Debug.Log(file);
-                //ƒvƒŒƒnƒu‚ğ”z’u‚·‚é
+                //ãƒ—ãƒ¬ãƒãƒ–ã‚’é…ç½®ã™ã‚‹
                 GameObject listButton = Instantiate(CreateLoadButton);
-                //‚»‚ÌƒIƒuƒWƒFƒNƒg‚ÌeˆÊ’u‚ğŒˆ‚ß‚é
+                //ãã®ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã®è¦ªä½ç½®ã‚’æ±ºã‚ã‚‹
                 listButton.transform.SetParent(Content);
-                //‚»‚ÌƒXƒNƒŠƒvƒg‚ÉƒpƒX‚ğŠ„‚è“–‚Ä‚Ä‚¢‚­
+                //ãã®ã‚¹ã‚¯ãƒªãƒ—ãƒˆã«ãƒ‘ã‚¹ã‚’å‰²ã‚Šå½“ã¦ã¦ã„ã
                 listButton.GetComponent<CreateStageButtons>().Path = file;
             }
         }
         else
         {
-            Debug.Log(path + "ƒtƒHƒ‹ƒ_[–³‚©‚Á‚½‚Ì‚Åì‚Á‚Ä‚¨‚«‚Ü‚µ‚½B");
-            //ƒtƒHƒ‹ƒ_[‚ª‚È‚©‚Á‚½‚çì‚é
+            Debug.Log(path + "ãƒ•ã‚©ãƒ«ãƒ€ãƒ¼ç„¡ã‹ã£ãŸã®ã§ä½œã£ã¦ãŠãã¾ã—ãŸã€‚");
+            //ãƒ•ã‚©ãƒ«ãƒ€ãƒ¼ãŒãªã‹ã£ãŸã‚‰ä½œã‚‹
             Directory.CreateDirectory(path);
         }
     }
 
-    //V‚µ‚­ì‚éƒ{ƒ^ƒ“‚ğ‰Ÿ‚µ‚½‚ç
+    //æ–°ã—ãä½œã‚‹ãƒœã‚¿ãƒ³ã‚’æŠ¼ã—ãŸã‚‰
     public void OnnewCreate()
     {
-        //ƒtƒF[ƒhƒAƒEƒg‚³‚¹‚é
+        //ãƒ•ã‚§ãƒ¼ãƒ‰ã‚¢ã‚¦ãƒˆã•ã›ã‚‹
         LoadUI.Fadeout();
-        //ƒTƒ“ƒvƒ‹‚Ìƒ}ƒbƒvƒf[ƒ^‚ğ“Ç‚İ‚Ş
+        //ã‚µãƒ³ãƒ—ãƒ«ã®ãƒãƒƒãƒ—ãƒ‡ãƒ¼ã‚¿ã‚’èª­ã¿è¾¼ã‚€
         MapData.mapinstance.setMapData_Create(null);
-        //MapEditerƒV[ƒ“‚Ö
+        //MapEditerã‚·ãƒ¼ãƒ³ã¸
         StartCoroutine(LoadStageScene("MapEditer"));
     }
 
-    //ƒV[ƒ“‚ğ“Ç‚İ‚Ş
+    //ã‚·ãƒ¼ãƒ³ã‚’èª­ã¿è¾¼ã‚€
     private IEnumerator LoadStageScene(string scenename)
     {
         var async = SceneManager.LoadSceneAsync(scenename);

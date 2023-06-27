@@ -1,30 +1,59 @@
 using UnityEngine;
 using TMPro;
 using UnityEngine.SceneManagement;
+using System.Collections;
 
-//ƒ^ƒCƒgƒ‹‰æ–Ê‚ÌƒZ[ƒu‰æ–Ê‚ğŠÇ—
+//ã‚¿ã‚¤ãƒˆãƒ«ç”»é¢ã®ã‚»ãƒ¼ãƒ–ç”»é¢ã‚’ç®¡ç†
 public class title_SaveData : MonoBehaviour
 {
-    //V‚µ‚¢ƒf[ƒ^‚Ìê‡‚Í‚·‚®‚ÉƒXƒe[ƒW‚Ö”ò‚Î‚·‚½‚ßA‚»‚ÌƒXƒe[ƒWƒf[ƒ^
+    //æ–°ã—ã„ãƒ‡ãƒ¼ã‚¿ã®å ´åˆã¯ã™ãã«ã‚¹ãƒ†ãƒ¼ã‚¸ã¸é£›ã°ã™ãŸã‚ã€ãã®ã‚¹ãƒ†ãƒ¼ã‚¸ãƒ‡ãƒ¼ã‚¿
+    [Header("æœ€åˆã®ã‚¹ãƒ†ãƒ¼ã‚¸ãƒ‡ãƒ¼ã‚¿")]
     [SerializeField] MapData_scrobj firststagedata;
-    //íœƒ‚[ƒh
-    [SerializeField] bool deleteMode;
-    //‘I‚ñ‚¾ƒZ[ƒuƒf[ƒ^
-    [SerializeField] int selectdata;
-    //íœ‚µ‚Ä‘åä•v‚©•·‚­ƒpƒlƒ‹
-    [SerializeField] GameObject confPanel;
-    //‚»‚ê‚¼‚ê‚Ìƒ{ƒ^ƒ“‚È‚Ç‚ÌƒeƒLƒXƒg
-    [SerializeField] TextMeshProUGUI header, SaveData1, SaveData2, SaveData3, deleteButton;
 
-    //•\¦‚³‚ê‚½‚ç
+    //å‰Šé™¤ãƒ¢ãƒ¼ãƒ‰
+    [Header("å‰Šé™¤ãƒ¢ãƒ¼ãƒ‰")]
+    [SerializeField] bool deleteMode;
+
+    //é¸ã‚“ã ã‚»ãƒ¼ãƒ–ãƒ‡ãƒ¼ã‚¿
+    [Header("é¸ã‚“ã ãƒ‡ãƒ¼ã‚¿å")]
+    [SerializeField] int selectdata;
+
+    //å‰Šé™¤ã—ã¦å¤§ä¸ˆå¤«ã‹èããƒ‘ãƒãƒ«
+    [Header("å‰Šé™¤ã—ã¦å¤§ä¸ˆå¤«ã‹èããƒ‘ãƒãƒ«")]
+    [SerializeField] GameObject confPanel;
+
+    //ãã‚Œãã‚Œã®ãƒœã‚¿ãƒ³ãªã©ã®ãƒ†ã‚­ã‚¹ãƒˆ
+    [Header("ä¸€ç•ªä¸Šã®ã‚¿ã‚¤ãƒˆãƒ«ãƒ†ã‚­ã‚¹ãƒˆ")]
+    [SerializeField] TextMeshProUGUI header;
+
+    [Header("ãã‚Œãã‚Œã®ãƒœã‚¿ãƒ³ãªã©ã®ãƒ†ã‚­ã‚¹ãƒˆ")]
+    [SerializeField] TextMeshProUGUI SaveData1;
+    [SerializeField] TextMeshProUGUI SaveData2;
+    [SerializeField] TextMeshProUGUI SaveData3;
+    [SerializeField] TextMeshProUGUI deleteButton;
+
+    [Header("ã‚¹ã‚¿ãƒƒãƒ•ã‚¯ãƒ¬ã‚¸ãƒƒãƒˆãƒœã‚¿ãƒ³")]
+    [SerializeField] GameObject CreditButton;
+    bool All_Crear;
+
+    //ãƒ•ã‚§ãƒ¼ãƒ‰ãƒ‘ãƒãƒ«
+    [Header("ãƒ•ã‚§ãƒ¼ãƒ‰ãƒ‘ãƒãƒ«")]
+    [SerializeField] private Loading_fade LoadUI;
+
+    //è¡¨ç¤ºã•ã‚ŒãŸã‚‰
     private void OnEnable()
     {
-        //‚»‚ê‚¼‚ê‚Ìƒ{ƒ^ƒ“‚Ì“à—e‚ğ‘‚«Š·‚¦‚é
+        //ãã‚Œãã‚Œã®ãƒœã‚¿ãƒ³ã®å†…å®¹ã‚’æ›¸ãæ›ãˆã‚‹
         settextdata(1);
         settextdata(2);
         settextdata(3);
+
+        //å…¨ã‚¯ãƒªã®å ´åˆã‚¹ã‚¿ãƒƒãƒ•ã‚¯ãƒ¬ã‚¸ãƒƒãƒˆã‚’è¦‹ã‚Œã‚‹ã‚ˆã†ã«
+        if (All_Crear) CreditButton.SetActive(true);
+        else CreditButton.SetActive(false);
     }
 
+    //ç•ªå·ã‚’å—ã‘å–ã‚‹ã¨ãã‚Œã«åˆã†textmeshproã‚’è¿”ã™
     TextMeshProUGUI num2textdata(int num)
     {
         switch (num)
@@ -36,149 +65,221 @@ public class title_SaveData : MonoBehaviour
             case 3:
                 return SaveData3;
             default:
-                Debug.LogError("”šŠ„‚è“–‚Ä‚ğŒ©’¼‚µ‚Ä‚İ‚Ä‚­‚¾‚³‚¢");
+                Debug.LogError("æ•°å­—å‰²ã‚Šå½“ã¦ã‚’è¦‹ç›´ã—ã¦ã¿ã¦ãã ã•ã„");
                 return null;
         }
     }
 
-    //”š‚ğ‚à‚ç‚Á‚Ä‚»‚ÌƒZ[ƒuƒf[ƒ^‚Ì“à—e‚É‘‚«Š·‚¦‚é
+    //æ•°å­—ã‚’ã‚‚ã‚‰ã£ã¦ãã®ã‚»ãƒ¼ãƒ–ãƒ‡ãƒ¼ã‚¿ã®å†…å®¹ã«æ›¸ãæ›ãˆã‚‹
     void settextdata(int num)
     {
         Debug.Log(Application.dataPath + "/SaveData" + num + ".json");
-        //”š‚Å‚Ç‚ê‚ğ•ÒW‚·‚é‚Ì‚©Š„‚è“–‚Ä‚é
+        //æ•°å­—ã§ã©ã‚Œã‚’ç·¨é›†ã™ã‚‹ã®ã‹å‰²ã‚Šå½“ã¦ã‚‹
         TextMeshProUGUI text = num2textdata(num);
-        //“à—e‚ğŒ©‚é‚½‚ß‚Éˆê’U“Ç‚İ‚Ş
+        //å†…å®¹ã‚’è¦‹ã‚‹ãŸã‚ã«ä¸€æ—¦èª­ã¿è¾¼ã‚€
         SaveManager.instance.LoadSaveData("SaveData" + num);
-        //WebGL‚Æ‚Å•ª‚¯‚é
+        //WebGLã¨ã§åˆ†ã‘ã‚‹
         if (Application.platform == RuntimePlatform.WebGLPlayer)
         {
-            //WebGL‚Ìˆ—
+            //WebGLã®å‡¦ç†
             if (PlayerPrefs.GetString("SaveData" + num, "").Equals(""))
             {
-                //ƒZ[ƒuƒf[ƒ^‚ª‚È‚³‚»‚¤‚Ìê‡AV‚µ‚¢ƒf[ƒ^‚Æ‚·‚é
-                text.text = "V‚µ‚¢ƒf[ƒ^";
+                //ã‚»ãƒ¼ãƒ–ãƒ‡ãƒ¼ã‚¿ãŒãªã•ãã†ã®å ´åˆã€æ–°ã—ã„ãƒ‡ãƒ¼ã‚¿ã¨ã™ã‚‹
+                text.text = "æ–°ã—ã„ãƒ‡ãƒ¼ã‚¿";
             }
             else
             {
-                //‚ ‚Á‚½‚ç“ú•t‚ÆƒNƒŠƒA”‚ğ•\¦‚³‚¹‚é
-                text.text = SaveManager.instance.getDateTime() + "\nƒNƒŠƒA”F" + SaveManager.instance.clearnum();
+                //å…¨ã‚¯ãƒªã®å ´åˆè‰²ã‚’å¤‰ãˆã‚‹
+                if (SaveManager.instance.clearnum() >= 27)
+                {
+                    All_Crear = true;
+                    //ã‚ã£ãŸã‚‰æ—¥ä»˜ã¨ã‚¯ãƒªã‚¢æ•°ã‚’è¡¨ç¤ºã•ã›ã‚‹
+                    text.color = new Color(0.7924528f, 0.7023308f, 0.0f);//é»„é‡‘è‰²
+                    text.text = "â˜…"+SaveManager.instance.getDateTime() + "\nã‚¯ãƒªã‚¢æ•°ï¼š" + SaveManager.instance.clearnum();
+                }
+                else
+                {
+                    text.color = Color.black;
+                    //ã‚ã£ãŸã‚‰æ—¥ä»˜ã¨ã‚¯ãƒªã‚¢æ•°ã‚’è¡¨ç¤ºã•ã›ã‚‹
+                    text.text = SaveManager.instance.getDateTime() + "\nã‚¯ãƒªã‚¢æ•°ï¼š" + SaveManager.instance.clearnum();
+                }
             }
         }
         else
         {
-            //WebGLˆÈŠO‚Ìˆ—
+            //WebGLä»¥å¤–ã®å‡¦ç†
             if (System.IO.File.Exists(Application.dataPath + "/SaveData" + num + ".json"))
             {
-                //“ú•t‚ªæ“¾‚Å‚«‚È‚¯‚ê‚Î‰ó‚ê‚Ä‚é‚Æ‚·‚é
-                //‚ ‚Á‚½‚ç“ú•t‚ÆƒNƒŠƒA”‚ğ•\¦‚³‚¹‚é
-                if (SaveManager.instance.getDateTime() == null) text.text = "<color=red>ƒtƒ@ƒCƒ‹”j‘¹";
+                //æ—¥ä»˜ãŒå–å¾—ã§ããªã‘ã‚Œã°å£Šã‚Œã¦ã‚‹ã¨ã™ã‚‹
+                //ã‚ã£ãŸã‚‰æ—¥ä»˜ã¨ã‚¯ãƒªã‚¢æ•°ã‚’è¡¨ç¤ºã•ã›ã‚‹
+                if (SaveManager.instance.getDateTime() == null) text.text = "<color=red>ãƒ•ã‚¡ã‚¤ãƒ«ç ´æ";
                 else
-                    text.text = SaveManager.instance.getDateTime() + "\nƒNƒŠƒA”F" + SaveManager.instance.clearnum();
+                {
+                    //å…¨ã‚¯ãƒªã®å ´åˆè‰²ã‚’å¤‰ãˆã‚‹
+                    if (SaveManager.instance.clearnum() >= 27)
+                    {
+                        All_Crear = true;
+                        //ã‚ã£ãŸã‚‰æ—¥ä»˜ã¨ã‚¯ãƒªã‚¢æ•°ã‚’è¡¨ç¤ºã•ã›ã‚‹
+                        text.color = new Color(0.7924528f, 0.7023308f, 0.0f);//é»„é‡‘è‰²
+                        text.text = "â˜…" + SaveManager.instance.getDateTime() + "\nã‚¯ãƒªã‚¢æ•°ï¼š" + SaveManager.instance.clearnum();
+                    }
+                    else
+                    {
+                        text.color = Color.black;
+                        //ã‚ã£ãŸã‚‰æ—¥ä»˜ã¨ã‚¯ãƒªã‚¢æ•°ã‚’è¡¨ç¤ºã•ã›ã‚‹
+                        text.text = SaveManager.instance.getDateTime() + "\nã‚¯ãƒªã‚¢æ•°ï¼š" + SaveManager.instance.clearnum();
+                    }
+                }
             }
             else
             {
-                //ƒtƒ@ƒCƒ‹‚ª‚È‚©‚Á‚½‚çV‚µ‚¢ƒf[ƒ^‚Æ‚·‚é
-                text.text = "V‚µ‚¢ƒf[ƒ^";
+                //ãƒ•ã‚¡ã‚¤ãƒ«ãŒãªã‹ã£ãŸã‚‰æ–°ã—ã„ãƒ‡ãƒ¼ã‚¿ã¨ã™ã‚‹
+                text.text = "æ–°ã—ã„ãƒ‡ãƒ¼ã‚¿";
             }
         }
     }
 
-    //‚»‚ê‚¼‚ê‚Ìƒ{ƒ^ƒ“‚É‚Â‚¢‚Ä‚¢‚Äƒf[ƒ^‚ğ“Ç‚ñ‚ÅƒZƒŒƒNƒg‚È‚Ç‚ÉˆÚ“®‚·‚é
+    //ãã‚Œãã‚Œã®ãƒœã‚¿ãƒ³ã«ã¤ã„ã¦ã„ã¦ãƒ‡ãƒ¼ã‚¿ã‚’èª­ã‚“ã§ã‚»ãƒ¬ã‚¯ãƒˆãªã©ã«ç§»å‹•ã™ã‚‹
     public void LoadSaveData(int datanum)
     {
-        //‚È‚ñ‚Ìƒf[ƒ^‚©‚ğ‹L˜^‚·‚é
+        //ãªã‚“ã®ãƒ‡ãƒ¼ã‚¿ã‹ã‚’è¨˜éŒ²ã™ã‚‹
         selectdata = datanum;
 
-        //‚à‚µíœƒ‚[ƒh‚¾‚Á‚½‚ç
+        //ã‚‚ã—å‰Šé™¤ãƒ¢ãƒ¼ãƒ‰ã ã£ãŸã‚‰
         if (deleteMode)
         {
-            //‚Ù‚ñ‚Æ‚É‚¢‚¢‚©q‚Ë‚éƒpƒlƒ‹‚ğo‚·
+            //ã»ã‚“ã¨ã«ã„ã„ã‹å°‹ã­ã‚‹ãƒ‘ãƒãƒ«ã‚’å‡ºã™
             confPanel.SetActive(true);
         }
         else
         {
-            //íœƒ‚[ƒh‚¶‚á‚È‚¢
-            //ƒtƒ@ƒCƒ‹‚ª‰ó‚ê‚Ä‚¢‚È‚¯‚ê‚Î“Ç‚İ‚Ş
-            if (!num2textdata(selectdata).text.Equals("<color=red>ƒtƒ@ƒCƒ‹”j‘¹"))
+            //å‰Šé™¤ãƒ¢ãƒ¼ãƒ‰ã˜ã‚ƒãªã„
+            //ãƒ•ã‚¡ã‚¤ãƒ«ãŒå£Šã‚Œã¦ã„ãªã‘ã‚Œã°èª­ã¿è¾¼ã‚€
+            if (!num2textdata(selectdata).text.Equals("<color=red>ãƒ•ã‚¡ã‚¤ãƒ«ç ´æ"))
             {
-                //ƒf[ƒ^‚ğ“Ç‚İ‚Ş
+                //ãƒ‡ãƒ¼ã‚¿ã‚’èª­ã¿è¾¼ã‚€
                 SaveManager.instance.LoadSaveData("SaveData" + selectdata);
-                //‚Ü‚½WebGL‚Æ•ª‚¯‚é
+                //ã¾ãŸWebGLã¨åˆ†ã‘ã‚‹
                 if (Application.platform == RuntimePlatform.WebGLPlayer)
                 {
-                    //ƒf[ƒ^‚ª‚È‚¢ê‡
+                    //ãƒ‡ãƒ¼ã‚¿ãŒãªã„å ´åˆ
                     if (PlayerPrefs.GetString("SaveData" + selectdata, "").Equals(""))
                     {
-                        //‚¢‚«‚È‚è‚Í‚¶‚ß‚ÌƒXƒe[ƒW‚ğ“Ç‚İ‚Ş
+                        //ã„ããªã‚Šã¯ã˜ã‚ã®ã‚¹ãƒ†ãƒ¼ã‚¸ã‚’èª­ã¿è¾¼ã‚€
                         MapData.mapinstance.setMapData(firststagedata);
-                        //”ò‚Î‚·
-                        SceneManager.LoadScene("Stage");
+                        //é£›ã°ã™
+                        StartCoroutine(LoadScene("Stage"));
                     }
                     else
                     {
-                        //ƒXƒe[ƒWƒZƒŒƒNƒg‚É”ò‚Î‚·
-                        SceneManager.LoadScene("Select");
+                        //ã‚¹ãƒ†ãƒ¼ã‚¸ã‚»ãƒ¬ã‚¯ãƒˆã«é£›ã°ã™
+                        StartCoroutine(LoadScene("Select"));
                     }
                 }
                 else
                 {
-                    //WebGL‚¶‚á‚È‚¢ˆ—
-                    //ƒZ[ƒuƒf[ƒ^‚ª‘¶İ‚·‚é
+                    //WebGLã˜ã‚ƒãªã„å‡¦ç†
+                    //ã‚»ãƒ¼ãƒ–ãƒ‡ãƒ¼ã‚¿ãŒå­˜åœ¨ã™ã‚‹
                     if (System.IO.File.Exists(Application.dataPath + "/SaveData" + selectdata + ".json"))
                     {
-                        //ƒXƒe[ƒWƒZƒŒƒNƒg‚É”ò‚Î‚·
-                        SceneManager.LoadScene("Select");
+                        //ã‚¹ãƒ†ãƒ¼ã‚¸ã‚»ãƒ¬ã‚¯ãƒˆã«é£›ã°ã™
+                        StartCoroutine(LoadScene("Select"));
                     }
                     else
                     {
-                        //ƒZ[ƒuƒf[ƒ^‚ª‘¶İ‚µ‚È‚¢
-                        //‚Í‚¶‚ß‚ÌƒXƒe[ƒW‚ğ“Ç‚İ‚Ş
+                        //ã‚»ãƒ¼ãƒ–ãƒ‡ãƒ¼ã‚¿ãŒå­˜åœ¨ã—ãªã„
+                        //ã¯ã˜ã‚ã®ã‚¹ãƒ†ãƒ¼ã‚¸ã‚’èª­ã¿è¾¼ã‚€
                         MapData.mapinstance.setMapData(firststagedata);
-                        //”ò‚Î‚·
-                        SceneManager.LoadScene("Stage");
+                        //é£›ã°ã™
+                        StartCoroutine(LoadScene("Stage"));
                     }
                 }
             }
         }
     }
 
-    //íœƒ{ƒ^ƒ“‚ğ‰Ÿ‚µ‚½‚çŒÄ‚Î‚ê‚é
+    //ã‚·ãƒ¼ãƒ³èª­ã¿è¾¼ã¿æ¼”å‡º
+    private IEnumerator LoadScene(string scenename)
+    {
+        LoadUI.Fadeout();
+        //æš—è»¢ã™ã‚‹ã¾ã§å¾…ã¤
+        while (LoadUI.Fade_move) yield return null;
+
+        //ã‚·ãƒ¼ãƒ³èª­ã¿è¾¼ã¿
+        var async = SceneManager.LoadSceneAsync(scenename);
+
+        while (!async.isDone)
+        {
+            Debug.Log(async.progress);
+            yield return null;
+        }
+    }
+
+    //å‰Šé™¤ãƒœã‚¿ãƒ³ã‚’æŠ¼ã—ãŸã‚‰å‘¼ã°ã‚Œã‚‹
     public void OnDeleteMode()
     {
-        //íœƒ‚[ƒhON‚Ìê‡
+        //å‰Šé™¤ãƒ¢ãƒ¼ãƒ‰ONã®å ´åˆ
         if (deleteMode)
         {
-            //íœƒ‚[ƒhƒIƒt‚É‚·‚é
+            //å‰Šé™¤ãƒ¢ãƒ¼ãƒ‰ã‚ªãƒ•ã«ã™ã‚‹
             deleteMode = false;
-            //ƒeƒLƒXƒg‚à•ÏX
-            header.text = "ƒZ[ƒuƒf[ƒ^";
-            deleteButton.text = "<color=red>íœ";
+            //ãƒ†ã‚­ã‚¹ãƒˆã‚‚å¤‰æ›´
+            header.text = "ã‚»ãƒ¼ãƒ–ãƒ‡ãƒ¼ã‚¿";
+            deleteButton.color = Color.red;
+            deleteButton.text = "å‰Šé™¤";
         }
         else
         {
-            //íœƒ‚[ƒh‚É‚·‚é
+            //å‰Šé™¤ãƒ¢ãƒ¼ãƒ‰ã«ã™ã‚‹
             deleteMode = true;
-            //ƒeƒLƒXƒg‚à•ÏX
-            header.text = "ƒZ[ƒuƒf[ƒ^@<color=red>íœƒ‚[ƒh";
-            deleteButton.text = "–ß‚é";
+            //ãƒ†ã‚­ã‚¹ãƒˆã‚‚å¤‰æ›´
+            header.text = "ã‚»ãƒ¼ãƒ–ãƒ‡ãƒ¼ã‚¿ã€€<color=red>å‰Šé™¤ãƒ¢ãƒ¼ãƒ‰";
+            deleteButton.color= Color.black;
+            deleteButton.text = "æˆ»ã‚‹";
         }
     }
 
-    //ƒf[ƒ^‚ğÁ‚·–½—ß‚ğo‚·
+    //ãƒ‡ãƒ¼ã‚¿ã‚’æ¶ˆã™å‘½ä»¤ã‚’å‡ºã™
     public void OnDeleteData()
     {
-        //‘I‚Î‚ê‚½ƒf[ƒ^‚ğÁ‚·
+        //é¸ã°ã‚ŒãŸãƒ‡ãƒ¼ã‚¿ã‚’æ¶ˆã™
         SaveManager.instance.OnDeleteSaveData("SaveData" + selectdata);
-        //Šm”Fƒpƒlƒ‹‚ğÁ‚·
+        //ç¢ºèªãƒ‘ãƒãƒ«ã‚’æ¶ˆã™
         confPanel.SetActive(false);
-        //ƒ{ƒ^ƒ“‚Ì“à—e‚ğ•\¦‚µ‚È‚¨‚·
+        //ãƒœã‚¿ãƒ³ã®å†…å®¹ã‚’è¡¨ç¤ºã—ãªãŠã™
         settextdata(selectdata);
     }
 
-    //Á‚·‰æ–Ê‚Å‚â‚ß‚é‚ğ‰Ÿ‚µ‚½‚Æ‚«‚ÉŒÄ‚Î‚ê‚é
+    //æ¶ˆã™ç”»é¢ã§ã‚„ã‚ã‚‹ã‚’æŠ¼ã—ãŸã¨ãã«å‘¼ã°ã‚Œã‚‹
     public void OnReturnDelete()
     {
-        //Šm”F‰æ–Ê‚ğ”ñ•\¦‚É‚·‚é
+        //ç¢ºèªç”»é¢ã‚’éè¡¨ç¤ºã«ã™ã‚‹
         confPanel.SetActive(false);
+    }
+
+    //ã‚¯ãƒªã‚¢å¾Œã«æŠ¼ã™ã¨ã‚‚ã†ä¸€åº¦è¦‹ã‚Œã‚‹
+    public void OnCredit()
+    {
+        StartCoroutine(Scene_move("Ending"));
+    }
+
+    //ã‚·ãƒ¼ãƒ³ç§»å‹•æ™‚ã«ãƒ•ã‚§ãƒ¼ãƒ‰ã‚‚ã—ã¤ã¤ã‚·ãƒ¼ãƒ³èª­ã¿è¾¼ã¿ã‚‚ã—ãŸã‹ã£ãŸ
+    IEnumerator Scene_move(string scenename)
+    {
+        //å‹•ãã‚’ã‚‚ã¨ã«æˆ»ã™
+        Time.timeScale = 1;
+        if (MapData.mapinstance.Last) yield return new WaitForSecondsRealtime(3f);
+        LoadUI.Fadeout();
+        //æš—è»¢ã™ã‚‹ã¾ã§å¾…ã¤
+        while (LoadUI.Fade_move) yield return null;
+
+        //ã‚·ãƒ¼ãƒ³èª­ã¿è¾¼ã¿
+        var async = SceneManager.LoadSceneAsync(scenename);
+
+        while (!async.isDone)
+        {
+            Debug.Log(async.progress);
+            yield return null;
+        }
     }
 }

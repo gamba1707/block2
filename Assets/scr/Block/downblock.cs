@@ -2,24 +2,24 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-//‰º‚ª‚éƒuƒƒbƒN
+//ä¸‹ãŒã‚‹ãƒ–ãƒ­ãƒƒã‚¯
 public class downblock : MonoBehaviour
 {
-    //’Êí‚Æ‰º‚ª‚Á‚Ä‚¢‚é‚Æ‚«‚Ìƒ}ƒeƒŠƒAƒ‹
+    //é€šå¸¸æ™‚ã¨ä¸‹ãŒã£ã¦ã„ã‚‹ã¨ãã®ãƒãƒ†ãƒªã‚¢ãƒ«
     [SerializeField] Material nomalmaterial,downmaterial;
-    //‰Šú’l—p
+    //åˆæœŸå€¤ç”¨
     Vector3 firstpos;
-    //ƒ}ƒeƒŠƒAƒ‹•Ï‚¦‚é—p
+    //ãƒãƒ†ãƒªã‚¢ãƒ«å¤‰ãˆã‚‹ç”¨
     MeshRenderer meshRenderer;
-    //‰º‚ª‚Á‚Ä‚¢‚é‚Æ‚«‚Ég—p
+    //ä¸‹ãŒã£ã¦ã„ã‚‹ã¨ãã«ä½¿ç”¨
     Rigidbody rb;
 
     // Start is called before the first frame update
     void Start()
     {
-        //‰Šú’l“o˜^
+        //åˆæœŸå€¤ç™»éŒ²
         firstpos = transform.position;
-        //ƒRƒ“ƒ|[ƒlƒ“ƒg‚ğæ“¾
+        //ã‚³ãƒ³ãƒãƒ¼ãƒãƒ³ãƒˆã‚’å–å¾—
         meshRenderer = GetComponent<MeshRenderer>();
         rb = GetComponent<Rigidbody>();
     }
@@ -27,48 +27,48 @@ public class downblock : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        //‘¬“x‚ªÅ‘å‚Å-1‚Å‰º‚ª‚è‘±‚¯‚é‚æ‚¤‚É‚·‚é
+        //é€Ÿåº¦ãŒæœ€å¤§ã§-1ã§ä¸‹ãŒã‚Šç¶šã‘ã‚‹ã‚ˆã†ã«ã™ã‚‹
         if(rb.velocity.y<-1f||rb.velocity.y>0)rb.velocity = new Vector3(0, -1f, 0);
     }
 
     private void OnTriggerEnter(Collider other)
     {
-        //ƒvƒŒƒCƒ„[‚ªG‚ê‚½‚ç
+        //ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ãŒè§¦ã‚ŒãŸã‚‰
         if (other.gameObject.name.Equals("Player"))
         {
-            //‰º‚ª‚Á‚Ä‚¢‚éF‚É‚·‚é
+            //ä¸‹ãŒã£ã¦ã„ã‚‹è‰²ã«ã™ã‚‹
             meshRenderer.material= downmaterial;
-            //2•bŒã‚É‰º‚ª‚èn‚ß‚é
+            //2ç§’å¾Œã«ä¸‹ãŒã‚Šå§‹ã‚ã‚‹
             Invoke("down_move",2f);
         }
     }
 
-    //“®‚«o‚·–½—ß
+    //å‹•ãå‡ºã™å‘½ä»¤
     void down_move()
     {
-        //RiditBody‚Ìd—Í‚ğg‚¤
+        //RiditBodyã®é‡åŠ›ã‚’ä½¿ã†
         rb.useGravity = true;
         
-        //Y‚¾‚¯‰ğœ‚µ‚Ä—‰º‚³‚¹‚é
+        //Yã ã‘è§£é™¤ã—ã¦è½ä¸‹ã•ã›ã‚‹
         rb.constraints = RigidbodyConstraints.FreezeRotation| RigidbodyConstraints.FreezePositionX | RigidbodyConstraints.FreezePositionZ;
-        //—‰º‘¬“x‚ğw’è
+        //è½ä¸‹é€Ÿåº¦ã‚’æŒ‡å®š
         rb.velocity = new Vector3(0, -1f, 0);
     }
 
-    //ƒJƒƒ‰‚©‚çŠO‚ê‚½‚çŒÄ‚Î‚ê‚é
+    //ã‚«ãƒ¡ãƒ©ã‹ã‚‰å¤–ã‚ŒãŸã‚‰å‘¼ã°ã‚Œã‚‹
     private void OnBecameInvisible()
     {
-        //ˆê’U‚±‚ÌƒIƒuƒWƒFƒNƒg‚ğÁ‚·
+        //ä¸€æ—¦ã“ã®ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã‚’æ¶ˆã™
         this.gameObject.SetActive(false);
-        //‰Šú’l‚É–ß‚·
+        //åˆæœŸå€¤ã«æˆ»ã™
         transform.position = firstpos;
-        //d—Í‚ğØ‚é
+        //é‡åŠ›ã‚’åˆ‡ã‚‹
         rb.useGravity = false;
-        //‘S•”ŒÅ’è‚·‚é
+        //å…¨éƒ¨å›ºå®šã™ã‚‹
         rb.constraints = RigidbodyConstraints.FreezeRotation | RigidbodyConstraints.FreezePosition;
-        //’Êí‚ÌF‚É–ß‚·
+        //é€šå¸¸ã®è‰²ã«æˆ»ã™
         meshRenderer.material= nomalmaterial;
-        //Š®—¹‚µ‚½‚Ì‚ÅƒIƒuƒWƒFƒNƒg‚ğ•\¦‚·‚é
+        //å®Œäº†ã—ãŸã®ã§ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã‚’è¡¨ç¤ºã™ã‚‹
         this.gameObject.SetActive(true);
     }
 }

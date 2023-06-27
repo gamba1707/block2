@@ -4,75 +4,81 @@ using TMPro;
 using System;
 using UnityEngine.SceneManagement;
 
-//ƒvƒŒƒnƒu‚Ìƒ{ƒ^ƒ“‚É‚»‚ê‚¼‚ê‚Â‚¯‚ç‚ê‚Ä‚¢‚é
+//ãƒ—ãƒ¬ãƒãƒ–ã®ãƒœã‚¿ãƒ³ã«ãã‚Œãã‚Œã¤ã‘ã‚‰ã‚Œã¦ã„ã‚‹
 public class CreateStageButtons : MonoBehaviour
 {
-    //ƒXƒe[ƒW–¼‚ğ“ü‚ê‚éƒeƒLƒXƒg
+    //ã‚¹ãƒ†ãƒ¼ã‚¸åã‚’å…¥ã‚Œã‚‹ãƒ†ã‚­ã‚¹ãƒˆ
     [SerializeField] TextMeshProUGUI titleText;
-    //“ú‚ğ“ü‚ê‚éƒeƒLƒXƒg
+    //æ—¥æ™‚ã‚’å…¥ã‚Œã‚‹ãƒ†ã‚­ã‚¹ãƒˆ
     [SerializeField] TextMeshProUGUI dateText;
-    //Š„‚è“–‚Ä‚ç‚ê‚½Json‚Ö‚ÌƒpƒX‚ğ“ü‚ê‚é—p
+    //å‰²ã‚Šå½“ã¦ã‚‰ã‚ŒãŸJsonã¸ã®ãƒ‘ã‚¹ã‚’å…¥ã‚Œã‚‹ç”¨
     [SerializeField] private string path;
-    //ƒtƒF[ƒh
+    //ãƒ•ã‚§ãƒ¼ãƒ‰
     [SerializeField] private Loading_fade LoadUI;
 
     // Start is called before the first frame update
     void Start()
     {
-        //ƒtƒF[ƒh‚ğ‚³‚ª‚µ‚Äæ“¾iˆ—“I‚É”÷–­j
+        //ãƒ•ã‚§ãƒ¼ãƒ‰ã‚’ã•ãŒã—ã¦å–å¾—ï¼ˆå‡¦ç†çš„ã«å¾®å¦™ï¼‰
         LoadUI = transform.root.Find("LoadPanel").GetComponent<Loading_fade>();
-        //‰ğ‘œ“x‚ğ•ÏX‚³‚ê‚é‚Æ‚È‚º‚©ˆÓ–¡•s–¾‚È”’l‚ÉƒXƒP[ƒ‹‚ğ•ÏX‚³‚ê‚é‚½‚ß
+        //è§£åƒåº¦ã‚’å¤‰æ›´ã•ã‚Œã‚‹ã¨ãªãœã‹æ„å‘³ä¸æ˜ãªæ•°å€¤ã«ã‚¹ã‚±ãƒ¼ãƒ«ã‚’å¤‰æ›´ã•ã‚Œã‚‹ãŸã‚
         transform.localScale = new Vector3(1, 1, 1);
     }
 
-    //•ÒW‚·‚é‚ğ‰Ÿ‚µ‚½
+    //ç·¨é›†ã™ã‚‹ã‚’æŠ¼ã—ãŸæ™‚
     public void OnEditCreateStage()
     {
-        //ƒtƒF[ƒhƒAƒEƒg‚³‚¹
+        //ãƒ•ã‚§ãƒ¼ãƒ‰ã‚¢ã‚¦ãƒˆã•ã›
         LoadUI.Fadeout();
-        //Jsonƒtƒ@ƒCƒ‹‚ÌƒpƒX‚ğ“n‚·
+        //Jsonãƒ•ã‚¡ã‚¤ãƒ«ã®ãƒ‘ã‚¹ã‚’æ¸¡ã™
         MapData.mapinstance.setMapData_Create(path);
-        //•ÒWƒ‚[ƒh‚ğƒIƒ“‚É‚·‚é
+        //ç·¨é›†ãƒ¢ãƒ¼ãƒ‰ã‚’ã‚ªãƒ³ã«ã™ã‚‹
         MapData.mapinstance.Createmode = true;
-        //ƒV[ƒ“‚ğ“Ç‚İ‚Ş
+        //ã‚·ãƒ¼ãƒ³ã‚’èª­ã¿è¾¼ã‚€
         StartCoroutine(LoadStageScene("MapEditer"));
     }
 
-    //—V‚Ôƒ{ƒ^ƒ“‚ğ‰Ÿ‚µ‚½‚Æ‚«‚ÉStageƒV[ƒ“‚Ö”ò‚Î‚·
+    //éŠã¶ãƒœã‚¿ãƒ³ã‚’æŠ¼ã—ãŸã¨ãã«Stageã‚·ãƒ¼ãƒ³ã¸é£›ã°ã™
     public void OnPlayCreateStage()
     {
-        //ƒtƒF[ƒhƒAƒEƒg‚³‚¹‚é
+        //ãƒ•ã‚§ãƒ¼ãƒ‰ã‚¢ã‚¦ãƒˆã•ã›ã‚‹
         LoadUI.Fadeout();
-        //Jsonƒtƒ@ƒCƒ‹‚ÌƒpƒX‚ğ“n‚·
+        //Jsonãƒ•ã‚¡ã‚¤ãƒ«ã®ãƒ‘ã‚¹ã‚’æ¸¡ã™
         MapData.mapinstance.setMapData_Create(path);
-        //•ÒWƒ‚[ƒh‚ğƒIƒ“‚É‚·‚é
+        //ç·¨é›†ãƒ¢ãƒ¼ãƒ‰ã‚’ã‚ªãƒ³ã«ã™ã‚‹
         MapData.mapinstance.Createmode = true;
-        //ƒV[ƒ“‚ğ“Ç‚İ‚Ş
+        //ã‚·ãƒ¼ãƒ³ã‚’èª­ã¿è¾¼ã‚€
         StartCoroutine(LoadStageScene("Stage"));
     }
 
-    //ƒV[ƒ“‚ğ“Ç‚İ‚Ş
+    //ã‚·ãƒ¼ãƒ³ã‚’èª­ã¿è¾¼ã‚€
     private IEnumerator LoadStageScene(string scenename)
     {
+        //æš—è»¢ã™ã‚‹ã¾ã§å¾…ã¤
+        while (LoadUI.Fade_move) yield return null;
+
+        //ã‚·ãƒ¼ãƒ³èª­ã¿è¾¼ã¿
         var async = SceneManager.LoadSceneAsync(scenename);
 
-        async.allowSceneActivation = false;
-        while (LoadUI.Fade_move) yield return null;
-        async.allowSceneActivation = true;
+        while (!async.isDone)
+        {
+            Debug.Log(async.progress);
+            yield return null;
+        }
     }
 
-    //ƒvƒƒpƒeƒB
+    //ãƒ—ãƒ­ãƒ‘ãƒ†ã‚£
     public string Path
     {
         get { return path; }
         set
         {
-            //ƒpƒX‚ğ“n‚³‚ê‚½‚çƒeƒLƒXƒg‚àİ’è‚µ‚Ä‚µ‚Ü‚¤
-            //ƒpƒXİ’è
+            //ãƒ‘ã‚¹ã‚’æ¸¡ã•ã‚ŒãŸã‚‰ãƒ†ã‚­ã‚¹ãƒˆã‚‚è¨­å®šã—ã¦ã—ã¾ã†
+            //ãƒ‘ã‚¹è¨­å®š
             path = value;
-            //ƒXƒe[ƒW–¼İ’è
+            //ã‚¹ãƒ†ãƒ¼ã‚¸åè¨­å®š
             titleText.text = System.IO.Path.GetFileNameWithoutExtension(path);
-            //ƒtƒ@ƒCƒ‹‚Ìì¬“ú‚ğæ“¾‚µ‚Äİ’è
+            //ãƒ•ã‚¡ã‚¤ãƒ«ã®ä½œæˆæ—¥ã‚’å–å¾—ã—ã¦è¨­å®š
             DateTime dt = System.IO.File.GetCreationTime(path);
             dateText.text = dt.ToString("D");
         }

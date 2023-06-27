@@ -2,16 +2,17 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-//ƒXƒe[ƒWƒZƒŒƒNƒg‰æ–Ê‚ÅƒuƒƒbƒN‚ğ‰ñ“]‚³‚¹‚é
+//ã‚¹ãƒ†ãƒ¼ã‚¸ã‚»ãƒ¬ã‚¯ãƒˆç”»é¢ã§ãƒ–ãƒ­ãƒƒã‚¯ã‚’å›è»¢ã•ã›ã‚‹
+//ã‘ã©å‰²ã¨ä½•ã§ã‚‚æ±ç”¨çš„ã«å›ã›ã‚‹
 public class blockrotate : MonoBehaviour
 {
-    //‰ñ“]”‚ğ”CˆÓ‚É’è‚ß‚ç‚ê‚é‚æ‚¤‚É
-    [Header("‰ñ“]”")]
+    //å›è»¢æ•°ã‚’ä»»æ„ã«å®šã‚ã‚‰ã‚Œã‚‹ã‚ˆã†ã«
+    [Header("å›è»¢æ•°")]
     [SerializeField]float x, y, z;
 
     void FixedUpdate()
     {
-        //‚à‚ç‚Á‚½”’l‚Å‰ñ“]‚³‚¹‚é
+        //ã‚‚ã‚‰ã£ãŸæ•°å€¤ã§å›è»¢ã•ã›ã‚‹
         transform.Rotate(x, y, z);
     }
 }

@@ -1,31 +1,38 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
+//ポーズ画面
 public class Pouse_UI : MonoBehaviour
 {
+    //クリエイトモード時にセレクトかタイトルかを切り替えるため
     [SerializeField] GameObject selectbutton, titlebutton;
 
     private void Start()
     {
-        if(MapData.mapinstance.Createmode) selectbutton.SetActive(false);
+        //クリエイトモードならセレクトへ戻るを消す
+        //ストーリーモードのならタイトルへ戻るを消す
+        if (MapData.mapinstance.Createmode) selectbutton.SetActive(false);
         else titlebutton.SetActive(false);
     }
-    //�Q�[���ɖ߂�
+
+    //ゲームに戻るボタン
     public void OnReturnGame()
     {
         GameManager.I.OnPouseback();
     }
-    //���Z�b�g����������ꂽ��Ă΂��
+
+    //リセットするを押されたら呼ばれる
     public void OnResetGame()
     {
         GameManager.I.OnGameReset();
     }
-    //�Z���N�g�ɖ߂���������ꍇ�ɌĂ΂��
+
+    //セレクトに戻るを押した場合に呼ばれる
     public void OnReturnSelect()
     {
         GameManager.I.OnStageSelect();
     }
+
+    //タイトルに戻るボタン
     public void OnTitleButton()
     {
         GameManager.I.OnTitleBack();

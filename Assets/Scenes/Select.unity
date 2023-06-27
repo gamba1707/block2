@@ -245,7 +245,6 @@ MonoBehaviour:
   LoadUI: {fileID: 1320501681}
   selectbutton_parent: {fileID: 1438795253}
   mapData: {fileID: 1341358661}
-  LoadingUI: {fileID: 554140876}
 --- !u!1 &207953260
 GameObject:
   m_ObjectHideFlags: 0
@@ -412,6 +411,7 @@ GameObject:
   - component: {fileID: 233264032}
   - component: {fileID: 233264034}
   - component: {fileID: 233264033}
+  - component: {fileID: 233264035}
   m_Layer: 5
   m_Name: Image
   m_TagString: Untagged
@@ -477,6 +477,21 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 233264031}
   m_CullTransparentMesh: 1
+--- !u!114 &233264035
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 233264031}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ed1895c95eaca7d49939d7f7ee8fbd86, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  x: 0
+  y: 0
+  z: -2.5
 --- !u!1 &554140876
 GameObject:
   m_ObjectHideFlags: 0
@@ -1097,7 +1112,7 @@ AudioSource:
   m_Enabled: 1
   serializedVersion: 4
   OutputAudioMixerGroup: {fileID: 0}
-  m_audioClip: {fileID: 8300000, guid: ab77f374c0f7e9049849f9a0f690ac72, type: 3}
+  m_audioClip: {fileID: 8300000, guid: 8ca9c08878cac7748a26a72cdb7a3e95, type: 3}
   m_PlayOnAwake: 1
   m_Volume: 0.25
   m_Pitch: 1
@@ -1510,6 +1525,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   fade_move: 0
+  loadingObj: {fileID: 554140876}
 --- !u!114 &1320501682
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1851,6 +1867,14 @@ MonoBehaviour:
   - {fileID: 11400000, guid: c1276d8f290bdaa499510231bccd129a, type: 2}
   - {fileID: 11400000, guid: 4ae95f9ea11ca0a418ed3730f5242a86, type: 2}
   - {fileID: 11400000, guid: 98e4c12b337db9d428e799d2240000f8, type: 2}
+  - {fileID: 11400000, guid: ab109287c740df047b31218f6581a274, type: 2}
+  - {fileID: 11400000, guid: 00f184aa8c5bc2643a11826b435c1d1e, type: 2}
+  - {fileID: 11400000, guid: ba96f68ebd3bf7043a13b7448404978f, type: 2}
+  - {fileID: 11400000, guid: 6b7bfd6355ab6fe499c2f12570f3d8dc, type: 2}
+  - {fileID: 11400000, guid: a74cb28dade5b604c8e0e323c2b4f87f, type: 2}
+  - {fileID: 11400000, guid: 60b6f96562577f84c87e4f2443d3ea07, type: 2}
+  - {fileID: 11400000, guid: eda33e34a78d59d41b54949ea50b3e3b, type: 2}
+  - {fileID: 11400000, guid: 37203e294277f0b46ab2268f5b36bd96, type: 2}
   EditMode: 0
   StageText: {fileID: 1112467834}
   ScoreText: {fileID: 1762144586}

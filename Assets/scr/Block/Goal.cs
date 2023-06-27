@@ -1,37 +1,41 @@
 using UnityEngine;
 
-//ƒS[ƒ‹‚Ì‚à‚â‚à‚â‚É‚Â‚¯‚éƒXƒNƒŠƒvƒg
+//ã‚´ãƒ¼ãƒ«ã®ã‚‚ã‚„ã‚‚ã‚„ã«ã¤ã‘ã‚‹ã‚¹ã‚¯ãƒªãƒ—ãƒˆ
 public class Goal : MonoBehaviour
 {
-    //ƒS[ƒ‹‚µ‚½‚ÉŠñ‚éƒJƒƒ‰
+    //ã‚´ãƒ¼ãƒ«ã—ãŸæ™‚ã«å¯„ã‚‹ã‚«ãƒ¡ãƒ©
     [SerializeField] GameObject clear_vcam;
-    //ƒS[ƒ‹—p‚ÌƒI[ƒfƒBƒI
+    //ã‚´ãƒ¼ãƒ«ç”¨ã®ã‚ªãƒ¼ãƒ‡ã‚£ã‚ª
     AudioSource audioSource;
-    //SE‚ğ‚·‚Å‚É–Â‚ç‚µ‚Ä‚¢‚é‚©
+    //SEã‚’ã™ã§ã«é³´ã‚‰ã—ã¦ã„ã‚‹ã‹
     bool SE_IsDone;
 
     private void Start()
     {
-        //©g‚É‚ ‚éaudioSource‚ğæ“¾
+        if (MapData.mapinstance.Last) this.gameObject.SetActive(false);
+        //è‡ªèº«ã«ã‚ã‚‹audioSourceã‚’å–å¾—
         audioSource = GetComponent<AudioSource>();
     }
 
-    //ƒS[ƒ‹”»’è‚É“–‚½‚Á‚½‚çŒÄ‚Î‚ê‚é
+    //ã‚´ãƒ¼ãƒ«åˆ¤å®šã«å½“ãŸã£ãŸã‚‰å‘¼ã°ã‚Œã‚‹
     private void OnTriggerEnter(Collider other)
     {
-        //“–‚½‚Á‚½‘Šè‚ªPlayer‚¾‚Á‚½ê‡
-        if (other.gameObject.CompareTag("Player"))
+        if (!MapData.mapinstance.Last)
         {
-            //ƒS[ƒ‹ˆ—‚ğ‚·‚é
-            Debug.Log("<color=red>ƒS[ƒ‹‚µ‚Ü‚µ‚½</color>");
-            //GameManager‚É’Ê’m‚·‚é
-            GameManager.I.OnClear();
-            //ƒJƒƒ‰‚ğŠñ‚ç‚¹‚é
-            clear_vcam.SetActive(true);
-            //Œø‰Ê‰¹‚ğ–Â‚ç‚·
-            if(!SE_IsDone)audioSource.PlayOneShot(audioSource.clip);
-            //‰¹‚ª“ñd‚É‚È‚ç‚È‚¢‚æ‚¤‚É‚·‚é
-            SE_IsDone = true;
+            //å½“ãŸã£ãŸç›¸æ‰‹ãŒPlayerã ã£ãŸå ´åˆ
+            if (other.gameObject.CompareTag("Player"))
+            {
+                //ã‚´ãƒ¼ãƒ«å‡¦ç†ã‚’ã™ã‚‹
+                Debug.Log("<color=red>ã‚´ãƒ¼ãƒ«ã—ã¾ã—ãŸ</color>");
+                //GameManagerã«é€šçŸ¥ã™ã‚‹
+                GameManager.I.OnClear();
+                //ã‚«ãƒ¡ãƒ©ã‚’å¯„ã‚‰ã›ã‚‹
+                clear_vcam.SetActive(true);
+                //åŠ¹æœéŸ³ã‚’é³´ã‚‰ã™
+                if (!SE_IsDone) audioSource.PlayOneShot(audioSource.clip);
+                //éŸ³ãŒäºŒé‡ã«ãªã‚‰ãªã„ã‚ˆã†ã«ã™ã‚‹
+                SE_IsDone = true;
+            }
         }
     }
 }

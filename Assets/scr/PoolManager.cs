@@ -2,69 +2,79 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+//ãƒ–ãƒ­ãƒƒã‚¯ã®ãƒ—ãƒ¼ãƒ«ç®¡ç†ã‚’ã—ã¦ã„ã‚‹ã‚ˆã†ãª...
 public class PoolManager : MonoBehaviour
 {
-    [Header("ƒuƒƒbƒN‚ÌƒvƒŒƒnƒu")]
-    //ƒuƒƒbƒN‚ÌƒvƒŒƒnƒuiT‚¦‚ª‚È‚©‚Á‚½—pj
+    //ãƒ–ãƒ­ãƒƒã‚¯ã®ãƒ—ãƒ¬ãƒãƒ–ï¼ˆæ§ãˆãŒãªã‹ã£ãŸæ™‚ç”¨ï¼‰
+    [Header("ãƒ–ãƒ­ãƒƒã‚¯ã®ãƒ—ãƒ¬ãƒãƒ–")]
     [SerializeField] GameObject nomalblock;
     [SerializeField] GameObject trampolineblock;
     [SerializeField] GameObject downblock;
-    [Header("“ÁêƒuƒƒbƒN‚ÌƒvƒŒƒnƒu")]
+    [Header("ç‰¹æ®Šãƒ–ãƒ­ãƒƒã‚¯ã®ãƒ—ãƒ¬ãƒãƒ–")]
     [SerializeField] GameObject floorblock;
     [SerializeField] GameObject fallblock;
     [SerializeField] GameObject trampolineblock_before;
     [SerializeField] GameObject downblock_before;
 
-    [Header("¶¬‚·‚éƒuƒƒbƒN‚ÌeƒIƒuƒWƒFƒNƒgæ")]
-    [SerializeField] Transform nomal_parent;//e‚Æ‚µ‚Ä”z’uæ
-    [SerializeField] Transform trampoline_parent;//e‚Æ‚µ‚Ä”z’uæ
-    [SerializeField] Transform down_parent;//e‚Æ‚µ‚Ä”z’uæ
+    [Header("ç”Ÿæˆã™ã‚‹ãƒ–ãƒ­ãƒƒã‚¯ã®è¦ªã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆå…ˆ")]
+    [SerializeField] Transform nomal_parent;//è¦ªã¨ã—ã¦é…ç½®å…ˆ
+    [SerializeField] Transform trampoline_parent;//è¦ªã¨ã—ã¦é…ç½®å…ˆ
+    [SerializeField] Transform down_parent;//è¦ªã¨ã—ã¦é…ç½®å…ˆ
 
-    [Header("¶¬‚·‚éƒuƒƒbƒN‚ÌeƒIƒuƒWƒFƒNƒgæ(“ÁêƒIƒuƒWƒFƒNƒg)")]
-    [SerializeField] Transform floor_parent;//e‚Æ‚µ‚Ä”z’uæ
-    [SerializeField] Transform fall_parent;//e‚Æ‚µ‚Ä”z’uæ
-    [SerializeField] Transform trampoline_p_before;//e‚Æ‚µ‚Ä”z’uæ
-    [SerializeField] Transform down_p_before;//e‚Æ‚µ‚Ä”z’uæ
+    [Header("ç”Ÿæˆã™ã‚‹ãƒ–ãƒ­ãƒƒã‚¯ã®è¦ªã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆå…ˆ(ç‰¹æ®Šã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆ)")]
+    [SerializeField] Transform floor_parent;//è¦ªã¨ã—ã¦é…ç½®å…ˆ
+    [SerializeField] Transform fall_parent;//è¦ªã¨ã—ã¦é…ç½®å…ˆ
+    [SerializeField] Transform trampoline_p_before;//è¦ªã¨ã—ã¦é…ç½®å…ˆ
+    [SerializeField] Transform down_p_before;//è¦ªã¨ã—ã¦é…ç½®å…ˆ
 
-    [Header("‚»‚ê‚¼‚ê‚ÌƒV[ƒ“‚É‚ ‚éƒS[ƒ‹ƒIƒuƒWƒFƒNƒg")]
+    [Header("ãã‚Œãã‚Œã®ã‚·ãƒ¼ãƒ³ã«ã‚ã‚‹ã‚´ãƒ¼ãƒ«ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆ")]
     [SerializeField] GameObject goalblock;
 
-    [Header("¶¬Œø‰Ê‰¹")]
+    [Header("ç”ŸæˆåŠ¹æœéŸ³")]
     AudioSource audioSource;
     [SerializeField] AudioClip nomal_se, eraser_se;
 
-    private int nomalnum, blocknum, trampolinenum, downnum;//‰½ŒÂ”ñ•\¦‚ÅT‚¦‚Ä‚¢‚é‚©
+    //ä½•å€‹éè¡¨ç¤ºã§æ§ãˆã¦ã„ã‚‹ã‹
+    private int nomalnum, blocknum, trampolinenum, downnum;
+
     void Start()
     {
+        //ã‚³ãƒ³ãƒãƒ¼ãƒãƒ³ãƒˆã‚’å–å¾—
         audioSource = GetComponent<AudioSource>();
-        //GameManager‚Ì•û‚Åİ’è‚³‚ê‚½”’l‚Å‰Šú‰»‚·‚é
+
+        //GameManagerã®æ–¹ã§è¨­å®šã•ã‚ŒãŸæ•°å€¤ã§åˆæœŸåŒ–ã™ã‚‹
         nomalnum = GameManager.I.Nomalnum;
         blocknum = GameManager.I.Blocknum;
         trampolinenum = blocknum;
         downnum = blocknum;
-        //w’è‚³‚ê‚Ä‚¢‚é‚à‚Ì‚ğw’è‚³‚ê‚½”¶¬‚·‚é
+
+        //æŒ‡å®šã•ã‚Œã¦ã„ã‚‹ã‚‚ã®ã‚’æŒ‡å®šã•ã‚ŒãŸæ•°ç”Ÿæˆã™ã‚‹
+        //æ™®é€šã®ãƒ–ãƒ­ãƒƒã‚¯
         for (int i = 0; i < nomalnum; i++)
         {
             Instantiate(nomalblock, new Vector3(0, 0, -5), Quaternion.identity, nomal_parent);
         }
+        //ãã‚Œä»¥å¤–ã®ãƒ–ãƒ­ãƒƒã‚¯
         for (int i = 0; i < blocknum; i++)
         {
             Instantiate(trampolineblock, new Vector3(0, 0, -5), Quaternion.identity, trampoline_parent);
             Instantiate(downblock, new Vector3(0, 0, -5), Quaternion.identity, down_parent);
-
         }
 
-        //¶¬‚µ‚½ƒIƒuƒWƒFƒNƒg‚ğ”ñ•\¦‚É‚·‚é
+        //ç”Ÿæˆã—ãŸã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã‚’éè¡¨ç¤ºã«ã™ã‚‹
+        //æ™®é€šã®ãƒ–ãƒ­ãƒƒã‚¯
         foreach (Transform child in nomal_parent)
         {
             GameObject childObject = child.gameObject;
             child.gameObject.SetActive(false);
         }
+        //ãƒˆãƒ©ãƒ³ãƒãƒªãƒ³ãƒ–ãƒ­ãƒƒã‚¯
         foreach (Transform child in trampoline_parent)
         {
             GameObject childObject = child.gameObject;
             child.gameObject.SetActive(false);
         }
+        //ä¸‹ãŒã‚‹ãƒ–ãƒ­ãƒƒã‚¯
         foreach (Transform child in down_parent)
         {
             GameObject childObject = child.gameObject;
@@ -72,126 +82,163 @@ public class PoolManager : MonoBehaviour
         }
     }
 
+    //åº§æ¨™ã‚’ã‚‚ã‚‰ã†ã¨åºŠãƒ–ãƒ­ãƒƒã‚¯ã‚’ç”Ÿæˆã™ã‚‹
     public void GetFloorObject(Vector3 pos)
     {
         Instantiate(floorblock, pos, Quaternion.identity, floor_parent);
     }
 
+    //åº§æ¨™ã‚’ã‚‚ã‚‰ã†ã¨å¥ˆè½ãƒ–ãƒ­ãƒƒã‚¯ã‚’ç”Ÿæˆã™ã‚‹
     public void GetFallObject(Vector3 pos)
     {
         Instantiate(fallblock, pos, Quaternion.identity, fall_parent);
     }
+
+    //åº§æ¨™ã‚’ã‚‚ã‚‰ã†ã¨åœ°å½¢ãƒˆãƒ©ãƒ³ãƒãƒªãƒ³ãƒ–ãƒ­ãƒƒã‚¯ã‚’ç”Ÿæˆã™ã‚‹
     public void GetTrampolineObject_before(Vector3 pos)
     {
         Instantiate(trampolineblock_before, pos, Quaternion.identity, trampoline_p_before);
     }
+
+    //åº§æ¨™ã‚’ã‚‚ã‚‰ã†ã¨åœ°å½¢ä¸‹ãŒã‚‹ãƒ–ãƒ­ãƒƒã‚¯ã‚’ç”Ÿæˆã™r
     public void GetDownObject_before(Vector3 pos)
     {
         Instantiate(downblock_before, pos, Quaternion.identity, down_p_before);
     }
+
+    //åº§æ¨™ã‚’ã‚‚ã‚‰ã†ã¨ã‚´ãƒ¼ãƒ«ä½ç½®ã‚’å¤‰æ›´ã™ã‚‹ï¼ˆã‚¯ãƒªã‚¨ã‚¤ãƒˆãƒ¢ãƒ¼ãƒ‰ã®æ™‚ï¼‰
     public void GetGoalObject_edit(Vector3 pos)
     {
         goalblock.gameObject.transform.position = new Vector3(pos.x, pos.y - 0.75f, pos.z);
     }
+
+    //åº§æ¨™ã‚’ã‚‚ã‚‰ã†ã¨ã‚´ãƒ¼ãƒ«ä½ç½®ã‚’å¤‰æ›´ã™ã‚‹
     public void GetGoalObject(Vector3 pos)
     {
         goalblock.gameObject.transform.position = pos;
     }
 
-    //ƒm[ƒ}ƒ‹‚ÌƒuƒƒbƒN‚ğ¶¬‚·‚é
+    //ãƒãƒ¼ãƒãƒ«ã®ãƒ–ãƒ­ãƒƒã‚¯ã‚’ç”Ÿæˆã™ã‚‹
     public void GetNomalObject(Vector3 pos)
     {
+        //è£ã§æ§ãˆã¦ã„ã‚‹ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆãŒã‚ã‚Šãã†
         if (nomalnum > 0)
         {
+            //å…¨ã¦ã®ä¸­ã‹ã‚‰æ¢ã™
             foreach (Transform child in nomal_parent)
             {
+                //éè¡¨ç¤ºãªã‚„ã¤ãŒè¦‹ã¤ã‹ã£ãŸ
                 if (!child.gameObject.activeInHierarchy)
                 {
+                    //ç”Ÿæˆä½ç½®ã«ç§»å‹•ã•ã›ã‚‹
                     child.transform.position = pos;
+                    //è¡¨ç¤ºã«ã™ã‚‹
                     child.gameObject.SetActive(true);
+                    //ç”ŸæˆéŸ³ã‚’é³´ã‚‰ã™
                     audioSource.PlayOneShot(nomal_se);
+                    //éè¡¨ç¤ºã®æ•°ã‚’æ¸›ã‚‰ã™
                     nomalnum--;
-                    goto END;//ˆê‚ÂoŒ»‚³‚¹‚½‚çI‚í‚ç‚¹‚é
+                    //ä¸€ã¤å‡ºç¾ã•ã›ãŸã‚‰çµ‚ã‚ã‚‰ã›ã‚‹ï¼ˆENDé§…ã¸ï¼‰
+                    goto END;
                 }
             }
         }
-        else//‚à‚¤ƒXƒgƒbƒN‚ª‚È‚¢‚È‚çV‚½‚É¶¬‚µ‚Ä‘Î‰‚·‚é‚µ‚©‚È‚¢...
+        else//ã‚‚ã†ã‚¹ãƒˆãƒƒã‚¯ãŒãªã„ãªã‚‰æ–°ãŸã«ç”Ÿæˆã—ã¦å¯¾å¿œã™ã‚‹ã—ã‹ãªã„...
         {
+            //ç”Ÿæˆ
             Instantiate(nomalblock, pos, Quaternion.identity, nomal_parent);
+            //éŸ³
             audioSource.PlayOneShot(nomal_se);
         }
-    END:;//I‚í‚è“]‘—æ
+    END:;//çµ‚ã‚ã‚Šè»¢é€å…ˆ
     }
 
-    //ƒgƒ‰ƒ“ƒ|ƒŠƒ““I‚ÈƒuƒƒbƒN‚ğ¶¬‚·‚é
+    //ãƒˆãƒ©ãƒ³ãƒãƒªãƒ³çš„ãªãƒ–ãƒ­ãƒƒã‚¯ã‚’ç”Ÿæˆã™ã‚‹
     public void GetTranpolineObject(Vector3 pos)
     {
-        if (trampolinenum > 0)
+        //å…¨ã¦ã®ä¸­ã‹ã‚‰æ¢ã™
+        foreach (Transform child in trampoline_parent)
         {
-            foreach (Transform child in trampoline_parent)
+            //éè¡¨ç¤ºãªã‚„ã¤ãŒè¦‹ã¤ã‹ã£ãŸ
+            if (!child.gameObject.activeInHierarchy)
             {
-                if (!child.gameObject.activeInHierarchy)
-                {
-                    child.transform.position = pos;
-                    child.gameObject.SetActive(true);
-                    audioSource.PlayOneShot(nomal_se);
-                    trampolinenum--;
-                    goto END;//ˆê‚ÂoŒ»‚³‚¹‚½‚çI‚í‚ç‚¹‚é
-                }
+                //ç”Ÿæˆä½ç½®ã«ç§»å‹•ã•ã›ã‚‹
+                child.transform.position = pos;
+                //è¡¨ç¤ºã«ã™ã‚‹
+                child.gameObject.SetActive(true);
+                //ç”ŸæˆéŸ³ã‚’é³´ã‚‰ã™
+                audioSource.PlayOneShot(nomal_se);
+                //æ•°ã‚’æ¸›ã‚‰ã™
+                trampolinenum--;
+                //ä¸€ã¤å‡ºç¾ã•ã›ãŸã‚‰çµ‚ã‚ã‚‰ã›ã‚‹ï¼ˆENDé§…ã¸ï¼‰
+                goto END;
             }
         }
-        else//‚à‚¤ƒXƒgƒbƒN‚ª‚È‚¢‚È‚çV‚½‚É¶¬‚µ‚Ä‘Î‰‚·‚é‚µ‚©‚È‚¢...
-        {
-            Instantiate(trampolineblock, pos, Quaternion.identity, trampoline_parent);
-            audioSource.PlayOneShot(nomal_se);
-        }
-    END:;//I‚í‚è“]‘—æ
+
+        //ã‚‚ã†ã‚¹ãƒˆãƒƒã‚¯ãŒãªã„ãªã‚‰æ–°ãŸã«ç”Ÿæˆã—ã¦å¯¾å¿œã™ã‚‹ã—ã‹ãªã„...
+         //ç”Ÿæˆ
+        Instantiate(trampolineblock, pos, Quaternion.identity, trampoline_parent);
+        //éŸ³
+        audioSource.PlayOneShot(nomal_se);
+    END:;//çµ‚ã‚ã‚Šè»¢é€å…ˆ
     }
 
-    //‚¿‚­‚íƒuƒƒbƒN‚ğ¶¬‚·‚é
+    //ã¡ãã‚ãƒ–ãƒ­ãƒƒã‚¯ã‚’ç”Ÿæˆã™ã‚‹
     public void GetDownObject(Vector3 pos)
     {
+        //è£ã§æ§ãˆã¦ã„ã‚‹ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆãŒã‚ã‚Šãã†ãªã‚‰
         if (downnum > 0)
         {
+            //å…¨ã¦ã®ä¸­ã‹ã‚‰æ¢ã™
             foreach (Transform child in down_parent)
             {
+                //éè¡¨ç¤ºãªã‚„ã¤ãŒè¦‹ã¤ã‹ã£ãŸ
                 if (!child.gameObject.activeInHierarchy)
                 {
+                    //ç”Ÿæˆä½ç½®ã«ç§»å‹•ã•ã›ã‚‹
                     child.transform.position = pos;
+                    //è¡¨ç¤ºã«ã™ã‚‹
                     child.gameObject.SetActive(true);
+                    //ç”ŸæˆéŸ³ã‚’é³´ã‚‰ã™
                     audioSource.PlayOneShot(nomal_se);
+                    //æ•°ã‚’æ¸›ã‚‰ã™
                     downnum--;
-                    goto END;//ˆê‚ÂoŒ»‚³‚¹‚½‚çI‚í‚ç‚¹‚é
+                    //ä¸€ã¤å‡ºç¾ã•ã›ãŸã‚‰çµ‚ã‚ã‚‰ã›ã‚‹ï¼ˆENDé§…ã¸ï¼‰
+                    goto END;
                 }
             }
         }
-        else//‚à‚¤ƒXƒgƒbƒN‚ª‚È‚¢‚È‚çV‚½‚É¶¬‚µ‚Ä‘Î‰‚·‚é‚µ‚©‚È‚¢...
+        else//ã‚‚ã†ã‚¹ãƒˆãƒƒã‚¯ãŒãªã„ãªã‚‰æ–°ãŸã«ç”Ÿæˆã—ã¦å¯¾å¿œã™ã‚‹ã—ã‹ãªã„...
         {
+            //ç”Ÿæˆ
             Instantiate(downblock, pos, Quaternion.identity, down_parent);
+            //éŸ³
             audioSource.PlayOneShot(nomal_se);
         }
-    END:;//I‚í‚è“]‘—æ
+    END:;//çµ‚ã‚ã‚Šè»¢é€å…ˆ
     }
 
-    //Á‚µƒSƒ€‹@”\
+    //æ¶ˆã—ã‚´ãƒ æ©Ÿèƒ½
     public void EraserObject(GameObject obj)
     {
+        //éŸ³
         audioSource.PlayOneShot(eraser_se);
-        //Ä—˜—po—ˆ‚é”‚ğXV
+        //å†åˆ©ç”¨å‡ºæ¥ã‚‹æ•°ã‚’æ›´æ–°
         if (obj.CompareTag("cube")) nomalnum++;
         else if (obj.CompareTag("trampoline")) trampolinenum++;
         else if (obj.CompareTag("down")) downnum++;
         else Destroy(obj);
-        //ƒIƒuƒWƒFƒNƒg‚ğ”ñ•\¦‚É‚·‚é
+        //ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã‚’éè¡¨ç¤ºã«ã™ã‚‹
         if (obj != null) obj.SetActive(false);
     }
 
+    //ãƒªã‚»ãƒƒãƒˆãŒå‘¼ã°ã‚ŒãŸã‚‰
     public void Reset_box()
     {
-        //T‚¦‚Ä‚¢‚é”‚ğ‰Šú‰»‚µ‚È‚¨‚µ
+        //æ§ãˆã¦ã„ã‚‹æ•°ã‚’åˆæœŸåŒ–ã—ãªãŠã—
         nomalnum = nomal_parent.childCount;
         trampolinenum = trampoline_parent.childCount;
-        //ƒm[ƒ}ƒ‹ƒuƒƒbƒN‚ğ‘S‚Ä”ñ•\¦‰»
+        //ãƒãƒ¼ãƒãƒ«ãƒ–ãƒ­ãƒƒã‚¯ã‚’å…¨ã¦éè¡¨ç¤ºåŒ–
         foreach (Transform child in nomal_parent)
         {
             if (child.gameObject.activeInHierarchy)
@@ -199,7 +246,7 @@ public class PoolManager : MonoBehaviour
                 child.gameObject.SetActive(false);
             }
         }
-        //ƒgƒ‰ƒ“ƒ|ƒŠƒ“ƒuƒƒbƒN‚ğ‘S‚Ä”ñ•\¦‰»
+        //ãƒˆãƒ©ãƒ³ãƒãƒªãƒ³ãƒ–ãƒ­ãƒƒã‚¯ã‚’å…¨ã¦éè¡¨ç¤ºåŒ–
         foreach (Transform child in trampoline_parent)
         {
             if (child.gameObject.activeInHierarchy)
@@ -207,7 +254,7 @@ public class PoolManager : MonoBehaviour
                 child.gameObject.SetActive(false);
             }
         }
-        //‚¿‚­‚íƒuƒƒbƒN‚ğ‘S‚Ä”ñ•\¦‰»
+        //ã¡ãã‚ãƒ–ãƒ­ãƒƒã‚¯ã‚’å…¨ã¦éè¡¨ç¤ºåŒ–
         foreach (Transform child in down_parent)
         {
             if (child.gameObject.activeInHierarchy)
@@ -216,10 +263,11 @@ public class PoolManager : MonoBehaviour
             }
         }
 
-        Debug.Log("<color=#0000ffff>ƒuƒƒbƒN‰Šú‰»</color>\nnomalnum:" + nomalnum + "\ntrampolinenum:" + trampolinenum + "\ndownnum:" + downnum);
-
+        Debug.Log("<color=#0000ffff>ãƒ–ãƒ­ãƒƒã‚¯åˆæœŸåŒ–</color>\nnomalnum:" + nomalnum + "\ntrampolinenum:" + trampolinenum + "\ndownnum:" + downnum);
     }
 
+    //ã“ã“ã‹ã‚‰ãƒ—ãƒ­ãƒ‘ãƒ†ã‚£
+    //ä¸»ã«ã‚¯ãƒªã‚¨ã‚¤ãƒˆãƒ¢ãƒ¼ãƒ‰ã®ä½ç½®å–å¾—ã«ä½¿ã†
     public Transform Floor_parent
     {
         get { return floor_parent; }
@@ -241,4 +289,3 @@ public class PoolManager : MonoBehaviour
         get { return goalblock.gameObject.transform.position; }
     }
 }
-

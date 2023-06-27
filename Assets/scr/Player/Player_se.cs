@@ -2,19 +2,24 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-//�����ł̓A�j���[�V��������Ăяo�����Ƒ�����炵�܂�
+//ここではアニメーションから呼び出されると足音を鳴らします
 public class Player_se : MonoBehaviour
 {
+    //オーディオソース
     AudioSource source;
+    //歩く効果音
     [SerializeField] AudioClip walkse;
-    // Start is called before the first frame update
+
     void Start()
     {
+        //コンポーネントを取得
         source= GetComponent<AudioSource>();
     }
 
+    //アニメーションから床につくタイミングで呼ばれる
     void Onfoot()
     {
+        //鳴らす
         source.PlayOneShot(walkse);
     }
 }

@@ -1,22 +1,22 @@
 using UnityEngine;
 using TMPro;
 
-//‰Eã‚É‚ ‚éƒuƒƒbƒN”‚ÌƒeƒLƒXƒg‚ğ’l‚ğó‚¯æ‚è‚È‚ª‚ç•ÏX‚·‚éƒXƒNƒŠƒvƒg
+//å³ä¸Šã«ã‚ã‚‹ãƒ–ãƒ­ãƒƒã‚¯æ•°ã®ãƒ†ã‚­ã‚¹ãƒˆã‚’å€¤ã‚’å—ã‘å–ã‚ŠãªãŒã‚‰å¤‰æ›´ã™ã‚‹ã‚¹ã‚¯ãƒªãƒ—ãƒˆ
 public class Block_Text : MonoBehaviour
 {
-    //–Ú•WƒeƒLƒXƒg‚ÆŒ»İ‚ÌƒuƒƒbƒN”
+    //ç›®æ¨™ãƒ†ã‚­ã‚¹ãƒˆã¨ç¾åœ¨ã®ãƒ–ãƒ­ãƒƒã‚¯æ•°
     [SerializeField] TextMeshProUGUI Boxnum_Text, goalboxnum_Text;
 
     void Start()
     {
-        //–Ú•W”‚ÍÅ‰‚Éİ’è‚·‚é
+        //ç›®æ¨™æ•°ã¯æœ€åˆã«è¨­å®šã™ã‚‹
         goalboxnum_Text.text = GameManager.I.Add_Blocknum_goal.ToString();
     }
 
     // Update is called once per frame
     void Update()
     {
-        //ƒuƒƒbƒN”‚ğXV‚µ‚Ä‚¢‚­
+        //ãƒ–ãƒ­ãƒƒã‚¯æ•°ã‚’æ›´æ–°ã—ã¦ã„ã
         Boxnum_Text.text = GameManager.I.Add_Blocknum.ToString();
     }
 

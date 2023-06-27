@@ -3,46 +3,56 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-//‚±‚±‚Å‚ÍƒXƒe[ƒWƒZƒŒƒNƒg‰æ–Ê‚ğ‚Ù‚ÚŠÇ—‚µ‚Ä‚¢‚Ü‚·
+//ã“ã“ã§ã¯ã‚¹ãƒ†ãƒ¼ã‚¸ã‚»ãƒ¬ã‚¯ãƒˆç”»é¢ã‚’ã»ã¼ç®¡ç†ã—ã¦ã„ã¾ã™
 public class selectUI : MonoBehaviour
 {
-    [Header("ƒ[ƒh‰æ–Ê")]
+    [Header("ãƒ­ãƒ¼ãƒ‰ç”»é¢")]
     [SerializeField] private Loading_fade LoadUI;
-    [Header("ƒ{ƒ^ƒ“‚ÌeƒIƒuƒWƒFƒNƒg")]
+    [Header("ãƒœã‚¿ãƒ³ã®è¦ªã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆ")]
     [SerializeField] private Transform selectbutton_parent;
-    //ƒXƒe[ƒWƒf[ƒ^iƒ{ƒ^ƒ“‚ª‰Ÿ‚³‚ê‚½‚Æ‚«‚É‚»‚ê‚¼‚ê‚ÉƒAƒ^ƒbƒ`‚³‚ê‚Ä‚¢‚éƒf[ƒ^‚ğ“n‚·ˆ×j
+
+    private bool load_scene;
+
+    //ã‚¹ãƒ†ãƒ¼ã‚¸ãƒ‡ãƒ¼ã‚¿ï¼ˆãƒœã‚¿ãƒ³ãŒæŠ¼ã•ã‚ŒãŸã¨ãã«ãã‚Œãã‚Œã«ã‚¢ã‚¿ãƒƒãƒã•ã‚Œã¦ã„ã‚‹ãƒ‡ãƒ¼ã‚¿ã‚’æ¸¡ã™ç‚ºï¼‰
+    //MapDataã‚¹ã‚¯ãƒªãƒ—ãƒˆ
     [SerializeField] MapData mapData;
-    [SerializeField] GameObject LoadingUI;
 
     private void Start()
     {
-        LoadingUI.SetActive(false);
-        //ƒtƒF[ƒhƒCƒ“‚ğŒ©‚¹‚é
+        //ãƒ•ã‚§ãƒ¼ãƒ‰ã‚¤ãƒ³ã‚’è¦‹ã›ã‚‹
         LoadUI.Fadein();
     }
 
+    //ã‚¿ã‚¤ãƒˆãƒ«ã¸æˆ»ã‚‹ã‚’æŠ¼ã—ãŸ
     public void OnTitleBack()
     {
+        //ãƒ•ã‚§ãƒ¼ãƒ‰ã‚¢ã‚¦ãƒˆï¼ˆæš—è»¢ã™ã‚‹ï¼‰
         LoadUI.Fadeout();
+        //ã‚·ãƒ¼ãƒ³ã‚’èª­ã¿è¾¼ã‚€
         StartCoroutine(LoadScene("title"));
     }
 
-    //‚»‚ê‚¼‚ê‚ÌƒXƒe[ƒW‚Ìƒ{ƒ^ƒ“‚ª‰Ÿ‚³‚ê‚½‚çŒÄ‚Î‚ê‚é
+    //ãã‚Œãã‚Œã®ã‚¹ãƒ†ãƒ¼ã‚¸ã®ãƒœã‚¿ãƒ³ãŒæŠ¼ã•ã‚ŒãŸã‚‰å‘¼ã°ã‚Œã‚‹
     public void OnClickButton(MapData_scrobj stagedata)
     {
-        //ƒtƒF[ƒhƒAƒEƒg‚³‚¹‚é
+        //ãƒ•ã‚§ãƒ¼ãƒ‰ã‚¢ã‚¦ãƒˆã•ã›ã‚‹
         LoadUI.Fadeout();
-        //‚»‚ê‚¼‚ê‚Ìƒ{ƒ^ƒ“‚ÉƒAƒ^ƒbƒ`‚³‚ê‚Ä‚¢‚éƒXƒe[ƒWƒf[ƒ^‚ğ“n‚·
+        //ãã‚Œãã‚Œã®ãƒœã‚¿ãƒ³ã«ã‚¢ã‚¿ãƒƒãƒã•ã‚Œã¦ã„ã‚‹ã‚¹ãƒ†ãƒ¼ã‚¸ãƒ‡ãƒ¼ã‚¿ã‚’æ¸¡ã™
         mapData.setMapData(stagedata);
-        StartCoroutine(LoadScene("Stage"));
+        //ã‚·ãƒ¼ãƒ³ã‚’èª­ã¿è¾¼ã‚€
+        if(!load_scene)StartCoroutine(LoadScene("Stage"));
+        //ï¼’å›ç›®ä»¥é™ã¯å—ã‘ä»˜ã‘ãªã„
+        load_scene = true;
     }
+
+    //ã‚·ãƒ¼ãƒ³èª­ã¿è¾¼ã¿æ¼”å‡º
     private IEnumerator LoadScene(string scenename)
     {
-        LoadingUI.SetActive(true);
+        //æš—è»¢ã™ã‚‹ã¾ã§å¾…ã¤
         while (LoadUI.Fade_move) yield return null;
         
+        //ã‚·ãƒ¼ãƒ³èª­ã¿è¾¼ã¿
         var async = SceneManager.LoadSceneAsync(scenename);
-        
         
         while (!async.isDone)
         {

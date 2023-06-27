@@ -1,30 +1,41 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
+//ステージBGMを管理する
 public class StageBGMManager : MonoBehaviour
 {
-
+    //オーディオソース
     AudioSource audioSource;
-    [Header("�X�e�[�WBGM")]
+    //それぞれのステージで流すBGM
+    [Header("ステージBGM")]
     [SerializeField] AudioClip BOSSBGM;
+    [SerializeField] AudioClip FINALBGM;
     [SerializeField] AudioClip stage0BGM;
     [SerializeField] AudioClip stage1BGM;
     [SerializeField] AudioClip stage2BGM;
     [SerializeField] AudioClip stage3BGM;
-    // Start is called before the first frame update
+
     void Start()
     {
+        //コンポーネントを取得
         audioSource = GetComponent<AudioSource>();
-        Debug.Log(MapData.mapinstance.mapname().Substring(0, 1));
-        Debug.Log("BOSS:"+ MapData.mapinstance.Boss);
-        if (MapData.mapinstance.Boss)
-        {
 
+        Debug.Log(MapData.mapinstance.mapname().Substring(0, 1));
+        Debug.Log("BOSS:" + MapData.mapinstance.Boss);
+        //ボスステージなら
+        if (MapData.mapinstance.Boss ||MapData.mapinstance.Boss_Reverse)
+        {
+            //ボスステージのBGMにする
             audioSource.clip = BOSSBGM;
+        }
+        else if (MapData.mapinstance.Last)
+        {
+            //ラスボスステージのBGMにする
+            audioSource.clip = FINALBGM;
         }
         else
         {
+            //ボスステージじゃない場合
+            //ステージ名頭文字の数字で分ける
             switch (MapData.mapinstance.mapname().Substring(0, 1))
             {
                 case "0":
@@ -41,14 +52,16 @@ public class StageBGMManager : MonoBehaviour
                     break;
             }
         }
+        //再生する
         audioSource.Play();
     }
 
-    // Update is called once per frame
     void Update()
     {
+        //ゲームクリアしたとき
         if (GameManager.I.gamestate("GameClear"))
         {
+            //BGMを止める
             audioSource.Stop();
         }
     }

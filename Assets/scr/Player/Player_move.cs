@@ -19,6 +19,7 @@ public class Player_move : MonoBehaviour
     [SerializeField] private bool falling;//落ちているか
 
     AudioSource audioSource;//音（跳ねる音）
+    [SerializeField]AudioClip trampoline_se, gameover_se;
 
     void Start()
     {
@@ -39,8 +40,8 @@ public class Player_move : MonoBehaviour
         //プレイ中なら
         if (GameManager.I.gamestate("Play"))
         {
-            //ここはプレイヤーの位置をGameManagerに伝える所
-            GameManager.I.Playerpos = transform.position;
+                //ここはプレイヤーの位置をGameManagerに伝える所
+                GameManager.I.Playerpos = transform.position;
 
             //入力値
             x = Input.GetAxis("Horizontal");    //左右矢印キーの値(-1.0~1.0)
@@ -106,7 +107,7 @@ public class Player_move : MonoBehaviour
             //上方向に上げる
             moveDirection.y = 6.2f;
             //跳ねる音を鳴らす
-            audioSource.PlayOneShot(audioSource.clip);
+            audioSource.PlayOneShot(trampoline_se);
         }
     }
 
@@ -148,6 +149,30 @@ public class Player_move : MonoBehaviour
         anim.SetBool("fall", true);
     }
 
+    public void GameOver_last_move()
+    {
+        //落ちたアニメーション
+        anim.SetBool("fall", true);
+
+        //落ちたアニメーション
+        anim.SetBool("fall", false);
+        anim.SetTrigger("reset");
+
+
+    }
+    
+    public void GameOver_last_se()
+    {
+        audioSource.PlayOneShot(gameover_se);
+    }
+
+    public void Boss_Block_move()
+    {
+        //
+        anim.SetTrigger("damage");
+        
+    }
+
     //リセットされたとき初期化する
     public void Reset_move()
     {
@@ -157,6 +182,8 @@ public class Player_move : MonoBehaviour
         anim.SetTrigger("reset");
         anim.SetBool("walk", false);
         anim.SetBool("fall", true);
+        anim.ResetTrigger("damage");
+        anim.ResetTrigger("reset");
         //向きを戻す
         Player_t.transform.rotation = Quaternion.Euler(0f, 0f, 0f);
         //移動量初期化
@@ -164,6 +191,12 @@ public class Player_move : MonoBehaviour
         moveDirection = Vector3.zero;
         //最後に落ちたのを戻す
         anim.SetBool("fall", false);
+        anim.SetTrigger("reset");
+        //微妙にスタート時安定性を欠くため確実に歩けるようにする
+        if (anim.GetCurrentAnimatorStateInfo(0).IsName("invisible"))
+        {
+            start_move();
+        }
         Debug.Log("<color=#0000ffff>プレイヤー初期化</color>\nPlayerpos:" + transform.position);
     }
 
@@ -172,5 +205,12 @@ public class Player_move : MonoBehaviour
     {
         //出現した風のアニメーションを流す
         anim.SetTrigger("start");
+    }
+
+    public void end_move() 
+    {
+        anim.SetBool("walk", false);
+
+        Player_t.transform.rotation = Quaternion.Euler(0f, -90f, 0f);
     }
 }

@@ -1,43 +1,63 @@
 using UnityEngine;
 
-//ƒ{ƒXƒXƒe[ƒW‚Å’Ç‚¢‚©‚¯‚Ä‚­‚éƒmƒCƒY
+//ãƒœã‚¹ã‚¹ãƒ†ãƒ¼ã‚¸ã§è¿½ã„ã‹ã‘ã¦ãã‚‹ãƒã‚¤ã‚º
 public class noise_move : MonoBehaviour
 {
-    //‰Šú’l‚É–ß‚·‚½‚ß‚ÌŠi”[êŠ
+    //åˆæœŸå€¤ã«æˆ»ã™ãŸã‚ã®æ ¼ç´å ´æ‰€
     private Vector3 firstpos;
-    
+
     void Start()
     {
-        //ƒ{ƒXƒXƒe[ƒW‚¶‚á‚È‚¯‚ê‚Î‚±‚ÌƒIƒuƒWƒFƒNƒg‚ÍÁ‚µ‚Ä‚¨‚­
+        //ãƒœã‚¹ã‚¹ãƒ†ãƒ¼ã‚¸ã˜ã‚ƒãªã‘ã‚Œã°ã“ã®ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã¯æ¶ˆã—ã¦ãŠã
         if (!MapData.mapinstance.Boss) this.gameObject.SetActive(false);
-        //‰Šú’l“o˜^
+
+        //åˆæœŸå€¤ç™»éŒ²
         firstpos = transform.position;
+
+        //ã‚‚ã—åè»¢è¨­å®šã•ã‚Œã¦ã„ãŸã‚‰
+        if (MapData.mapinstance.Boss_Reverse)
+        {
+            //åè»¢ãªã‚‰å†åº¦ã‚ªãƒ³ã«
+            this.gameObject.SetActive(true);
+            //é€†ã®ä½ç½®ã«è¨­å®š
+            transform.position = new Vector3(firstpos.x, firstpos.y, -1 * firstpos.z);
+            //åˆæœŸå€¤ç™»éŒ²
+            firstpos = transform.position;
+        }
     }
 
     void FixedUpdate()
     {
-        //ƒvƒŒƒC’†‚È‚ç
+        //ãƒ—ãƒ¬ã‚¤ä¸­ãªã‚‰
         if (GameManager.I.gamestate("Play"))
         {
-            //‰E•ûŒü‚ÉˆÚ“®‚³‚¹‚é
-            transform.position += new Vector3(0, 0, 0.025f);
+            if (MapData.mapinstance.Boss_Reverse)
+            {
+                //å·¦æ–¹å‘ã«ç§»å‹•ã•ã›ã‚‹
+                transform.position -= new Vector3(0, 0, 0.025f);
+            }
+            else
+            {
+                //å³æ–¹å‘ã«ç§»å‹•ã•ã›ã‚‹
+                transform.position += new Vector3(0, 0, 0.025f);
+            }
         }
     }
 
     private void OnTriggerEnter(Collider other)
     {
-        //ƒvƒŒƒC’†‚ÅAPlayer‚É“–‚½‚Á‚½‚ç
+        //ãƒ—ãƒ¬ã‚¤ä¸­ã§ã€Playerã«å½“ãŸã£ãŸã‚‰
         if (GameManager.I.gamestate("Play") && other.gameObject.name.Equals("Player"))
         {
-            //ƒQ[ƒ€ƒI[ƒo[‚É‚·‚é
+            //ã‚²ãƒ¼ãƒ ã‚ªãƒ¼ãƒãƒ¼ã«ã™ã‚‹
             GameManager.I.OnGameOver();
         }
     }
 
-    //ƒŠƒZƒbƒg‚ÅŒÄ‚Î‚ê‚é
+    //ãƒªã‚»ãƒƒãƒˆã§å‘¼ã°ã‚Œã‚‹
     public void noise_reset()
     {
-        //‰Šú’l‚É–ß‚·
+        //åˆæœŸå€¤ã«æˆ»ã™
         transform.position = firstpos;
     }
 }

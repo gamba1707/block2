@@ -1,41 +1,47 @@
-using System.Collections;
-using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 
+//å·¦å´ã«ã‚ã‚‹ã‚¢ã‚¤ãƒ†ãƒ ç®¡ç†
 public class itemManager : MonoBehaviour
 {
+    //ãƒˆã‚°ãƒ«ã‚°ãƒ«ãƒ¼ãƒ—ã§ç®¡ç†ã—ã¦ã„ã‚‹ã®ã§æŒã£ã¦ãŠã
     [SerializeField] private ToggleGroup toggleGroup;
-    //ƒAƒCƒeƒ€ƒgƒOƒ‹ƒOƒ‹[ƒv”z—ñ
+    //ã‚¢ã‚¤ãƒ†ãƒ ãƒˆã‚°ãƒ«ã‚°ãƒ«ãƒ¼ãƒ—é…åˆ—
     private Toggle[] toggle;
-    //ƒAƒCƒeƒ€‚Ì‰æ‘œ
-    [SerializeField] Sprite[]itemtex;
-    // Start is called before the first frame update
+    //ã‚¢ã‚¤ãƒ†ãƒ ã®ç”»åƒ
+    [SerializeField] Sprite[] itemtex;
+
     void Start()
     {
-        //‚Æ‚è‚ ‚¦‚¸ƒOƒ‹[ƒv‚Ì”•ªæ“¾‚µ‚ÄŠi”[
+        //ã¨ã‚Šã‚ãˆãšã‚°ãƒ«ãƒ¼ãƒ—ã®æ•°åˆ†ç”¨æ„ã™ã‚‹
         toggle = new Toggle[transform.childCount];
-        
-        for (int i=0; i<itemtex.Length; i++)
+
+        //å‰²ã‚Šå½“ã¦ã‚‰ã‚Œã¦ã„ã‚‹ç”»åƒåˆ†å›ã‚‹
+        for (int i = 0; i < itemtex.Length; i++)
         {
-            toggle[i]=transform.GetChild(i).GetComponent<Toggle>();
-            toggle[i].name= itemtex[i].name;//–¼‘O‚ğ‰æ‘œ–¼‚É•ÏX
-            toggle[i].targetGraphic.GetComponent<Image>().sprite = itemtex[i];//‰æ‘œ‚ğ‘‚«Š·‚¦‚é
-            transform.GetChild(i).Find("LabelQTMP").GetComponent<TextMeshProUGUI>().text = itemtex[i].name;//‰æ‘œ–¼‚ÉƒeƒLƒXƒg‚ğİ’è
+            //ãã®ç•ªã®ãƒˆã‚°ãƒ«ã‚’å–å¾—ã™ã‚‹
+            toggle[i] = transform.GetChild(i).GetComponent<Toggle>();
+            //åå‰ã‚’ç”»åƒåã«å¤‰æ›´
+            toggle[i].name = itemtex[i].name;
+            //ç”»åƒã‚’æ›¸ãæ›ãˆã‚‹
+            toggle[i].targetGraphic.GetComponent<Image>().sprite = itemtex[i];
+            //ç”»åƒåã«ãƒ†ã‚­ã‚¹ãƒˆã‚’è¨­å®š
+            transform.GetChild(i).Find("Labelï¼¿TMP").GetComponent<TextMeshProUGUI>().text = itemtex[i].name;
         }
+        //æœ€åˆã«é¸æŠã•ã‚Œã¦ã„ã‚‹ãƒ–ãƒ­ãƒƒã‚¯ã¨ã—ã¦ä¸€ç•ªä¸Šã®ç‰©ã«ã™ã‚‹
         GameManager.I.Selectname = toggleGroup.ActiveToggles().First().name;
-        Debug.Log("¡‘I‘ğ‚³‚ê‚Ä‚¢‚éF" + GameManager.I.Selectname);
+        Debug.Log("ä»Šé¸æŠã•ã‚Œã¦ã„ã‚‹ï¼š" + GameManager.I.Selectname);
     }
 
- 
-    //’l‚ª•Ï‰»‚·‚é‚ÆŒÄ‚Î‚ê‚é
-    //‘I‘ğ‚³‚ê‚Ä‚¢‚é‚à‚Ì‚ğXV‚·‚é
+
+    //å€¤ãŒå¤‰åŒ–ã™ã‚‹ã¨å‘¼ã°ã‚Œã‚‹
+    //é¸æŠã•ã‚Œã¦ã„ã‚‹ã‚‚ã®ã‚’æ›´æ–°ã™ã‚‹
     public void OnSelectChenge()
     {
-            GameManager.I.Selectname =toggleGroup.ActiveToggles().First().name;
-        Debug.Log("¡‘I‘ğ‚³‚ê‚Ä‚¢‚éF"+GameManager.I.Selectname);
+        //æ–°ã—ã„ã‚‚ã®ã‚’é€šçŸ¥ã™ã‚‹
+        GameManager.I.Selectname = toggleGroup.ActiveToggles().First().name;
+        Debug.Log("ä»Šé¸æŠã•ã‚Œã¦ã„ã‚‹ï¼š" + GameManager.I.Selectname);
     }
-
 }

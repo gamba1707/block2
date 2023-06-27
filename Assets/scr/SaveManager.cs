@@ -7,15 +7,16 @@ using UnityEngine;
 
 public class SaveManager : MonoBehaviour
 {
-    //ƒZ[ƒuƒf[ƒ^–{‘Ì
+    //ã‚»ãƒ¼ãƒ–ãƒ‡ãƒ¼ã‚¿æœ¬ä½“
     [System.Serializable]
     public class PlayerData
     {
         public string dateTime;
+        public List<string> exclear;
         public List<string> stagescore;
     }
 
-    //İ’èƒtƒ@ƒCƒ‹–{‘Ì
+    //è¨­å®šãƒ•ã‚¡ã‚¤ãƒ«æœ¬ä½“
     [Serializable]
     public class Setting
     {
@@ -26,33 +27,37 @@ public class SaveManager : MonoBehaviour
         public float sevolume;
     }
 
-    //ƒCƒ“ƒXƒ^ƒ“ƒX
+    //ã‚¤ãƒ³ã‚¹ã‚¿ãƒ³ã‚¹
     public static SaveManager instance;
 
-    // ‰Šú‰»ƒxƒNƒgƒ‹"<”¼Šp16•¶ši1byte=8bit, 8bit*16=128bit>"
+    //AESç”¨
+    // åˆæœŸåŒ–ãƒ™ã‚¯ãƒˆãƒ«"<åŠè§’16æ–‡å­—ï¼ˆ1byte=8bit, 8bit*16=128bit>"
     private const string AES_IV_128 = @"hG9PtAuatfJbdgBm";
-    // ˆÃ†‰»Œ®<”¼Šp32•¶ši8bit*32•¶š=256bitj>
+    // æš—å·åŒ–éµ<åŠè§’32æ–‡å­—ï¼ˆ8bit*32æ–‡å­—=256bitï¼‰>
     private const string AES_Key_256 = @"AMJVgHnRNdUez5yYKJiVbwCdj8MyZUfZ";
 
-
-    //ƒf[ƒ^‚ğ“s“xŒÄ‚Ño‚·‚Ì‚Å‚Í‚È‚­‚Á‚Ä‚¨‚­
-    //“Ç‚İ‚Ş‚×‚«ƒZ[ƒuƒf[ƒ^–¼
+    //ãƒ‡ãƒ¼ã‚¿ã‚’éƒ½åº¦å‘¼ã³å‡ºã™ã®ã§ã¯ãªãæŒã£ã¦ãŠã
+    //èª­ã¿è¾¼ã‚€ã¹ãã‚»ãƒ¼ãƒ–ãƒ‡ãƒ¼ã‚¿å
     public static string dataname;
-    //ƒZ[ƒuƒf[ƒ^
-    private string dateTime;//ƒZ[ƒu‚³‚ê‚½“ú•t
-    private List<string> stagescore = new List<string>();//ƒNƒŠƒA‚µ‚½ƒXƒe[ƒW–¼‚ÆƒXƒRƒA
-    //İ’è”’l
+
+    //ã‚»ãƒ¼ãƒ–ãƒ‡ãƒ¼ã‚¿
+    private string dateTime;//ã‚»ãƒ¼ãƒ–ã•ã‚ŒãŸæ—¥ä»˜
+    private List<string> exclear = new List<string>();//ç›®æ¨™ã‚ˆã‚Šæ—©ãã‚¯ãƒªã‚¢ã—ãŸã‚¹ãƒ†ãƒ¼ã‚¸åé›†
+    private List<string> stagescore = new List<string>();//ã‚¯ãƒªã‚¢ã—ãŸã‚¹ãƒ†ãƒ¼ã‚¸åã¨ã‚¹ã‚³ã‚¢
+
+    //è¨­å®šæ•°å€¤
     private bool fullScreen;
     private int screen_w;
     private int screen_h;
     private float bgmvolume;
     private float sevolume;
-    //ƒXƒe[ƒ^ƒX•¶
+
+    //ã‚¹ãƒ†ãƒ¼ã‚¿ã‚¹æ–‡
     StatusText statustext;
 
     void Awake()
     {
-        //d•¡‚µ‚Ä‘‚¦‚Ä‚¢‚©‚È‚¢‚æ‚¤‚É‚È‚¢ê‡‚Í‚»‚Ì‚Ü‚Ü‚Å‚ ‚éê‡‚Ííœ‚·‚é
+        //é‡è¤‡ã—ã¦å¢—ãˆã¦ã„ã‹ãªã„ã‚ˆã†ã«ãªã„å ´åˆã¯ãã®ã¾ã¾ã§ã‚ã‚‹å ´åˆã¯å‰Šé™¤ã™ã‚‹
         if (instance == null)
         {
             instance = this;
@@ -66,132 +71,132 @@ public class SaveManager : MonoBehaviour
 
     private void Start()
     {
-        //ƒQ[ƒ€‹N“®‚Ì‚İ‚±‚±‚ÅƒXƒe[ƒ^ƒX•¶‚ÌƒIƒuƒWƒFƒNƒg‚ğæ“¾‚·‚é
+        //ã‚²ãƒ¼ãƒ èµ·å‹•æ™‚ã®ã¿ã“ã“ã§ã‚¹ãƒ†ãƒ¼ã‚¿ã‚¹æ–‡ã®ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã‚’å–å¾—ã™ã‚‹
         statustext = GameObject.Find("statusText").GetComponent<StatusText>();
     }
 
     private void OnLevelWasLoaded()
     {
-        //ƒV[ƒ“‚²‚Æ‚ÉƒXƒe[ƒ^ƒX•¶ƒIƒuƒWƒFƒNƒg‚ğæ“¾
+        //ã‚·ãƒ¼ãƒ³ã”ã¨ã«ã‚¹ãƒ†ãƒ¼ã‚¿ã‚¹æ–‡ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã‚’å–å¾—
         statustext = GameObject.Find("statusText").GetComponent<StatusText>();
     }
 
-    //‚»‚ÌƒXƒe[ƒW‚Í–Ú•W‚æ‚è‚à‘½‚­ƒNƒŠƒA‚µ‚½ê‡iˆ«‚¢j‚ÉTrue‚ğ•Ô‚·ƒƒ\ƒbƒh
+    //ãã®ã‚¹ãƒ†ãƒ¼ã‚¸ã¯ç›®æ¨™ã‚ˆã‚Šã‚‚å¤šãã‚¯ãƒªã‚¢ã—ãŸå ´åˆï¼ˆæ‚ªã„ï¼‰ã«Trueã‚’è¿”ã™ãƒ¡ã‚½ãƒƒãƒ‰
     public bool Clearstage(MapData_scrobj mapdata)
     {
-        //ƒZ[ƒuƒf[ƒ^‚ª‘¶İ‚µ‚ÄA‚»‚ÌƒXƒe[ƒW‚ÌƒNƒŠƒAó‹µ‚ª‚ ‚éê‡
-        //‚»‚ÌƒXƒe[ƒW‚Ì–Ú•W‚æ‚è‘½‚¢ƒNƒŠƒA¨True
+        //ã‚»ãƒ¼ãƒ–ãƒ‡ãƒ¼ã‚¿ãŒå­˜åœ¨ã—ã¦ã€ãã®ã‚¹ãƒ†ãƒ¼ã‚¸ã®ã‚¯ãƒªã‚¢çŠ¶æ³ãŒã‚ã‚‹å ´åˆ
+        //ãã®ã‚¹ãƒ†ãƒ¼ã‚¸ã®ç›®æ¨™ã‚ˆã‚Šå¤šã„ã‚¯ãƒªã‚¢â†’True
         if (stagescore != null && stagescore.Contains(mapdata.name))
             return mapdata.clearnum < int.Parse(stagescore[stagescore.IndexOf(mapdata.name) + 1]);
         return false;
     }
 
-    //–Ú•WˆÈã‚ÅƒNƒŠƒA‚µ‚Ä‚¢‚½ê‡‚ÉTrue‚Å•Ô‚·ƒƒ\ƒbƒh
+    //ç›®æ¨™ä»¥ä¸Šã§ã‚¯ãƒªã‚¢ã—ã¦ã„ãŸå ´åˆã«Trueã§è¿”ã™ãƒ¡ã‚½ãƒƒãƒ‰
     public bool exClearstage(MapData_scrobj mapdata)
     {
-        //ƒZ[ƒuƒf[ƒ^‚ª‘¶İ‚µ‚ÄA‚»‚ÌƒXƒe[ƒW‚ÌƒNƒŠƒAó‹µ‚ª‚ ‚éê‡
-        //‚»‚ÌƒXƒe[ƒW‚Ì–Ú•W‚æ‚è­‚È‚¢‚©“¯‚¶ƒNƒŠƒA¨True
+        //ã‚»ãƒ¼ãƒ–ãƒ‡ãƒ¼ã‚¿ãŒå­˜åœ¨ã—ã¦ã€ãã®ã‚¹ãƒ†ãƒ¼ã‚¸ã®ã‚¯ãƒªã‚¢çŠ¶æ³ãŒã‚ã‚‹å ´åˆ
+        //ãã®ã‚¹ãƒ†ãƒ¼ã‚¸ã®ç›®æ¨™ã‚ˆã‚Šå°‘ãªã„ã‹åŒã˜ã‚¯ãƒªã‚¢â†’True
         if (stagescore != null && stagescore.Contains(mapdata.name))
             return mapdata.clearnum >= int.Parse(stagescore[stagescore.IndexOf(mapdata.name) + 1]);
         return false;
     }
 
-    //Œ»İ‚ÌƒNƒŠƒA”‚ğ•Ô‚·
+    //ç¾åœ¨ã®ã‚¯ãƒªã‚¢æ•°ã‚’è¿”ã™
     public int clearnum()
     {
-        //2‚ÂˆÈã‚ ‚ê‚ÎƒNƒŠƒA‚µ‚Ä‚¢‚é‚Æ‚µ‚Ä‚»‚Ì”’l‚ğ•Ô‚·
-        //ƒXƒe[ƒW–¼‚ÆƒXƒRƒA‚ª•À‚ñ‚Å“o˜^‚³‚ê‚Ä‚¢‚é‚Ì‚Å2‚ÅŠ„‚Á‚½”‚ğ•Ô‚·
+        //2ã¤ä»¥ä¸Šã‚ã‚Œã°ã‚¯ãƒªã‚¢ã—ã¦ã„ã‚‹ã¨ã—ã¦ãã®æ•°å€¤ã‚’è¿”ã™
+        //ã‚¹ãƒ†ãƒ¼ã‚¸åã¨ã‚¹ã‚³ã‚¢ãŒä¸¦ã‚“ã§ç™»éŒ²ã•ã‚Œã¦ã„ã‚‹ã®ã§2ã§å‰²ã£ãŸæ•°ã‚’è¿”ã™
         if (stagescore.Count >= 2) return stagescore.Count / 2;
         return 0;
     }
 
-    //ƒXƒe[ƒW–¼‚ğ“n‚·‚ÆƒNƒŠƒA‚µ‚½ƒuƒƒbƒN”‚ğ•Ô‚·
+    //ã‚¹ãƒ†ãƒ¼ã‚¸åã‚’æ¸¡ã™ã¨ã‚¯ãƒªã‚¢ã—ãŸãƒ–ãƒ­ãƒƒã‚¯æ•°ã‚’è¿”ã™
     public string clearscore(string name)
     {
-        //“o˜^‚ª‚ ‚ê‚Î‚»‚ÌŸ‚É“o˜^‚³‚ê‚Ä‚¢‚éƒXƒRƒA‚ğ•Ô‚·
+        //ç™»éŒ²ãŒã‚ã‚Œã°ãã®æ¬¡ã«ç™»éŒ²ã•ã‚Œã¦ã„ã‚‹ã‚¹ã‚³ã‚¢ã‚’è¿”ã™
         if (stagescore.Contains(name)) return stagescore[stagescore.IndexOf(name) + 1];
-        //–³‚¯‚ê‚Î-‚ğ•Ô‚·
+        //ç„¡ã‘ã‚Œã°-ã‚’è¿”ã™
         return "-";
     }
 
-    //ƒZ[ƒuƒf[ƒ^‚Ì“ú•t‚ğ•Ô‚·
+    //ã‚»ãƒ¼ãƒ–ãƒ‡ãƒ¼ã‚¿ã®æ—¥ä»˜ã‚’è¿”ã™
     public string getDateTime()
     {
         return this.dateTime;
     }
 
 
-    //İ’èƒtƒ@ƒCƒ‹‚ª‚È‚¢ê‡‚Ì‰Šú’lİ’èêŠ
+    //è¨­å®šãƒ•ã‚¡ã‚¤ãƒ«ãŒãªã„å ´åˆã®åˆæœŸå€¤è¨­å®šå ´æ‰€
     public void init_Setting()
     {
-        //ƒtƒ‹ƒXƒNƒŠ[ƒ“‚É‚·‚é
+        //ãƒ•ãƒ«ã‚¹ã‚¯ãƒªãƒ¼ãƒ³ã«ã™ã‚‹
         FullScreen = true;
-        //ˆê”Ô‚¢‚¢‰ğ‘œ“x‚É‚·‚éi‹t‡‚ÉŠi”[‚³‚ê‚Ä‚¢‚é‚Ì‚Å”z—ñ‚Ìˆê”ÔÅŒãj
+        //ä¸€ç•ªã„ã„è§£åƒåº¦ã«ã™ã‚‹ï¼ˆé€†é †ã«æ ¼ç´ã•ã‚Œã¦ã„ã‚‹ã®ã§é…åˆ—ã®ä¸€ç•ªæœ€å¾Œï¼‰
         Width = Screen.resolutions[Screen.resolutions.Length - 1].width;
         Height = Screen.resolutions[Screen.resolutions.Length - 1].height;
-        //BGM‚ÆSE‚Íƒ}ƒbƒNƒX
+        //BGMã¨SEã¯ãƒãƒƒã‚¯ã‚¹
         BGMVolume = 1.0f;
         SEVolume = 1.0f;
     }
 
-    //İ’èƒtƒ@ƒCƒ‹•Û‘¶ƒƒ\ƒbƒh
+    //è¨­å®šãƒ•ã‚¡ã‚¤ãƒ«ä¿å­˜ãƒ¡ã‚½ãƒƒãƒ‰
     public void SaveData_Setting()
     {
-        Debug.Log("İ’èƒtƒ@ƒCƒ‹•Û‘¶");
-        //ƒCƒ“ƒXƒ^ƒ“ƒX¶¬
+        Debug.Log("è¨­å®šãƒ•ã‚¡ã‚¤ãƒ«ä¿å­˜");
+        //ã‚¤ãƒ³ã‚¹ã‚¿ãƒ³ã‚¹ç”Ÿæˆ
         Setting setting = new Setting();
-        //ŠO•”ƒtƒ@ƒCƒ‹‘‚«‚Ş—p
+        //å¤–éƒ¨ãƒ•ã‚¡ã‚¤ãƒ«æ›¸ãè¾¼ã‚€ç”¨
         StreamWriter writer;
-        //‚»‚ê‚¼‚ê‚Ìİ’è‚³‚ê‚½ƒf[ƒ^‚ğŠ„‚è“–‚Ä‚Ä‚¢‚­
+        //ãã‚Œãã‚Œã®è¨­å®šã•ã‚ŒãŸãƒ‡ãƒ¼ã‚¿ã‚’å‰²ã‚Šå½“ã¦ã¦ã„ã
         setting.fullScreen = FullScreen;
         setting.screen_w = Width;
         setting.screen_h = Height;
         setting.bgmvolume = BGMVolume;
         setting.sevolume = SEVolume;
-        //JsonŒ`®‚É•ÏŠ·‚·‚é
+        //Jsonå½¢å¼ã«å¤‰æ›ã™ã‚‹
         string jsonstr = JsonUtility.ToJson(setting);
-        //WebGL”Å‚Æ‚»‚êˆÈŠO‚Å•ª‚¯‚é
+        //WebGLç‰ˆã¨ãã‚Œä»¥å¤–ã§åˆ†ã‘ã‚‹
         if (Application.platform == RuntimePlatform.WebGLPlayer)
         {
-            Debug.Log("WebGL”Åˆ—");
-            //WebGL‚¾‚ÆŠO•”ƒtƒ@ƒCƒ‹‚Í–³—‚È‚Ì‚ÅindexDB‚É•Û‘¶
+            Debug.Log("WebGLç‰ˆå‡¦ç†");
+            //WebGLã ã¨å¤–éƒ¨ãƒ•ã‚¡ã‚¤ãƒ«ã¯ç„¡ç†ãªã®ã§indexDBã«ä¿å­˜
             PlayerPrefs.SetString("Setting", jsonstr);
             PlayerPrefs.Save();
         }
         else
         {
-            //ƒtƒ@ƒCƒ‹‚É‘‚«‚Şˆ—
+            //ãƒ•ã‚¡ã‚¤ãƒ«ã«æ›¸ãè¾¼ã‚€å‡¦ç†
             writer = new StreamWriter(Application.dataPath + "/Setting.json", false);
             writer.Write(jsonstr);
             writer.Flush();
             writer.Close();
         }
 
-        statustext.SetStatusText("İ’èƒtƒ@ƒCƒ‹•Û‘¶Š®—¹");
-        Debug.Log("İ’èƒtƒ@ƒCƒ‹Š®—¹");
+        statustext.SetStatusText("è¨­å®šãƒ•ã‚¡ã‚¤ãƒ«ä¿å­˜å®Œäº†");
+        Debug.Log("è¨­å®šãƒ•ã‚¡ã‚¤ãƒ«å®Œäº†");
     }
 
-    //İ’èƒtƒ@ƒCƒ‹‚ğ“Ç‚İ‚Ş
+    //è¨­å®šãƒ•ã‚¡ã‚¤ãƒ«ã‚’èª­ã¿è¾¼ã‚€
     public void LoadSaveData_Setting()
     {
-        //ŠO•”ƒtƒ@ƒCƒ‹“Ç‚İ‚İ€”õ
+        //å¤–éƒ¨ãƒ•ã‚¡ã‚¤ãƒ«èª­ã¿è¾¼ã¿æº–å‚™
         StreamReader reader;
-        //ƒf[ƒ^Ši”[—p
+        //ãƒ‡ãƒ¼ã‚¿æ ¼ç´ç”¨
         string datastr = "";
-        //WebGL”Å‚Æ‚»‚êˆÈŠO‚Å•ª‚¯‚é
+        //WebGLç‰ˆã¨ãã‚Œä»¥å¤–ã§åˆ†ã‘ã‚‹
         if (Application.platform == RuntimePlatform.WebGLPlayer)
         {
-            Debug.Log("WebGL”Åˆ—");
-            //ƒf[ƒ^‚ğw’è‚µ‚Äæ‚Á‚Ä‚­‚é
+            Debug.Log("WebGLç‰ˆå‡¦ç†");
+            //ãƒ‡ãƒ¼ã‚¿ã‚’æŒ‡å®šã—ã¦å–ã£ã¦ãã‚‹
             datastr = PlayerPrefs.GetString("Setting", "");
             if (datastr.Equals(""))
             {
-                //ƒf[ƒ^‚ª‹ó‚Á‚Û‚¾‚Á‚½‚ç‰Šú’l‚ğŠ„‚è“–‚Ä‚Ä‚¨‚­
+                //ãƒ‡ãƒ¼ã‚¿ãŒç©ºã£ã½ã ã£ãŸã‚‰åˆæœŸå€¤ã‚’å‰²ã‚Šå½“ã¦ã¦ãŠã
                 init_Setting();
             }
             else
             {
-                //ƒf[ƒ^‚ª‚ ‚Á‚½‚ç•ÏŠ·‚µ‚Äİ’è‚µ‚Ä‚¢‚­
+                //ãƒ‡ãƒ¼ã‚¿ãŒã‚ã£ãŸã‚‰å¤‰æ›ã—ã¦è¨­å®šã—ã¦ã„ã
                 Setting data = JsonUtility.FromJson<Setting>(datastr);
                 FullScreen = data.fullScreen;
                 Width = data.screen_w;
@@ -202,14 +207,14 @@ public class SaveManager : MonoBehaviour
         }
         else
         {
-            //WebGLˆÈŠO‚Ìˆ—
+            //WebGLä»¥å¤–ã®å‡¦ç†
             if (File.Exists(Application.dataPath + "/Setting.json"))
             {
-                //Jsonƒtƒ@ƒCƒ‹‚ª‚ ‚ê‚Î“Ç‚İæ‚é
+                //Jsonãƒ•ã‚¡ã‚¤ãƒ«ãŒã‚ã‚Œã°èª­ã¿å–ã‚‹
                 reader = new StreamReader(Application.dataPath + "/Setting.json");
                 datastr = reader.ReadToEnd();
                 reader.Close();
-                //“Ç‚İI‚í‚Á‚½‚ç•ÏŠ·‚µ‚Äİ’è‚µ‚Ä‚¢‚­
+                //èª­ã¿çµ‚ã‚ã£ãŸã‚‰å¤‰æ›ã—ã¦è¨­å®šã—ã¦ã„ã
                 Setting data = JsonUtility.FromJson<Setting>(datastr);
                 FullScreen = data.fullScreen;
                 Width = data.screen_w;
@@ -219,176 +224,188 @@ public class SaveManager : MonoBehaviour
             }
             else
             {
-                //ƒf[ƒ^‚ª‚È‚©‚Á‚½ê‡‚Í‰Šú’lŠ„‚è“–‚Ä
+                //ãƒ‡ãƒ¼ã‚¿ãŒãªã‹ã£ãŸå ´åˆã¯åˆæœŸå€¤å‰²ã‚Šå½“ã¦
                 init_Setting();
             }
         }
     }
 
-    //ƒZ[ƒuƒf[ƒ^‚ğã‘‚«‚µ‚½‚è•Û‘¶‚µ‚½‚è‚·‚é
-    public void SaveData(string stagename, int add_blocknum)
+    //ã‚»ãƒ¼ãƒ–ãƒ‡ãƒ¼ã‚¿ã‚’ä¸Šæ›¸ãã—ãŸã‚Šä¿å­˜ã—ãŸã‚Šã™ã‚‹
+    public void SaveData(string stagename, int add_blocknum, int add_blocknum_goal)
     {
         Debug.Log(dataname);
-        //€”õ
+        //æº–å‚™
         PlayerData data = new PlayerData();
         StreamWriter writer;
-        //¡‚ÌŠÔ‚ğŒ^w’è‚µ‚ÄŠi”[
-        data.dateTime = DateTime.Now.ToString("yyyy”NMŒd“ú HH:mm:ss");
-        //‚à‚µ‚à‚¤‚»‚ÌƒXƒe[ƒW–¼‚ğ‚Á‚Ä‚¢‚ê‚ÎAƒXƒRƒA‚ğXV‚·‚é‚¾‚¯‚É‚·‚é
+        //ä»Šã®æ™‚é–“ã‚’å‹æŒ‡å®šã—ã¦æ ¼ç´
+        data.dateTime = DateTime.Now.ToString("yyyyå¹´Mæœˆdæ—¥ HH:mm:ss");
+        //ã‚‚ã—ã‚‚ã†ãã®ã‚¹ãƒ†ãƒ¼ã‚¸åã‚’æŒã£ã¦ã„ã‚Œã°ã€ã‚¹ã‚³ã‚¢ã‚’æ›´æ–°ã™ã‚‹ã ã‘ã«ã™ã‚‹
         if (stagescore.Contains(stagename))
         {
-            //ƒXƒRƒA‚ªXV‚µ‚Ä‚¢‚ê‚Îã‘‚«‚·‚é
+            //ã‚¹ã‚³ã‚¢ãŒæ›´æ–°ã—ã¦ã„ã‚Œã°ä¸Šæ›¸ãã™ã‚‹
             if (int.Parse(stagescore[stagescore.IndexOf(stagename) + 1]) > add_blocknum)
                 stagescore[stagescore.IndexOf(stagename) + 1] = add_blocknum.ToString();
         }
         else
         {
-            //“Á‚Éƒf[ƒ^‚ª‚È‚¯‚ê‚Î•’Ê‚Éƒf[ƒ^‚ğŠi”[
-            //•K‚¸ƒXƒe[ƒW–¼AƒXƒRƒA‚Ì‡”Ô‚Å“o˜^‚·‚é
+            //ç‰¹ã«ãƒ‡ãƒ¼ã‚¿ãŒãªã‘ã‚Œã°æ™®é€šã«ãƒ‡ãƒ¼ã‚¿ã‚’æ ¼ç´
+            //å¿…ãšã‚¹ãƒ†ãƒ¼ã‚¸åã€ã‚¹ã‚³ã‚¢ã®é †ç•ªã§ç™»éŒ²ã™ã‚‹
             stagescore.Add(stagename);
             stagescore.Add(add_blocknum.ToString());
         }
-        //“o˜^‚µ‚½ƒXƒRƒAƒf[ƒ^‚ğŠi”[‚·‚é
+
+        if (!exclear.Contains(stagename) && add_blocknum <= add_blocknum_goal)
+        {
+            exclear.Add(stagename);
+        }
+
+        //ç™»éŒ²ã—ãŸã‚¹ã‚³ã‚¢ãƒ‡ãƒ¼ã‚¿ã‚’æ ¼ç´ã™ã‚‹
+        data.exclear = exclear;
         data.stagescore = stagescore;
-        //JsonŒ`®‚É•ÏŠ·‚·‚é
+        //Jsonå½¢å¼ã«å¤‰æ›ã™ã‚‹
         string jsonstr = JsonUtility.ToJson(data);
         Debug.Log(jsonstr);
-        //AES‚ÅˆÃ†‰»‚·‚é
+        //AESã§æš—å·åŒ–ã™ã‚‹
         jsonstr = EncryptAES(jsonstr);
-        //WebGL”Å‚Æ‚»‚êˆÈŠO‚Å•ª‚¯‚é
+        //WebGLç‰ˆã¨ãã‚Œä»¥å¤–ã§åˆ†ã‘ã‚‹
         if (Application.platform == RuntimePlatform.WebGLPlayer)
         {
-            //WebGL”Å‚Ìˆ—
-            Debug.Log("WebGL”Åˆ—");
-            //indexDB‚ÉƒZ[ƒuƒf[ƒ^‚ğ“o˜^
+            //WebGLç‰ˆã®å‡¦ç†
+            Debug.Log("WebGLç‰ˆå‡¦ç†");
+            //indexDBã«ã‚»ãƒ¼ãƒ–ãƒ‡ãƒ¼ã‚¿ã‚’ç™»éŒ²
             PlayerPrefs.SetString(dataname, jsonstr);
             PlayerPrefs.Save();
         }
         else
         {
-            //WebGL”ÅˆÈŠO‚Ìˆ—
-            //ƒtƒ@ƒCƒ‹‚É‘‚«‚Şˆ—
+            //WebGLç‰ˆä»¥å¤–ã®å‡¦ç†
+            //ãƒ•ã‚¡ã‚¤ãƒ«ã«æ›¸ãè¾¼ã‚€å‡¦ç†
             writer = new StreamWriter(Application.dataPath + "/" + dataname + ".json", false);
             writer.Write(jsonstr);
             writer.Flush();
             writer.Close();
         }
 
-        Debug.Log("ƒZ[ƒu‚ªI—¹‚µ‚Ü‚µ‚½");
+        Debug.Log("ã‚»ãƒ¼ãƒ–ãŒçµ‚äº†ã—ã¾ã—ãŸ");
     }
 
-    //ƒZ[ƒuƒf[ƒ^‚ğ“Ç‚İæ‚Á‚Ä•Û‚·‚é
+    //ã‚»ãƒ¼ãƒ–ãƒ‡ãƒ¼ã‚¿ã‚’èª­ã¿å–ã£ã¦ä¿æŒã™ã‚‹
     public void LoadSaveData(string name)
     {
-        //‚Ç‚ÌƒZ[ƒuƒf[ƒ^‚ğ‘I‘ğ‚µ‚Än‚ß‚½‚©‚ğ“o˜^‚·‚é
+        //ã©ã®ã‚»ãƒ¼ãƒ–ãƒ‡ãƒ¼ã‚¿ã‚’é¸æŠã—ã¦å§‹ã‚ãŸã‹ã‚’ç™»éŒ²ã™ã‚‹
         dataname = name;
         Debug.Log(dataname);
 
-        //ƒf[ƒ^’u‚«ê
+        //ãƒ‡ãƒ¼ã‚¿ç½®ãå ´
         string datastr = "";
-        //WebGL”Å‚Æ‚»‚êˆÈŠO‚Å•ª‚¯‚é
+        //WebGLç‰ˆã¨ãã‚Œä»¥å¤–ã§åˆ†ã‘ã‚‹
         if (Application.platform == RuntimePlatform.WebGLPlayer)
         {
-            Debug.Log("WebGL”Åˆ—");
-            //•¶š—ñ‚ğæ“¾‚µ‚Ä‚­‚éi–³‚¯‚ê‚Î‹ó•¶š‚Åj
+            Debug.Log("WebGLç‰ˆå‡¦ç†");
+            //æ–‡å­—åˆ—ã‚’å–å¾—ã—ã¦ãã‚‹ï¼ˆç„¡ã‘ã‚Œã°ç©ºæ–‡å­—ã§ï¼‰
             datastr = PlayerPrefs.GetString(dataname, "");
-            //‚à‚µƒf[ƒ^‚ª‚È‚¯‚ê‚Î
+            //ã‚‚ã—ãƒ‡ãƒ¼ã‚¿ãŒãªã‘ã‚Œã°
             if (datastr.Equals(""))
             {
-                //ƒZ[ƒu“ú‚È‚µ
+                //ã‚»ãƒ¼ãƒ–æ—¥æ™‚ãªã—
                 this.dateTime = null;
-                //c‚Á‚Ä‚¢‚é‚©‚à‚µ‚ê‚È‚¢‚Ì‚ÅList‚ğ‹ó‚É‚·‚é
+                this.exclear.Clear();
+                //æ®‹ã£ã¦ã„ã‚‹ã‹ã‚‚ã—ã‚Œãªã„ã®ã§Listã‚’ç©ºã«ã™ã‚‹
                 this.stagescore.Clear();
             }
             else
             {
-                //ƒf[ƒ^‚ª‚ ‚ê‚Î
-                //AES‚ÅˆÃ†‰»‚³‚ê‚½ƒf[ƒ^‚ğ•œ†‚·‚é
+                //ãƒ‡ãƒ¼ã‚¿ãŒã‚ã‚Œã°
+                //AESã§æš—å·åŒ–ã•ã‚ŒãŸãƒ‡ãƒ¼ã‚¿ã‚’å¾©å·ã™ã‚‹
                 datastr = DecryptAES(datastr);
-                //ƒf[ƒ^‚ğ•ÏŠ·‚·‚é
+                //ãƒ‡ãƒ¼ã‚¿ã‚’å¤‰æ›ã™ã‚‹
                 PlayerData data = JsonUtility.FromJson<PlayerData>(datastr);
-                //©g‚Ì•Ï”‚ÉŠi”[
+                //è‡ªèº«ã®å¤‰æ•°ã«æ ¼ç´
                 this.dateTime = data.dateTime;
+                this.exclear = data.exclear;
                 this.stagescore = data.stagescore;
             }
         }
         else
         {
-            //WebGL”ÅˆÈŠO‚Ìˆ—
-            //ƒtƒ@ƒCƒ‹‚ª‘¶İ‚µ‚Ä‚¢‚é
+            //WebGLç‰ˆä»¥å¤–ã®å‡¦ç†
+            //ãƒ•ã‚¡ã‚¤ãƒ«ãŒå­˜åœ¨ã—ã¦ã„ã‚‹
             if (File.Exists(Application.dataPath + "/" + dataname + ".json"))
             {
-                //ƒtƒ@ƒCƒ‹‚ğ“Ç‚İæ‚é
+                //ãƒ•ã‚¡ã‚¤ãƒ«ã‚’èª­ã¿å–ã‚‹
                 StreamReader reader;
                 reader = new StreamReader(Application.dataPath + "/" + dataname + ".json");
                 datastr = reader.ReadToEnd();
                 reader.Close();
-                //“Ç‚İ‚ñ‚¾ƒf[ƒ^‚ğ•œ†‚·‚é
+                //èª­ã¿è¾¼ã‚“ã ãƒ‡ãƒ¼ã‚¿ã‚’å¾©å·ã™ã‚‹
                 datastr = DecryptAES(datastr);
-                //‚à‚µƒf[ƒ^‚ª‹ó‚Á‚Û‚¾‚Á‚½‚ç
+                //ã‚‚ã—ãƒ‡ãƒ¼ã‚¿ãŒç©ºã£ã½ã ã£ãŸã‚‰
                 if (datastr.Equals(""))
                 {
-                    //‰Šú‰»‚·‚é
+                    //åˆæœŸåŒ–ã™ã‚‹
                     this.dateTime = null;
+                    this.exclear.Clear();
                     this.stagescore.Clear();
                 }
                 else
                 {
-                    //ƒf[ƒ^‚ª‚ ‚éê‡
-                    //•ÏŠ·‚·‚é
+                    //ãƒ‡ãƒ¼ã‚¿ãŒã‚ã‚‹å ´åˆ
+                    //å¤‰æ›ã™ã‚‹
                     PlayerData data = JsonUtility.FromJson<PlayerData>(datastr);
-                    //©g‚ÉŠi”[‚·‚é
+                    //è‡ªèº«ã«æ ¼ç´ã™ã‚‹
                     this.dateTime = data.dateTime;
+                    this.exclear = data.exclear;
                     this.stagescore = data.stagescore;
                 }
 
             }
             else
             {
-                //ƒtƒ@ƒCƒ‹‚ª‚È‚¢‚æ‚¤‚È‚ç‰Šú‰»‚·‚é
+                //ãƒ•ã‚¡ã‚¤ãƒ«ãŒãªã„ã‚ˆã†ãªã‚‰åˆæœŸåŒ–ã™ã‚‹
                 this.dateTime = null;
+                this.exclear.Clear();
                 this.stagescore.Clear();
             }
         }
 
     }
 
-    //ÀÛ‚ÉƒZ[ƒuƒf[ƒ^‚ğÁ‚·ˆ—
+    //å®Ÿéš›ã«ã‚»ãƒ¼ãƒ–ãƒ‡ãƒ¼ã‚¿ã‚’æ¶ˆã™å‡¦ç†
     public void OnDeleteSaveData(string savename)
     {
         if (Application.platform == RuntimePlatform.WebGLPlayer)
         {
-            // WebGL”Å‚Ìˆ—
-            Debug.Log("WebGL”Åˆ—");
-            //ƒf[ƒ^‚ğíœ‚·‚é
+            // WebGLç‰ˆã®å‡¦ç†
+            Debug.Log("WebGLç‰ˆå‡¦ç†");
+            //ãƒ‡ãƒ¼ã‚¿ã‚’å‰Šé™¤ã™ã‚‹
             PlayerPrefs.DeleteKey(savename);
         }
         else
         {
-            // WebGL”ÅˆÈŠO‚Ìˆ—
-            //ƒpƒX‚ÌêŠ‚ğâ‘ÎQÆ‚Åì‚é
+            // WebGLç‰ˆä»¥å¤–ã®å‡¦ç†
+            //ãƒ‘ã‚¹ã®å ´æ‰€ã‚’çµ¶å¯¾å‚ç…§ã§ä½œã‚‹
             string dataname = Application.dataPath + "/" + savename + ".json";
-            //ƒtƒ@ƒCƒ‹‚ª‘¶İ‚µ‚Ä‚¢‚»‚¤‚È‚çíœ‚·‚é
+            //ãƒ•ã‚¡ã‚¤ãƒ«ãŒå­˜åœ¨ã—ã¦ã„ãã†ãªã‚‰å‰Šé™¤ã™ã‚‹
             if (File.Exists(dataname)) File.Delete(dataname);
         }
     }
 
     /*
-    //QlƒTƒCƒgFhttps://yuyu-code.com/programming-languages/c-sharp/aes-encryption-decryption/
+    //å‚è€ƒã‚µã‚¤ãƒˆï¼šhttps://yuyu-code.com/programming-languages/c-sharp/aes-encryption-decryption/
     //                  https://magnaga.com/2016/08/29/save-encryption/
     */
-    //AES(CBCƒ‚[ƒh)‚ÅˆÃ†‰»‚ª‚µ‚½‚©‚Á‚½
-    //‚±‚±‚ÍˆÃ†‰»ˆ—
+    //AES(CBCãƒ¢ãƒ¼ãƒ‰)ã§æš—å·åŒ–ãŒã—ãŸã‹ã£ãŸ
+    //ã“ã“ã¯æš—å·åŒ–å‡¦ç†
     public string EncryptAES(string text)
     {
         Aes aes = Aes.Create();
-        //AES‚Ìİ’è
+        //AESã®è¨­å®š
         aes.BlockSize = 128;
         aes.KeySize = 256;
         aes.Padding = PaddingMode.PKCS7;
         aes.Mode = CipherMode.CBC;
 
-        //‰Šú’l‚ÆˆÃ†‰»Œ®
+        //åˆæœŸå€¤ã¨æš—å·åŒ–éµ
         aes.IV = Encoding.UTF8.GetBytes(AES_IV_128);
         aes.Key = Encoding.UTF8.GetBytes(AES_Key_256);
 
@@ -396,7 +413,7 @@ public class SaveManager : MonoBehaviour
         MemoryStream memoryStream = new MemoryStream();
         CryptoStream cryptStream = new CryptoStream(memoryStream, encrypt, CryptoStreamMode.Write);
 
-        //ƒf[ƒ^‚ğbyte”z—ñ‚É•ÏŠ·
+        //ãƒ‡ãƒ¼ã‚¿ã‚’byteé…åˆ—ã«å¤‰æ›
         byte[] text_bytes = Encoding.UTF8.GetBytes(text);
 
         cryptStream.Write(text_bytes, 0, text_bytes.Length);
@@ -407,11 +424,11 @@ public class SaveManager : MonoBehaviour
         return (Convert.ToBase64String(encrypted));
     }
 
-    //•œ†ˆ—
+    //å¾©å·å‡¦ç†
     public string DecryptAES(string text)
     {
         Aes aes = Aes.Create();
-        //AES‚Ìİ’è(ˆÃ†‰»‚Æ“¯‚¶)
+        //AESã®è¨­å®š(æš—å·åŒ–ã¨åŒã˜)
         aes.BlockSize = 128;
         aes.KeySize = 256;
         aes.Padding = PaddingMode.PKCS7;
@@ -428,24 +445,24 @@ public class SaveManager : MonoBehaviour
         MemoryStream memoryStream = new MemoryStream(encrypted);
         CryptoStream cryptStream = new CryptoStream(memoryStream, decryptor, CryptoStreamMode.Read);
 
-        //•œ†‚ğ‚İ‚é
+        //å¾©å·ã‚’è©¦ã¿ã‚‹
         try
         {
-            //‘åä•v‚»‚¤‚È‚ç•œ†‚³‚ê‚½•¶‚ğ•Ô‚·
+            //å¤§ä¸ˆå¤«ãã†ãªã‚‰å¾©å·ã•ã‚ŒãŸæ–‡ã‚’è¿”ã™
             cryptStream.Read(planeText, 0, planeText.Length);
             return (Encoding.UTF8.GetString(planeText));
         }
         catch (Exception ex)
         {
-            //ƒ_ƒ‚»‚¤‚È‚ç‰ó‚ê‚½‚Æ‚¢‚¤‚±‚Æ‚É‚·‚é
+            //ãƒ€ãƒ¡ãã†ãªã‚‰å£Šã‚ŒãŸã¨ã„ã†ã“ã¨ã«ã™ã‚‹
             Debug.LogError(ex.Message);
-            statustext.SetStatusText("ƒtƒ@ƒCƒ‹‚ª”j‘¹‚µ‚Ä‚¢‚Ü‚·...íœ‚µ‚Ä‚­‚¾‚³‚¢...");
+            statustext.SetStatusText("ãƒ•ã‚¡ã‚¤ãƒ«ãŒç ´æã—ã¦ã„ã¾ã™...å‰Šé™¤ã—ã¦ãã ã•ã„...");
         }
         return "";
     }
 
 
-    //‚±‚±‚©‚çƒvƒƒpƒeƒB
+    //ã“ã“ã‹ã‚‰ãƒ—ãƒ­ãƒ‘ãƒ†ã‚£
     public bool FullScreen
     {
         get { return this.fullScreen; }
@@ -471,6 +488,11 @@ public class SaveManager : MonoBehaviour
     {
         get { return this.sevolume; }
         set { this.sevolume = value; }
+    }
+
+    public int ExStage
+    {
+        get { return this.exclear.Count; }
     }
 
 }

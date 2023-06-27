@@ -1,4 +1,4 @@
-﻿using System.Collections;
+using System.Collections;
 using UnityEngine;
 
 public class ShaderEffect_BleedingColors : MonoBehaviour {
@@ -16,8 +16,7 @@ public class ShaderEffect_BleedingColors : MonoBehaviour {
 
     void Start_Check()
     {
-		Debug.Log(MapData.mapinstance.Boss);
-        if (!MapData.mapinstance.Boss) this.enabled=false;
+        if (!(MapData.mapinstance.Boss || MapData.mapinstance.Boss_Reverse)) this.enabled=false;
     }
 
     // Postprocess the image

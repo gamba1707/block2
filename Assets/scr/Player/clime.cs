@@ -1,81 +1,81 @@
 using System.Collections;
 using UnityEngine;
 
-//ƒvƒŒƒCƒ„[‚Ì“o‚é‹@”\
+//ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ã®ç™»ã‚‹æ©Ÿèƒ½
 public class clime : MonoBehaviour
 {
-    //ƒAƒjƒ[ƒVƒ‡ƒ“
+    //ã‚¢ãƒ‹ãƒ¡ãƒ¼ã‚·ãƒ§ãƒ³
     private Animator anim;
-    //“–‚½‚Á‚½ƒuƒƒbƒN‚ÌˆÊ’u
+    //å½“ãŸã£ãŸãƒ–ãƒ­ãƒƒã‚¯ã®ä½ç½®
     private Vector3 blockpos;
 
     // Start is called before the first frame update
     void Start()
     {
-        //ƒRƒ“ƒ|[ƒlƒ“ƒgæ“¾
+        //ã‚³ãƒ³ãƒãƒ¼ãƒãƒ³ãƒˆå–å¾—
         anim = GetComponent<Animator>();
     }
 
     // Update is called once per frame
     void Update()
     {
-        //ˆê‰‚Ç‚ñ‚È‚Ó‚¤‚ÉŠm”F‚µ‚Ä‚¢‚é‚Ì‚©Šm”F
-        //ƒvƒŒƒCƒ„[‚ÌÎ‚ßã‚É‰½‚à‚È‚¢‚©Šm”F‚µ‚Ä‚¢‚Ü‚·
+        //ä¸€å¿œã©ã‚“ãªãµã†ã«ç¢ºèªã—ã¦ã„ã‚‹ã®ã‹ç¢ºèª
+        //ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ã®æ–œã‚ä¸Šã«ä½•ã‚‚ãªã„ã‹ç¢ºèªã—ã¦ã„ã¾ã™
         Debug.DrawRay(new Vector3(transform.position.x, transform.position.y + 1.7f, transform.position.z), transform.forward * 1.0f, Color.red);
     }
 
     private void OnTriggerEnter(Collider other)
     {
-        //ƒvƒŒƒC’†‚ÉƒLƒ…[ƒu‚É“–‚½‚Á‚½
+        //ãƒ—ãƒ¬ã‚¤ä¸­ã«ã‚­ãƒ¥ãƒ¼ãƒ–ã«å½“ãŸã£ãŸ
         if (GameManager.I.gamestate("Play") && other.gameObject.CompareTag("cube"))
         {
-            //Œõü‚ğ“ª‚®‚ç‚¢‚ÌˆÊ’u‚Éo‚µ‚Ä
+            //å…‰ç·šã‚’é ­ãã‚‰ã„ã®ä½ç½®ã«å‡ºã—ã¦
             Ray ray = new Ray(new Vector3(transform.position.x, transform.position.y + 1.7f, transform.position.z), transform.forward);
             Debug.DrawRay(new Vector3(transform.position.x, transform.position.y + 1.7f, transform.position.z), transform.forward * 1.0f, Color.red);
 
-            //Î‚ßã‚É‰½‚ª‚ ‚é‚©Œ©‚é
+            //æ–œã‚ä¸Šã«ä½•ãŒã‚ã‚‹ã‹è¦‹ã‚‹
             RaycastHit hit;
             Physics.Raycast(ray, out hit, 1.0f);
             Debug.Log(hit.collider == null);
 
-            //‰½‚à‚È‚¯‚ê‚Î“o‚é
+            //ä½•ã‚‚ãªã‘ã‚Œã°ç™»ã‚‹
             if (hit.collider == null)
             {
                 Debug.Log("OK");
-                //–Ú‚Ì‘O‚ÌƒuƒƒbƒN‚ÌˆÊ’u‚ğ“o˜^‚·‚é
+                //ç›®ã®å‰ã®ãƒ–ãƒ­ãƒƒã‚¯ã®ä½ç½®ã‚’ç™»éŒ²ã™ã‚‹
                 blockpos = other.transform.position;
-                //“o‚éƒAƒjƒ[ƒVƒ‡ƒ“‚ğ‚·‚é
+                //ç™»ã‚‹ã‚¢ãƒ‹ãƒ¡ãƒ¼ã‚·ãƒ§ãƒ³ã‚’ã™ã‚‹
                 anim.SetTrigger("clime");
             }
             else
             {
-                Debug.Log("“o‚ê‚È‚¢êŠ‚Ì‚Í‚¸");
+                Debug.Log("ç™»ã‚Œãªã„å ´æ‰€ã®ã¯ãš");
             }
         }
     }
 
-    //ƒAƒjƒ[ƒVƒ‡ƒ“‚ÌƒCƒxƒ“ƒg‚©‚çŒÄ‚Ño‚³‚ê‚é
-    //FX‚ÈŒ“‚Ë‡‚¢‚©‚ç–³—‚â‚èÀ•W‚ğã‚°‚Ä‹ì‚¯ã‚ª‚Á‚½‚æ‚¤‚ÉŒ©‚¹‚Ä‚é
+    //ã‚¢ãƒ‹ãƒ¡ãƒ¼ã‚·ãƒ§ãƒ³ã®ã‚¤ãƒ™ãƒ³ãƒˆã‹ã‚‰å‘¼ã³å‡ºã•ã‚Œã‚‹
+    //è‰²ã€…ãªå…¼ã­åˆã„ã‹ã‚‰ç„¡ç†ã‚„ã‚Šåº§æ¨™ã‚’ä¸Šã’ã¦é§†ã‘ä¸ŠãŒã£ãŸã‚ˆã†ã«è¦‹ã›ã¦ã‚‹
     IEnumerator clime_move()
     {
         float f = 0f;
         Debug.Log(blockpos);
-        //Œ»İ‚ÌƒvƒŒƒCƒ„[‚ÌˆÊ’u
+        //ç¾åœ¨ã®ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ã®ä½ç½®
         Vector3 startpos = new Vector3(transform.position.x, transform.position.y, transform.position.z);
-        //“–‚½‚Á‚½ƒuƒƒbƒN‚Ìˆê‚Âã‚ÌˆÊ’u
+        //å½“ãŸã£ãŸãƒ–ãƒ­ãƒƒã‚¯ã®ä¸€ã¤ä¸Šã®ä½ç½®
         Vector3 endpos = new Vector3(blockpos.x, blockpos.y + 1f, blockpos.z);
         Debug.Log(startpos);
         Debug.Log(endpos);
 
-        //‹ì‚¯ã‚ª‚é‚Ü‚ÅŒJ‚è•Ô‚·i•âŠ®‘Ò‚¿j
+        //é§†ã‘ä¸ŠãŒã‚‹ã¾ã§ç¹°ã‚Šè¿”ã™ï¼ˆè£œå®Œå¾…ã¡ï¼‰
         while (f <= 1.0f)
         {
-            //•âŠ®‚µ‚È‚ª‚çã‚És‚­
+            //è£œå®Œã—ãªãŒã‚‰ä¸Šã«è¡Œã
             transform.root.position = Vector3.Slerp(startpos, endpos, f);
-            //ó‹µ‰ÁZ
+            //çŠ¶æ³åŠ ç®—
             f += 0.05f;
-            //ŠÔ’PˆÊ‚Å‘Ò‚Â
-            yield return new WaitForSecondsRealtime(0.005f);
+            //æ™‚é–“å˜ä½ã§å¾…ã¤
+            yield return new WaitForSecondsRealtime(0.01f);
         }
     }
 }

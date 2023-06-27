@@ -12,7 +12,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fa9bb295bfe98a34db2a0915e96d55ca, type: 3}
   m_Name: "1-8\u300C\u305B\u307E\u308B\u300D"
   m_EditorClassIdentifier: 
+  laststage: 0
   bossstage: 1
+  bossstage_reverse: 0
   clearnum: 11
   stage_vcampos: {x: 40.299, y: 0, z: 19.5}
   floorpos:
